@@ -238,7 +238,7 @@ if hash brew >/dev/null 2>&1; then
 
     case "$1" in
       find)
-        fzf_opts=("--multi" "--query=$2" "--preview=$brew info {}" "--preview-window=$([ $(tput lines) -gt $(tput cols) ] && printf right || printf up)")
+        fzf_opts=("--multi" "--query=$2" "--preview=$brew info {1}" "--preview-window=$([ $(tput lines) -gt $(tput cols) ] && printf right || printf up)")
         choice=$($brew search | sed -f <($brew list | sed 's/.*/s\/^&$\/\& (installed)\//') | fzf "${fzf_opts[@]}" )
 
         if [ $? -eq 0 ] && [ -n "$choice" ]; then
