@@ -1,0 +1,56 @@
+function set_color() {
+  ANSI=$1
+  RGB=$2
+  printf "\e[3;$ANSI;$RGB}"
+}
+
+black="8;41;51"           # 0
+red="211;25;30"           # 1
+green="113;138;0"         # 2
+yellow="165;119;0"        # 3
+blue="27;115;200"         # 4
+magenta="200;22;110"      # 5
+cyan="31;145;133"         # 6
+white="233;226;201"       # 7
+brightblack="0;32;41"     # 8
+brightred="192;54;1"      # 9
+brightgreen="70;91;98"    # 10
+brightyellow="82;104;112" # 11
+brightblue="112;130;132"  # 12
+brightmagenta="88;87;186" # 13
+brightcyan="129;144;144"  # 14
+brightwhite="253;245;219" # 15
+
+# black
+set_color 0 "$black"
+set_color 8 "$brightblack"
+
+# red
+set_color 1 "$red"
+set_color 9 "$brightred"
+
+# green
+set_color 2 "$green"
+set_color 10 "$brightgreen"
+
+# yellow
+set_color 3 "$yellow"
+set_color 11 "$brightyellow"
+
+# blue
+set_color 4 "$blue"
+set_color 12 "$brightblue"
+
+# magenta
+set_color 5 "$magenta"
+set_color 13 "$brightmagenta"
+
+# cyan
+set_color 6 "$cyan"
+set_color 14 "$brightcyan"
+
+# white
+set_color 7 "$white"
+set_color 15 "$brightwhite"
+
+unset set_color

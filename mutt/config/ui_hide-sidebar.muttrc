@@ -1,0 +1,9 @@
+# vim: filetype=muttrc
+
+set sidebar_visible = no
+bind index j         next-undeleted
+bind index k         previous-undeleted
+bind index <tab>     next-new-then-unread
+bind index <backtab> previous-new-then-unread
+bind index <return>  display-message
+bind index q         quit

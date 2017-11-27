@@ -1,0 +1,20 @@
+# MS Word documents
+application/msword; open %s
+
+# Images
+image/*; qlmanage -p %s >/dev/null 2>&1
+# image/jpg; qlmanage -p %s >/dev/null 2>&1
+# image/jpeg; qlmanage -p %s >/dev/null 2>&1
+# image/pjpeg; qlmanage -p %s >/dev/null 2>&1
+# image/png; qlmanage -p %s >/dev/null 2>&1
+# image/gif; qlmanage -p %s >/dev/null 2>&1
+
+# PDFs
+application/pdf; qlmanage -p %s 2>&1 /dev/null
+
+# HTML
+# text/html; open -a Firefox %s & sleep 5; copiousoutput
+text/html; elinks -dump-charset %{charset} -default-mime-type text/html -dump %s; copiousoutput
+
+# Unidentified files
+application; open %s

@@ -1,0 +1,18 @@
+// Mac OS metadata files
+(?d).DS_Store
+(?d)Icon
+(?d).localized
+
+// Android metadata files
+.nomedia
+
+// Various temporary file patterns
+*.part
+tmp/
+*.tmp
+*.swp
+*.swo
+._*
+.#*
+#*#
+*~

@@ -1,0 +1,36 @@
+# vim: filetype=muttrc
+
+# Paths ------------------------------------------------------------------------
+set alias_file       = ~/.config/mutt/alias
+source $alias_file
+set header_cache     = ~/.config/mutt/cache/headers
+set message_cachedir = ~/.config/mutt/cache/bodies
+set certificate_file = ~/.config/mutt/certificates
+set mailcap_path     = ~/.config/mutt/mailcap
+set signature        = ~/.config/mutt/sig
+
+# Basic Options ----------------------------------------------------------------
+set wait_key         = no      # shut up, mutt
+set mbox_type        = Maildir # mailbox type
+set timeout          = 3       # how long to wait if user initiates a key sequence
+set confirmappend    = no      # don't ask, just do!
+set delete           = yes     # don't ask, just do!
+set mark_old         = no      # read/new is good enough for me
+set beep_new         = yes     # bell on new mails
+set pipe_decode      = yes     # strip headers and eval mimes when piping
+set mail_check_stats = yes
+
+set sendmail_wait    = 0
+set sleep_time       = 0       # disable delay when switching folders (among other things)
+
+# Composing --------------------------------------------------------------------
+set query_command    = "contacts '%s'"
+set abort_nosubject  = no
+set abort_unmodified = no
+set sig_dashes       = no
+set fast_reply       = yes
+set forward_format   = "Fwd: %s"
+set include          = yes
+set reverse_name     = yes
+set forward_quote    = yes
+set sig_on_top       = yes

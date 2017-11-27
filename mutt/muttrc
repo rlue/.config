@@ -1,0 +1,6 @@
+source ~/.config/mutt/config/base.muttrc
+source ~/.config/mutt/config/accounts.muttrc
+source ~/.config/mutt/config/ui.muttrc
+source ~/.config/mutt/config/solarized-dark.muttrc
+
+exec buffy-list

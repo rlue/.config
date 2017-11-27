@@ -1,0 +1,118 @@
+# vim: filetype=muttrc
+
+# VIEW =========================================================================
+
+# Status Bar -------------------------------------------------------------------
+set status_chars  = " *%A"
+set status_format = "───[ Folder: %f ]───[%r%m messages%?n? (%n new)?%?d? (%d to delete)?%?t? (%t tagged)? ]───%>─%?p?( %p postponed )?───"
+
+# Index ------------------------------------------------------------------------
+set date_format  = "%Y %b %d"
+set index_format = " %4C  [%Z]  %D  %-20.20F  %s %*   [%X] "
+set sort         = threads
+set sort_aux     = reverse-last-date-received
+set menu_scroll  = yes
+folder-hook !<.*> "exec collapse-all"
+
+# Pager ------------------------------------------------------------------------
+set pager_index_lines = 6   # show n-row index pane in pager view
+set pager_context     = 3   # how much context to keep on PgUp/PgDn
+set pager_stop        = yes # PgDn @ EOF ≠> move to next message
+set tilde             = yes # like vim, print column of tildes after EOF
+set markers           = no  # no ugly plus signs to indicate wrapped lines
+set wrap              = 80
+
+set quote_regexp = "^( {0,4}[>|:#%]| {0,4}[a-z0-9]+[>|]+)+"
+alternative_order text/plain *
+auto_view text/html
+
+# Browser ----------------------------------------------------------------------
+set folder_format = " %3C  %f %* [%m] "
+
+# Sidebar ----------------------------------------------------------------------
+set sidebar_next_new_wrap = yes
+set sidebar_format = " %B%*  [%N] "
+
+# KEY BINDINGS =================================================================
+
+# Contexts ---------------------------------------------------------------------
+# alias   - alias menu displaying suggested aliases
+# attach  - attachment list
+# browser - file/directory browser
+# editor  - single line editor for `To:', `Subject:' prompts.
+# index   - the main menu showing messages in a folder
+# pager   - where the contents of the message are displayed
+# query   - menu displaying results of query command
+
+# Navigation -------------------------------------------------------------------
+bind generic             z         noop
+bind index,pager,attach  g         noop
+bind index,pager         d         noop
+bind index,pager         u         noop
+bind index,pager         s         noop
+bind index,pager         c         noop
+bind generic,pager       t         noop
+
+bind generic,index,pager \Cf       next-page
+bind generic,index,pager \Cb       previous-page
+bind generic             gg        first-entry
+bind generic,index       G         last-entry
+bind generic,index,pager \Cd       half-down
+bind generic,index,pager \Cu       half-up
+bind generic             zt        current-top
+bind generic             zz        current-middle
+bind generic             zb        current-bottom
+
+bind index,pager         N         search-opposite
+bind index               <space>   collapse-thread
+bind index               za        collapse-thread
+macro pager              za        "<exit><collapse-thread>" "collapse-thread"
+bind index               zA        collapse-all
+bind index               <backtab> previous-new-then-unread
+
+bind pager               gg        top
+bind pager               G         bottom
+bind generic,pager       \Cy       previous-line
+bind generic,index,pager \Ce       next-line
+
+macro index C "<enter-command> source ~/.config/mutt/config/ui_show-sidebar.muttrc<enter>" "activate sidebar folder browser"
+
+# Go to folder...
+macro index,pager gd "<change-folder>=<Deferred><enter>"  "open deferred"
+macro index,pager gi "<change-folder>=<<Gmail>><enter>"   "open inbox"
+macro index,pager gh "<change-folder>=<<Hello>><enter>"   "open alternate inbox"
+macro index,pager gl "<change-folder>=<Lists><enter>"     "open mailing lists inbox"
+macro index,pager gs "<change-folder>=<Sent><enter>"      "open sent"
+macro index,pager gt "<change-folder>$trash<enter>"       "open trash"
+macro index,pager gf "<change-folder>?"                   "open mailbox..."
+
+# Actions ----------------------------------------------------------------------
+bind  index,pager    a   group-reply
+macro index          dd  "<enter-command> macro index u \"\<enter-command\> bind index u noop\\015\<enter-command\> set my_record=\\\$record\\015\<enter-command\> set record=\\\$my_last_deleted\\015\<change-folder\>$trash\\015'd\<tag-thread\>\<tag-prefix-cond\>\<save-message\>\\\<\\015\<sync-mailbox\>\<end-cond\>\<change-folder\>\\\<\\015\<enter-command\> set record=\\\$my_record\\015\<collapse-all\>'d\\<enter-command\> bind index \\\\'d noop\\015\" \"undo last deletion\"<enter><enter-command> set my_record=\$record<enter><enter-command> set record=^<enter><enter-command> set my_last_deleted=\$record<enter><enter-command> set record=\$my_record<enter><mark-message>d<enter><delete-message><sync-mailbox>"           "move message to trash"
+macro pager          dd  "<enter-command> macro index u \"\<enter-command\> bind index u noop\\015\<enter-command\> set my_record=\\\$record\\015\<enter-command\> set record=\\\$my_last_deleted\\015\<change-folder\>$trash\\015'd\<tag-thread\>\<tag-prefix-cond\>\<save-message\>\\\<\\015\<sync-mailbox\>\<end-cond\>\<change-folder\>\\\<\\015\<enter-command\> set record=\\\$my_record\\015\<collapse-all\>'d\\<enter-command\> bind index \\\\'d noop\\015\" \"undo last deletion\"<enter><enter-command> set my_record=\$record<enter><enter-command> set record=^<enter><enter-command> set my_last_deleted=\$record<enter><enter-command> set record=\$my_record<enter><exit><mark-message>d<enter><delete-message><sync-mailbox><display-message>"     "move message to trash"
+macro index          dat "<enter-command> macro index u \"\<enter-command\> bind index u noop\\015\<enter-command\> set my_record=\\\$record\\015\<enter-command\> set record=\\\$my_last_deleted\\015\<change-folder\>$trash\\015\<collapse-all\>'d\<tag-thread\>\<tag-prefix-cond\>\<save-message\>\\\<\\015\<sync-mailbox\>\<end-cond\>\<change-folder\>\\\<\\015\<enter-command\> set record=\\$my_record\\015\<collapse-all\>'d\\<enter-command\> bind index \\\\'d noop\\015\" \"undo last deletion\"<enter><enter-command> set my_record=\$record<enter><enter-command> set record=^<enter><enter-command> set my_last_deleted=\$record<enter><enter-command> set record=\$my_record<enter><mark-message>d<enter><delete-thread><sync-mailbox>"            "move thread to trash"
+macro pager          dat "<enter-command> macro index u \"\<enter-command\> bind index u noop\\015\<enter-command\> set my_record=\\\$record\\015\<enter-command\> set record=\\\$my_last_deleted\\015\<change-folder\>$trash\\015\<collapse-all\>'d\<tag-thread\>\<tag-prefix-cond\>\<save-message\>\\\<\\015\<sync-mailbox\>\<end-cond\>\<change-folder\>\\\<\\015\<enter-command\> set record=\\$my_record\\015\<collapse-all\>'d\\<enter-command\> bind index \\\\'d noop\\015\" \"undo last deletion\"<enter><enter-command> set my_record=\$record<enter><enter-command> set record=^<enter><enter-command> set my_last_deleted=\$record<enter><enter-command> set record=\$my_record<enter><exit><mark-message>d<enter><delete-thread><sync-mailbox><display-message>"      "move thread to trash"
+
+macro index,pager    ss  "<enter-command> macro browser \\015 \"\<select-entry\>\<sync-mailbox\><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<enter-command> macro browser q \"<exit><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<save-message>?"                                                                                                                                     "save message to a mailbox"
+macro index          sat "<enter-command> macro browser \\015 \"\<select-entry\>\<sync-mailbox\><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<enter-command> macro browser q \"<exit><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015'q<untag-pattern>.\\015\"\015<mark-message>q<enter><untag-pattern>.<enter><tag-thread><tag-prefix-cond><save-message>?"                                    "save thread to a mailbox"
+macro index          \;s "<enter-command> macro browser \\015 \"\<select-entry\>\<sync-mailbox\><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<enter-command> macro browser q \"<exit><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<tag-prefix-cond><save-message>?"                                                                                                                    "save tagged messages to a mailbox"
+macro pager          sat "<enter-command> macro browser \\015 \"\<select-entry\>\<sync-mailbox\><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015<display-message>\"\015<enter-command> macro browser q \"<exit><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015'q<untag-pattern>.\\015<display-message>\"\015<exit><mark-message>q<enter><untag-pattern>.<enter><tag-thread><tag-prefix><save-message>?" "save thread to a mailbox"
+macro index,pager    cc  "<enter-command> macro browser \\015 \"\<select-entry\>\<sync-mailbox\><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<enter-command> macro browser q \"<exit><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<copy-message>?"                                                                                                                                     "copy message to a mailbox"
+macro index          cat "<enter-command> macro browser \\015 \"\<select-entry\>\<sync-mailbox\><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<enter-command> macro browser q \"<exit><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015'q<untag-pattern>.\\015\"\015<mark-message>q<enter><untag-pattern>.<enter><tag-thread><tag-prefix-cond><copy-message>?"                                    "copy thread to a mailbox"
+macro index          \;c "<enter-command> macro browser \\015 \"\<select-entry\>\<sync-mailbox\><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<enter-command> macro browser q \"<exit><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015\"\015<tag-prefix-cond><copy-message>?"                                                                                                                    "copy tagged messages to a mailbox"
+macro pager          cat "<enter-command> macro browser \\015 \"\<select-entry\>\<sync-mailbox\><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015<display-message>\"\015<enter-command> macro browser q \"<exit><enter-command> bind browser \\\\015 select-entry\\015<enter-command> bind browser q exit\\015'q<untag-pattern>.\\015<display-message>\"\015<exit><mark-message>q<enter><untag-pattern>.<enter><tag-thread><tag-prefix><copy-message>?" "copy thread to a mailbox"
+bind  generic        tt  tag-entry
+bind  index          tat tag-thread
+bind  pager          tt  tag-message
+macro pager          tat "<exit><mark-message>q<enter><tag-thread>'q<display-message>"    "tag-thread"
+macro pager          ~   "<exit><mark-message>"                                           "create a hotkey macro for the current message"
+macro index,pager    gx  "<pipe-message>urlscan<Enter>"                                   "call urlscan to extract URLs out of a message"
+macro attach,compose gx  "<pipe-entry>urlscan<Enter>"                                     "call urlscan to extract URLs out of a message"
+macro attach         s   <save-entry><bol>~/Downloads/<eol><enter>
+
+# Command Line -----------------------------------------------------------------
+bind editor \Cp history-up
+bind editor \Cn history-down
+bind editor \Ct transpose-chars
+bind editor <tab> complete-query
+bind editor <backtab> complete

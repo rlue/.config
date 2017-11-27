@@ -1,0 +1,5 @@
+set mirror:use-pget-n 64
+set mirror:parallel-transfer-count 3
+set pget:default-n 64
+set bmk:save-passwords true
+# set sftp:connect-program "SSH_AUTH_SOCK=\"$(gpgconf --list-dirs agent-ssh-socket)\" ssh -a -x"

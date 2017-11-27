@@ -1,0 +1,57 @@
+// IMPORTANT ===================================================================
+// This file should appear twice in this directory (~/.config):
+//   - as symbolic link `.stignore`       (to define Syncthing ignore patterns)
+//   - as regular file  `.stignore.local` (to be synced between machines)
+// For details, see https://docs.syncthing.net/users/ignoring.html
+
+// INCLUDE =====================================================================
+#include .stignore.global
+
+// IGNORE ======================================================================
+/secrets.tar.gpg
+*cache*
+*history*
+/.ssh/id_rsa*
+/.tldrc
+/.vim/viminfo
+/.vim/plugged
+/configstore
+/gnupg/S.*
+/ranger
+/syncthing
+/systemd
+/yarn
+
+// Partial syncs ---------------------------------------------------------------
+// Some folders contain system-specific files
+// or large amounts of non-personal data.
+// This section whitelists only certain files in such directories.
+
+!/.bundle/config
+/.bundle/*
+
+!/.elinks/elinks.conf
+/.elinks/*
+
+!/.gem/credentials
+/.gem/*
+
+!/cmus/rc
+/cmus/*
+
+!/lftp/rc
+!/lftp/bookmarks
+/lftp/*
+
+!/qutebrowser/config.py
+/qutebrowser/*
+
+!/rtv/refresh-token
+!/rtv/rtv.cfg
+/rtv/*
+
+!/Transmission\ Remote\ GUI/transgui.ini
+/Transmission\ Remote\ GUI/*
+
+!/wireshark/preferences
+/wireshark/*

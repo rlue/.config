@@ -1,0 +1,5 @@
+# vim: filetype=muttrc
+
+set from      = "lists@ryanlue.com"
+set sendmail  = "/usr/local/bin/msmtp -a lists"
+set spoolfile = "=<Lists>"

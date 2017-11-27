@@ -1,0 +1,77 @@
+# EXPLORE:
+# - filters
+# - flags (for articles)
+# - navigation by dialog
+# - how to load tags dialog by default
+# - how to see all articles
+
+# custom bindings
+unbind-key ^K
+unbind-key J  # remapped to 'j'
+unbind-key K  # remapped to 'k'
+unbind-key n  # remapped to 'J'
+unbind-key p  # remapped to 'K'
+unbind-key \# # remapped to 'f'
+unbind-key u  # use goto-url (mapped to 'f') instead
+unbind-key E  # remapped to '^M'
+unbind-key D  # remapped to 'd'
+unbind-key g  # never wanna sort
+unbind-key G  # never wanna sort
+
+bind-key j  down feedlist
+bind-key j  down articlelist
+bind-key j  down tagselection
+bind-key j  down dialogs
+bind-key j  down filterselection
+bind-key j  down urlview
+bind-key ^E down help
+bind-key ^E down article # TODO: rebind edit-flags
+bind-key k  up   feedlist
+bind-key k  up   articlelist
+bind-key k  up   tagselection
+bind-key k  up   filterselection
+bind-key k  up   urlview
+bind-key ^Y up   help
+bind-key ^Y up   article
+
+bind-key ^F pagedown # TODO: rebind clear-filter
+bind-key ^B pageup
+
+bind-key j  next        article
+bind-key J  next-unread article
+bind-key k  prev        article
+bind-key K  prev-unread article
+bind-key ^N next-feed
+bind-key ^P prev-feed
+
+bind-key d  delete-article
+bind-key s  bookmark  # for 'save'; never want to actualy save
+bind-key f  goto-url  # for 'follow' TODO: rebind select-filter
+bind-key ^M edit-urls # for 'manage'
+
+# other settings
+goto-first-unread no
+goto-next-feed no
+auto-reload yes
+reload-time 30
+browser open
+bookmark-cmd "~/.newsboat/add_to_pocket.sh"
+bookmark-autopilot yes
+swap-title-and-hints yes
+prepopulate-query-feeds yes
+feedlist-title-format "───[ %?T?%T&All? ]───[ %t feeds ]─────────────────────────────────────────────────────────────────────"
+articlelist-title-format "───[ %T ]───[ %t articles ]─────────────────────────────────────────────────────────────────────"
+searchresult-title-format "───[ Search ]───[ %t results ]─────────────────────────────────────────────────────────────────────"
+help-title-format "───[ Help ]───[ %N %V ]─────────────────────────────────────────────────────────────────────"
+selecttag-title-format "───[ Tags ]───────────────────────────────────────────────────────────────────────────────────"
+selectfilter-title-format "───[ Filters ]───────────────────────────────────────────────────────────────────────────────────"
+itemview-title-format "───[ %T ]───────────────────────────────────────────────────────────────────────────────────"
+dialogs-title-format "───[ URLs ]───────────────────────────────────────────────────────────────────────────────────"
+dialogs-title-format "───[ Dialogs ]───────────────────────────────────────────────────────────────────────────────────"
+
+# solarized
+color listnormal        default  default bold
+color listfocus         black    yellow  bold
+color listnormal_unread cyan     default
+color listfocus_unread  black    yellow  bold 
+color info              color243 black   bold

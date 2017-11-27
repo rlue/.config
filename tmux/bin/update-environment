@@ -1,0 +1,11 @@
+#!/bin/bash
+
+while read v; do
+  if [[ $v == -* ]]; then
+    unset ${v/#-/}
+  else
+    v=${v/=/=\"}
+    v=${v/%/\"}
+    eval export $v
+  fi
+done < <(tmux show-environment)

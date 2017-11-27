@@ -1,0 +1,31 @@
+#!/usr/bin/env ruby
+
+require 'uri'
+
+if RUBY_PLATFORM !~ /darwin/
+  STDERR.puts 'mdbg: requires Mac OS.'
+elsif ARGV.empty?
+  puts <<-HERE.gsub(/^ +/, '')
+  quicklook -- preview online documents
+
+  Usage: quicklook [url]
+
+  use `-' to read the url from STDIN
+
+  HERE
+else
+  if ARGV.first == '-'
+    input = []
+    input << STDIN.gets.chomp until STDIN.eof?
+    url = input.first.strip
+  else
+    url = ARGV.first.strip
+  end
+
+  unless url =~ URI.regexp
+    raise ArgumentError 'not a valid URL'
+  end
+
+  `curl #{url} -o /tmp/quicklook#{File.extname(url)} >/dev/null 2>&1`
+  `qlmanage -p /tmp/quicklook#{File.extname(url)} >/dev/null 2>&1`
+end

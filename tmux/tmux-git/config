@@ -1,0 +1,26 @@
+# tmux-git configuration file
+
+# Location of the status on tmux bar: left or right
+TMUX_STATUS_LOCATION='left'
+
+# Status for where you are out of a repo. Default is your pre-existing status 
+# line. 
+# Kudos to https://github.com/danarnold for the idea.
+TMUX_OUTREPO_STATUS="$(tmux show -vg status-$TMUX_STATUS_LOCATION)"
+
+# Function to build the status line. You need to define the $TMUX_STATUS 
+# variable.
+TMUX_STATUS_DEFINITION() {
+    # You can use any tmux status variables, and $GIT_BRANCH, $GIT_DIRTY, 
+    # $GIT_FLAGS ( which is an array of flags ), and pretty much any variable
+    # used in this script :-)
+    
+    TMUX_STATUS="#[fg=green]$(basename "$GIT_REPO")#[fg=white]::#[fg=blue]$GIT_BRANCH "
+    
+    if [ ${#GIT_FLAGS[@]} -gt 0 ]; then
+        TMUX_STATUS="$TMUX_STATUS#[fg=white][#[fg=yellow]$(IFS=,; echo "${GIT_FLAGS[*]}")#[fg=white]] "
+    fi
+
+}
+
+# vim:ft=sh

@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+if RUBY_PLATFORM !~ /darwin/
+  STDERR.puts 'mdbg: requires Mac OS.'
+elsif ARGV.empty?
+  puts <<-HERE.gsub(/^ +/, '')
+  mdbg -- look up Chinese words on mdbg.net
+
+  Usage: mdbg [query]
+
+  use `-' to read the query from STDIN
+
+  HERE
+else
+  if ARGV.first == '-'
+    input = []
+    input << STDIN.gets.chomp until STDIN.eof?
+    query = input.join
+  else
+    query = ARGV.join
+  end
+
+  # rudimentary check for presence of Chinese characters
+  if query.split('').none? { |char| char.bytes.length > 1 }
+    raise ArgumentError 'query string contains no Chinese characters'
+  end
+
+  `open "https://www.mdbg.net/chinese/dictionary?page=worddict&wdrst=1&wdqb=#{query}"`
+end

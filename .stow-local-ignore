@@ -1,0 +1,7 @@
+^/\.stfolder
+^/\.stignore.*
+^/\.git.*
+^/[^.].*
+^/.fbtermrc # comment out for Linux
+^/.fonts # comment out for Linux
+/.DS_Store

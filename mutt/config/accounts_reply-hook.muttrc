@@ -1,0 +1,6 @@
+# vim: filetype=muttrc
+
+set my_record = $record
+set record    = ^
+macro compose q "<enter-command> bind compose y send-message<return><enter-command> bind compose q exit<return><enter-command> set record=\$my_record<return><exit>" "reset $record and exit"
+macro compose y "<enter-command> bind compose y send-message<return><enter-command> bind compose q exit<return><enter-command> set record=\$my_record<return><send-message>" "reset $record and send message"

@@ -1,0 +1,9 @@
+# vim: filetype=muttrc
+
+set sidebar_visible = yes
+macro index j         "<sidebar-next><sidebar-open>"                            ""
+macro index k         "<sidebar-prev><sidebar-open>"                            ""
+macro index <tab>     "<sidebar-next-new><sidebar-open>"                        ""
+macro index <backtab> "<sidebar-prev-new><sidebar-open>"                        ""
+macro index <return>  "<enter-command> source ~/.config/mutt/config/ui_hide-sidebar.muttrc<enter>" ""
+macro index q         "<enter-command> source ~/.config/mutt/config/ui_hide-sidebar.muttrc<enter>" ""

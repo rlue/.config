@@ -1,0 +1,71 @@
+# Identity =====================================================================
+/gnupg/
+/pass/
+
+# FRAGILE! .git/hooks/pre-commit uses the section below to package and encrypt 
+# the listed files for safe dissemination. Do NOT add comments, file globs, or
+# anything else but than valid, literal filenames.
+# Secrets ======================================================================
+/env/
+/Transmission Remote GUI/transgui.ini
+/asciinema/config
+/heroku/config.json
+/.gem/credentials
+/.netrc
+/.pocket-config
+/.pocket-index
+
+# Misc. ========================================================================
+/.fonts
+/.stfolder
+/.stignore
+
+# .stignore ====================================================================
+*cache*
+*history*
+/.ssh/id_rsa*
+/.tldrc
+/.vim/viminfo
+/.vim/plugged
+/configstore
+# /gnupg/S.*
+# /gnupg/gpg-agent.conf
+/ranger
+/syncthing
+/systemd
+/yarn
+
+# Partial syncs ----------------------------------------------------------------
+# Some folders contain system-specific files
+# or large amounts of non-personal data.
+# This section whitelists only certain files in such directories.
+
+!/.bundle/
+/.bundle/*
+!/.bundle/config
+
+/.elinks/*
+!/.elinks/elinks.conf
+
+# !/.gem/credentials
+/.gem/*
+
+/cmus/*
+!/cmus/rc
+
+/lftp/*
+!/lftp/rc
+!/lftp/bookmarks
+
+/qutebrowser/*
+!/qutebrowser/config.py
+
+/rtv/*
+# !/rtv/refresh-token
+!/rtv/rtv.cfg
+
+# !/Transmission\ Remote\ GUI/transgui.ini
+/Transmission\ Remote\ GUI/*
+
+/wireshark/*
+!/wireshark/preferences

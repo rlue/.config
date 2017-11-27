@@ -1,0 +1,11 @@
+if-shell -b '[ "$(uname)" = "Darwin" ] && [ -x "$HOME/.config/tmux/bin/mdbg" ]' \
+  "if-shell -b '[ \"$(echo \"$TMUX_VERSION >= 2.4\" | bc)\" = 1 ]' \
+         \"bind-key -T copy-mode-vi z send-keys -X copy-pipe '$HOME/.config/tmux/bin/mdbg -'\" \
+         \"bind-key -t vi-copy z copy-pipe '$HOME/.config/tmux/bin/mdbg -'\""
+
+if-shell -b '[ "$(uname)" = "Darwin" ] && [ -x "$HOME/.config/tmux/bin/quicklook" ]' \
+  "if-shell -b '[ \"$(echo \"$TMUX_VERSION >= 2.4\" | bc)\" = 1 ]' \
+         \"bind-key -T copy-mode-vi p send-keys -X copy-pipe '$HOME/.config/tmux/bin/quicklook -'\" \
+         \"bind-key -t vi-copy p copy-pipe '$HOME/.config/tmux/bin/quicklook -'\""
+
+# vim:ft=tmux

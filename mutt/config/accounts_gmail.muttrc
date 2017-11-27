@@ -1,0 +1,5 @@
+# vim: filetype=muttrc
+
+set from      = "ryan.lue@gmail.com"
+set sendmail  = "/usr/local/bin/msmtp -a gmail"
+set spoolfile = "=<<Gmail>>"
