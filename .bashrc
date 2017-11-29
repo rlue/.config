@@ -69,7 +69,7 @@ if [ "$(uname)" = Linux ]; then
       debian_chroot=$(cat /etc/debian_chroot)
     fi
 
-    # Power Management -----------------------------------------------------------
+    # Power Management ---------------------------------------------------------
     if type systemctl >/dev/null 2>&1; then
       if [ -z "$(type -t halt)" ];   then alias halt="systemctl poweroff";  fi
       if [ -z "$(type -t susp)" ];   then alias susp="systemctl suspend";   fi
@@ -82,7 +82,7 @@ if [ "$(uname)" = Linux ]; then
       alias batt="upower -i $(upower -e | grep battery) | grep \"time to empty\" | sed \"s/^[ \t]*time to empty:[ \t]*//\" -"
     fi
 
-    # Colors ---------------------------------------------------------------------
+    # Colors -------------------------------------------------------------------
     # set a fancy prompt (non-color, unless we know we "want" color)
     # case "$TERM" in
     #     xterm-color|*-256color|fbterm) color_prompt=yes;;
@@ -131,7 +131,7 @@ if [ "$(uname)" = Linux ]; then
     # export PS1="\[`EXT_COLOR 187`\]\u@\h[`CLOSE_COLOR`\]\[`EXT_COLOR 174`\]:\w \$ \[`CLOSE_COLOR`\]"
     # export LS_COLORS='di=38;5;108:fi=00;*svn-commit.tmp=31:ln=38;5;116:ex=38;5;186'
 
-    # GUI Term Options -----------------------------------------------------------
+    # GUI Term Options ---------------------------------------------------------
     # If this is an xterm set the title to user@host:dir
     case "$TERM" in
     xterm*|rxvt*)
