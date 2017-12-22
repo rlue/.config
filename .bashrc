@@ -230,8 +230,6 @@ if hash brew >/dev/null 2>&1; then
     brew=$(type -P brew)
     if hash rg >/dev/null 2>&1; then
       grepprg='rg'
-    elif hash ag >/dev/null 2>&1; then
-      grepprg='ag'
     else
       grepprg='grep'
     fi
