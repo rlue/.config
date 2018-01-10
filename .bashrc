@@ -298,6 +298,10 @@ if hash fd >/dev/null 2>&1 && hash fzf >/dev/null 2>&1; then
   alias fzd='cd ./$(fd --type d | fzf-tmux +m --preview="ls {}")'
 fi
 
+# Alacritty --------------------------------------------------------------------
+alias light="ln -f ~/.config/alacritty/alacritty-gruvbox.yml ~/.config/alacritty/alacritty.yml"
+alias dark="ln -f ~/.config/alacritty/alacritty-hybrid.yml ~/.config/alacritty/alacritty.yml"
+
 # Bundler ----------------------------------------------------------------------
 alias b='bundle exec'
 alias bj='bundle exec jekyll'
