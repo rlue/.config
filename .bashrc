@@ -15,13 +15,18 @@ if [ -z "$SSH_CONNECTION" ]; then
   # if in virtual terminal, start fbterm (with 256 color support)
   if type fbterm >/dev/null 2>&1 && [[ "$(tty)" =~ /dev/tty ]]; then
     fbterm
-  # otherwise, start tmux / initialize tmux plugins
-  elif type tmux >/dev/null 2>&1; then
-    if [ -z "$TMUX" ]; then
-      tmux new -As work
-    elif [ "$(uname)" = Linux ] || type greadlink >/dev/null 2>&1; then
-      source "$HOME/.config/tmux/tmux-git/init.sh" >/dev/null 2>&1
+  # or if not in tmux, set TERM and start tmux (if possible)
+  elif [ -z "$TMUX" ]; then
+    if infocmp xterm-256color-italic >/dev/null 2>&1; then
+      export TERM=xterm-256color-italic
     fi
+
+    if type tmux >/dev/null 2>&1; then
+      tmux new -As work
+    fi
+    # or else initialize tmux plugins (if possible)
+  elif [ "$(uname)" = Linux ] || type greadlink >/dev/null 2>&1; then
+    source "$HOME/.config/tmux/tmux-git/init.sh" >/dev/null 2>&1
   fi
 fi
 
