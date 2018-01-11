@@ -4,15 +4,15 @@
 (?d).localized
 
 // Android metadata files
-.nomedia
+(?d).nomedia
 
 // Various temporary file patterns
-*.part
-tmp/
-*.tmp
-*.swp
-*.swo
-._*
-.#*
-#*#
-*~
+(?d)*.part
+(?d)tmp/
+(?d)*.tmp
+(?d)*.swp
+(?d)*.swo
+(?d)._*
+(?d).#*
+(?d)#*#
+(?d)*~
