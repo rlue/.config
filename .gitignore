@@ -4,7 +4,7 @@
 
 # FRAGILE! .git/hooks/pre-commit uses the section below to package and encrypt 
 # the listed files for safe dissemination. Do NOT add comments, file globs, or
-# anything else but than valid, literal filenames.
+# anything else other than valid, literal filenames.
 # Secrets ======================================================================
 /env/
 /Transmission Remote GUI/transgui.ini
@@ -12,6 +12,7 @@
 /heroku/config.json
 /.gem/credentials
 /.netrc
+/.ngrok2/ngrok.yml
 /.pocket-config
 /.pocket-index
 
