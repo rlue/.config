@@ -310,3 +310,8 @@ alias dark="ln -f ~/.config/alacritty/alacritty-hybrid.yml ~/.config/alacritty/a
 # Bundler ----------------------------------------------------------------------
 alias b='bundle exec'
 alias bj='bundle exec jekyll'
+
+# DIRENV =======================================================================
+if hash direnv >/dev/null 2>&1; then
+  eval "$(direnv hook bash)"
+fi
