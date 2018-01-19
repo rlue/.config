@@ -25,8 +25,14 @@ if [ -z "$SSH_CONNECTION" ]; then
       tmux new -As work
     fi
     # or else initialize tmux plugins (if possible)
-  elif [ "$(uname)" = Linux ] || type greadlink >/dev/null 2>&1; then
-    source "$HOME/.config/tmux/tmux-git/init.sh" >/dev/null 2>&1
+  else
+    if [ "$(uname)" = Linux ] || type greadlink >/dev/null 2>&1; then
+      source "$HOME/.config/tmux/tmux-git/init.sh" >/dev/null 2>&1
+    fi
+
+    if hash timer >/dev/null 2>&1 && ! pgrep -f $(which timer) >/dev/null 2>&1; then
+      timer -qr -1 15 15 15 15 &
+    fi
   fi
 fi
 
