@@ -3,7 +3,6 @@
 set realname  = "Ryan Lue"
 set folder    = ~/Mail/
 set postponed = "=<Drafts>"
-set record    = "=<Deferred>"
 set trash     = "=<Trash>"
 source ~/.config/mutt/config/accounts_gmail.muttrc
 

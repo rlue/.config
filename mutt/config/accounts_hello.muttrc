@@ -2,4 +2,5 @@
 
 set from      = "hello@ryanlue.com"
 set sendmail  = "/usr/local/bin/msmtp -a hello"
+set record    = "=<<Hello>>"
 set spoolfile = "=<<Hello>>"

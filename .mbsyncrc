@@ -97,6 +97,13 @@ Create Slave
 Expunge Both
 SyncState *
 
+Channel gmail-dumplock
+Master :gmail:"Dump Lock"
+Slave :local:<Dump-Lock>
+Create Slave
+Expunge Both
+SyncState *
+
 Channel gmail-trash
 Master :gmail:"[Gmail]/Trash"
 Slave :local:<Trash>
@@ -122,6 +129,7 @@ Channel gmail-inbox
 Channel gmail-drafts
 Channel gmail-sent
 Channel gmail-deferred
+Channel gmail-dumplock
 
 Group gmail
 Channel gmail-inbox
@@ -129,5 +137,6 @@ Channel gmail-drafts
 Channel gmail-sent
 Channel gmail-spam
 Channel gmail-deferred
+Channel gmail-dumplock
 Channel gmail-trash
 Channel gmail-labels

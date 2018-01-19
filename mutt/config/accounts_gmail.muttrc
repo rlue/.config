@@ -2,4 +2,5 @@
 
 set from      = "ryan.lue@gmail.com"
 set sendmail  = "/usr/local/bin/msmtp -a gmail"
+set record    = "=<<Gmail>>"
 set spoolfile = "=<<Gmail>>"
