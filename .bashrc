@@ -22,7 +22,11 @@ if [ -z "$SSH_CONNECTION" ]; then
     fi
 
     if type tmux >/dev/null 2>&1; then
-      tmux new -As work
+      if tmux ls | grep -i work: >/dev/null 2>&1; then
+        tmux attach -t "*[wW][oO][rR][kK]" # for compatibility with rlue/utils/timer
+      else
+        tmux new -As work
+      fi
     fi
     # or else initialize tmux plugins (if possible)
   else
@@ -30,7 +34,7 @@ if [ -z "$SSH_CONNECTION" ]; then
       source "$HOME/.config/tmux/tmux-git/init.sh" >/dev/null 2>&1
     fi
 
-    if hash timer >/dev/null 2>&1 && ! pgrep -f $(which timer) >/dev/null 2>&1; then
+    if hash timer >/dev/null 2>&1 && ! pgrep -f $(hash -t timer) >/dev/null 2>&1; then
       timer -qr -1 15 15 15 15 &
     fi
   fi
