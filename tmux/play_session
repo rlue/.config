@@ -1,4 +1,4 @@
-bind-key A if-shell 'tmux has -t play' \
+bind-key X if-shell 'tmux has -t play' \
                     'attach -t play; select-window -t 1' \
                     'new -s play; \
                       if-shell "type mutt"       "new-window \"mbsync inboxes && mutt\""; \
