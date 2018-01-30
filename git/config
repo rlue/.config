@@ -16,3 +16,5 @@
 	br = branch
 	co = checkout
 	mg = merge
+	mc = merge --no-ff
+	rb = rebase
