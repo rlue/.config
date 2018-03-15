@@ -8,7 +8,7 @@
 # Secrets ======================================================================
 /Transmission Remote GUI/transgui.ini
 /asciinema/config
-/heroku/config.json
+/hub
 /.gem/credentials
 /.netrc
 /.ngrok2/ngrok.yml
