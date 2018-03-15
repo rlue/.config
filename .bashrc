@@ -22,7 +22,7 @@ if [ -z "$SSH_CONNECTION" ]; then
     fi
 
     if type tmux >/dev/null 2>&1; then
-      if tmux ls | grep -i work: >/dev/null 2>&1; then
+      if tmux ls 2>/dev/null | grep -i work: >/dev/null 2>&1; then
         tmux attach -t "*[wW][oO][rR][kK]" # for compatibility with rlue/utils/timer
       else
         tmux new -As work
