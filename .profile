@@ -31,7 +31,7 @@ if [ "`uname`" = Darwin ]; then
   # Prevent `GitHub API rate limit exceeded` error
   # per https://gist.github.com/christopheranderton/8644743
   if command -v brew >/dev/null 2>&1; then
-    export HOMEBREW_GITHUB_API_TOKEN=`cat "$HOME/.config/env/homebrew_github_api_token" >/dev/null 2>&1`
+    export HOMEBREW_GITHUB_API_TOKEN=`pass env/homebrew_github_api_token 2>/dev/null`
   fi
 
 # Linux ------------------------------------------------------------------------
@@ -85,6 +85,8 @@ do
     esac
   fi
 done
+
+export DEV_PW=`pass dev/default 2>/dev/null`
 
 # APPLICATION SETTINGS =========================================================
 # less -------------------------------------------------------------------------
