@@ -6,6 +6,7 @@
 	email = hello@ryanlue.com
 [core]
 	editor = vim
+	; pager  = "vim -R -c 'set ft=git nowrap' -c 'AnsiEsc' -"
 [merge]
 	tool = vimdiff
 [push]
@@ -18,3 +19,4 @@
 	mg = merge
 	mc = merge --no-ff
 	rb = rebase
+	lg = log --color --graph --pretty=format:'%Cred %h %Creset-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
