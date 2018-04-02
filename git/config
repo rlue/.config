@@ -1,6 +1,6 @@
 # This is Git's per-user configuration file.
 [credential "https://github.com"]
-	helper = !pass github.com/rlue
+	helper = !pass web/github/rlue
 [user]
 	name = Ryan Lue
 	email = hello@ryanlue.com

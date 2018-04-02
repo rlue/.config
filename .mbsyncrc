@@ -5,7 +5,7 @@ IMAPAccount gmail
 Host imap.gmail.com
 Port 993
 User ryan.lue
-PassCmd "pass email/ryan.lue@gmail.com"
+PassCmd "pass web/email/ryan.lue@gmail.com"
 AuthMechs LOGIN
 SSLType IMAPS
 SSLVersions TLSv1.2
@@ -15,7 +15,7 @@ IMAPAccount hello
 Host mail.privateemail.com
 Port 993
 User hello@ryanlue.com
-PassCmd "pass email/hello@ryanlue.com"
+PassCmd "pass web/email/hello@ryanlue.com"
 AuthMechs LOGIN
 SSLType IMAPS
 SSLVersions TLSv1.2
@@ -25,7 +25,7 @@ IMAPAccount lists
 Host mail.privateemail.com
 Port 993
 User lists@ryanlue.com
-PassCmd "pass email/lists@ryanlue.com"
+PassCmd "pass web/email/lists@ryanlue.com"
 AuthMechs LOGIN
 SSLType IMAPS
 SSLVersions TLSv1.2
