@@ -35,6 +35,40 @@
 /systemd
 /yarn
 
+# Linux ------------------------------------------------------------------------
+/akonadi*
+/akregator*
+/autostart*
+/baloo*
+/bluedevil*
+/chromium
+/dolphinrc
+/dconf
+/dmenu
+/email*
+/enchant
+/eventviewsrc
+/fcitx
+/fontconfig
+/gtk*
+/k*
+/mimeapps.list
+/org.kde.*
+/pavucontrol.ini
+/plasma*
+/powermanagementprofilesrc
+/pulse
+/QtProject.conf
+/session
+/skypeforlinux
+/spectaclerc
+/specialmailcollectionsrc
+/startup*
+/systemd
+/systemsettingsrc
+/Trolltech.conf
+/user-dirs*
+
 # Partial syncs ----------------------------------------------------------------
 # Some folders contain system-specific files
 # or large amounts of non-personal data.

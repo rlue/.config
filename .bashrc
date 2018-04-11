@@ -8,13 +8,17 @@
 # INITIALIZATION ===============================================================
 if [ "$(ps -o comm= $PPID)" = fbterm ]; then
   export TERM=fbterm
-  source "$HOME/.config/fbterm/colors/hybrid" >/dev/null 2>&1
+  source "$HOME/.config/fbterm/colors/hybrid" 2>/dev/null
 fi
 
 if [ -z "$SSH_CONNECTION" ]; then
   # if in virtual terminal, start fbterm (with 256 color support)
   if type fbterm >/dev/null 2>&1 && [[ "$(tty)" =~ /dev/tty ]]; then
-    fbterm
+    if type fcitx >/dev/null 2>&1 && type fcitx-fbterm-helper >/dev/null 2>&1; then
+      pgrep -x fcitx >/dev/null 2>&1 && fcitx-fbterm-helper || fcitx-fbterm-helper -l
+    else
+      fbterm
+    fi
   # or if not in tmux, set TERM and start tmux (if possible)
   elif [ -z "$TMUX" ]; then
     if infocmp xterm-256color-italic >/dev/null 2>&1; then
@@ -74,6 +78,10 @@ if [ "$(uname)" = Linux ]; then
     done
   fi
 
+  if type xdg-open >/dev/null 2>&1; then
+    alias open="xdg-open"
+  fi
+
   # Debian ---------------------------------------------------------------------
   if [ -r /etc/debian_version ]; then
     # make less more friendly for non-text input files, see lesspipe(1)
@@ -90,11 +98,6 @@ if [ "$(uname)" = Linux ]; then
       if [ -z "$(type -t susp)" ];   then alias susp="systemctl suspend";   fi
       if [ -z "$(type -t hbnt)" ];   then alias hbnt="systemctl hibernate"; fi
       if [ -z "$(type -t reboot)" ]; then alias reboot="systemctl reboot";  fi
-    fi
-
-    # shellcheck disable=SC2139
-    if type upower >/dev/null 2>&1; then
-      alias batt="upower -i $(upower -e | grep battery) | grep \"time to empty\" | sed \"s/^[ \t]*time to empty:[ \t]*//\" -"
     fi
 
     # Colors -------------------------------------------------------------------
@@ -187,6 +190,17 @@ if type chruby-exec >/dev/null 2>&1; then
   # chruby.sh _must_ be sourced first
   source "$(pkgpath chruby-exec)/share/chruby/chruby.sh" >/dev/null 2>&1
   source "$(pkgpath chruby-exec)/share/chruby/auto.sh" >/dev/null 2>&1
+fi
+
+# node -------------------------------------------------------------------------
+if [ -d "$HOME/.nvm" ]; then
+  export NVM_DIR="$HOME/.nvm"
+  source "$NVM_DIR/nvm.sh" >/dev/null 2>&1
+  source "$NVM_DIR/bash_completion" >/dev/null 2>&1
+fi
+
+if [ -d "$HOME/.avn" ]; then
+  source "$HOME/.avn/bin/avn.sh" >/dev/null 2>&1
 fi
 
 # helper functions -------------------------------------------------------------
@@ -314,12 +328,20 @@ if hash fd >/dev/null 2>&1 && hash fzf >/dev/null 2>&1; then
 fi
 
 # Alacritty --------------------------------------------------------------------
-alias light="ln -f ~/.config/alacritty/alacritty-gruvbox.yml ~/.config/alacritty/alacritty.yml"
-alias dark="ln -f ~/.config/alacritty/alacritty-hybrid.yml ~/.config/alacritty/alacritty.yml"
+alias light="ln -srf ~/.config/alacritty/alacritty-gruvbox.yml ~/.config/alacritty/alacritty.yml; alias vim=\"vim -c 'colorscheme gruvbox | set bg=light'\""
+alias dark="ln -srf ~/.config/alacritty/alacritty-hybrid.yml ~/.config/alacritty/alacritty.yml; unalias vim"
 
 # Bundler ----------------------------------------------------------------------
 alias b='bundle exec'
 alias bj='bundle exec jekyll'
+
+# ranger -----------------------------------------------------------------------
+# if [ -r "$HOME/.config/ranger/w3mimgdisplay" ]; then
+#   export W3MIMGDISPLAY_PATH="$HOME/.config/ranger/w3mimgdisplay"
+# fi
+# if [ -r "$HOME/.config/ranger/rc.conf" ]; then
+#   export RANGER_LOAD_DEFAULT_RC="FALSE"
+# fi
 
 # DIRENV =======================================================================
 if hash direnv >/dev/null 2>&1; then
