@@ -28,6 +28,7 @@
 /autostart*
 /baloo*
 /bluedevil*
+/calibre
 /chromium
 /dolphinrc
 /dconf
@@ -40,6 +41,7 @@
 /gtk*
 /k*
 /mimeapps.list
+/Mumble
 /org.kde.*
 /pavucontrol.ini
 /plasma*
@@ -53,6 +55,7 @@
 /startup*
 /systemd
 /systemsettingsrc
+/systemmonitorrc
 /Trolltech.conf
 /user-dirs*
 
