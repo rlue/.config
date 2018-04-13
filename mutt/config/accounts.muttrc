@@ -8,14 +8,16 @@ source ~/.config/mutt/config/accounts_gmail.muttrc
 
 # Mailboxes to show in the sidebar
 # mailboxes `find ~/.mail/ -maxdepth 1 -mindepth 1 -d -not -name '.notmuch' | sed 's/ /\\ /' | paste -sd ' ' -`
-mailboxes =<<Gmail>> =<<Hello>> =<Deferred> =<Lists> =<Drafts>
+mailboxes =<<Gmail>> =<<Hello>> =<<Zammad>> =<Deferred> =<Lists> =<Drafts>
 
 # Automatic account switching
 folder-hook =<<Hello>>                  "source ~/.config/mutt/config/accounts_hello.muttrc"
 folder-hook =<Lists>                    "source ~/.config/mutt/config/accounts_lists.muttrc"
-folder-hook !=<(<Hello>|Lists)>         "source ~/.config/mutt/config/accounts_gmail.muttrc"
+folder-hook =<<Zammad>>                 "source ~/.config/mutt/config/accounts_zammad.muttrc"
+folder-hook !=<(<Hello>|Lists|<Zammad>)>         "source ~/.config/mutt/config/accounts_gmail.muttrc"
 reply-hook  "~L ^hello@ryanlue\.com$"   "source ~/.config/mutt/config/accounts_hello.muttrc"
 reply-hook  "~L ^lists@ryanlue\.com$"   "source ~/.config/mutt/config/accounts_lists.muttrc"
+reply-hook  "~L ^rl@zammad\.com$"       "source ~/.config/mutt/config/accounts_zammad.muttrc"
 reply-hook  "~L ^ryan\.lue@gmail\.com$" "source ~/.config/mutt/config/accounts_gmail.muttrc"
 
 # Override <Sent> folder when replying to a thread
