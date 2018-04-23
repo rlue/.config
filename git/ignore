@@ -39,11 +39,10 @@ Thumbs.db
 # persist installation options between runs of the bundle install command. 
 /.bundle
 
-# Exuberant ctags --------------------------------------------------------------
-/tags*
-
 # Temporary files --------------------------------------------------------------
 *.tmp
 
-# IDE files --------------------------------------------------------------------
+# Development tools ------------------------------------------------------------
+/tags*
+/.envrc
 /Session.vim
