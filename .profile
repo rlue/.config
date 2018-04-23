@@ -70,7 +70,7 @@ command -v vim >/dev/null 2>&1 && export EDITOR=vim || export EDITOR=vi
 export VISUAL="$EDITOR"
 
 if [ "$EDITOR" = 'vim' ]; then
-  export MANPAGER="/bin/sh -c \"col -b | vim -c 'runtime ftplugin/man.vim | set ft=man ro nomod nolist iskeyword+=:' -\""
+  export MANPAGER="/bin/sh -c \"col -b | vim -c 'runtime ftplugin/man.vim | set ft=man ro nomod nolist nonu iskeyword+=:' -\""
 fi
 
 for dir in \
@@ -80,7 +80,9 @@ for dir in \
 do
   if [ -d "$dir" ]; then
     case "$PATH" in
-      *"$dir"*) :;;
+      *":$dir:"*) :;;
+      "$dir:"*) :;;
+      *":$dir") :;;
       *) export PATH="$dir:$PATH";;
     esac
   fi
