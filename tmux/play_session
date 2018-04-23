@@ -1,7 +1,10 @@
 bind-key X if-shell 'tmux has -t play' \
                     'attach -t play; select-window -t 1' \
                     'new -s play; \
-                      if-shell "type mutt"       "new-window \"mbsync inboxes && mutt\""; \
+                      if-shell "type neomutt" \
+		        "new-window \"mbsync inboxes && neomutt\"" \
+		        "if-shell \"type mutt\" \
+			  \"new-window \\\"mbsync inboxes && mutt\\\"\""; \
                       if-shell "type newsboat"   "new-window \"newsboat\""; \
                       new-window ssh bbsu@ptt.cc; \
                       if-shell "type rtv"        "new-window \"rtv\""; \
