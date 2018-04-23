@@ -1,6 +1,55 @@
-# Identity =====================================================================
-/gnupg/
-/pass/
+# WHITELIST ===================================================================
+# Due to the inundation of ~/.config files on Linux systems,
+# this repository works on a whitelist basis.
+
+/*
+*cache*
+*history*
+
+!/.bash_profile
+!/.bashrc
+!/.bundle/config
+!/.elinks/elinks.conf
+!/.fbtermrc
+!/.git
+!/.gitignore
+!/.gitmodules
+!/.ignore
+!/.irbrc
+!/.mbsyncrc
+!/.msmtprc
+!/.newsboat
+!/.notmuch-config
+!/.profile
+!/.ruby-version
+!/.ssh/authorized_keys
+!/.ssh/config
+!/.stignore.global
+!/.stignore.local
+!/.stow-local-ignore
+!/.tmux.conf
+!/README.md
+!/alacritty
+!/cmus/rc
+!/fbterm
+!/fontconfig
+!/git
+!/htop
+!/hub
+!/lftp/bookmarks
+!/lftp/rc
+!/mutt
+!/neofetch
+!/qutebrowser/config.py
+!/ranger/*.conf
+!/ranger/scope.sh
+!/rtv/refresh-token
+!/rtv/rtv.cfg
+!/terminal.app
+!/terminfo
+!/tmux
+!/torrench
+!/wireshark/preferences
 
 # FRAGILE! .git/hooks/pre-commit uses the section below to package and encrypt 
 # the listed files for safe dissemination. Do NOT add comments, file globs, or
@@ -15,95 +64,3 @@
 /.ngrok2/ngrok.yml
 /.pocket-config
 /.pocket-index
-
-# Misc. ========================================================================
-/.fonts
-/.stfolder
-/.stignore
-
-# .stignore ====================================================================
-*cache*
-*history*
-/.ssh/id_rsa*
-/.tldrc
-/.vim/viminfo
-/.vim/plugged
-/configstore
-# /gnupg/S.*
-# /gnupg/gpg-agent.conf
-/ranger
-/syncthing
-/systemd
-/yarn
-
-# Linux ------------------------------------------------------------------------
-/akonadi*
-/akregator*
-/autostart*
-/baloo*
-/bluedevil*
-/calibre
-/chromium
-/dolphinrc
-/dconf
-/dmenu
-/email*
-/enchant
-/eventviewsrc
-/fcitx
-/fontconfig
-/gtk*
-/k*
-/mimeapps.list
-/Mumble
-/org.kde.*
-/pavucontrol.ini
-/plasma*
-/powermanagementprofilesrc
-/pulse
-/QtProject.conf
-/session
-/skypeforlinux
-/spectaclerc
-/specialmailcollectionsrc
-/startup*
-/systemd
-/systemsettingsrc
-/systemmonitorrc
-/Trolltech.conf
-/user-dirs*
-
-# Partial syncs ----------------------------------------------------------------
-# Some folders contain system-specific files
-# or large amounts of non-personal data.
-# This section whitelists only certain files in such directories.
-
-!/.bundle/
-/.bundle/*
-!/.bundle/config
-
-/.elinks/*
-!/.elinks/elinks.conf
-
-# !/.gem/credentials
-/.gem/*
-
-/cmus/*
-!/cmus/rc
-
-/lftp/*
-!/lftp/rc
-!/lftp/bookmarks
-
-/qutebrowser/*
-!/qutebrowser/config.py
-
-/rtv/*
-# !/rtv/refresh-token
-!/rtv/rtv.cfg
-
-# !/Transmission\ Remote\ GUI/transgui.ini
-/Transmission\ Remote\ GUI/*
-
-/wireshark/*
-!/wireshark/preferences

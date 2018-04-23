@@ -7,88 +7,70 @@
 // INCLUDE =====================================================================
 #include .stignore.global
 
-// IGNORE ======================================================================
-/secrets.tar.gpg
-*cache*
-*history*
-/.ssh/id_rsa*
-/.tldrc
+// WHITELIST ===================================================================
+// Due to the inundation of ~/.config files on Linux systems,
+// this Syncthing folder works on a whitelist basis.
+
+!/.bash_profile
+!/.bashrc
+!/.bundle/config
+!/.elinks/elinks.conf
+!/.fbtermrc
+!/.fonts
+!/.gem/credentials
+!/.git
+!/.gitignore
+!/.gitmodules
+!/.ignore
+!/.irbrc
+!/.mbsyncrc
+!/.msmtprc
+!/.netrc
+!/.newsboat
+!/.ngrok2
+!/.notmuch-config
+!/.pocket-config
+!/.pocket-index
+!/.profile
+!/.ruby-version
+!/.ssh
+!/.stfolder
+!/.stignore
+!/.stignore.global
+!/.stignore.local
+!/.stow-local-ignore
+!/.tmux.conf
 /.vim/viminfo
 /.vim/plugged
-/configstore
-/gnupg/S.*
-/ranger
-/syncthing
-/systemd
-/yarn
-
-// Linux -----------------------------------------------------------------------
-/akonadi*
-/akregator*
-/autostart*
-/baloo*
-/bluedevil*
-/calibre
-/chromium
-/dolphinrc
-/dconf
-/dmenu
-/email*
-/enchant
-/eventviewsrc
-/fcitx
-/fontconfig
-/gtk*
-/k*
-/mimeapps.list
-/Mumble
-/org.kde.*
-/pavucontrol.ini
-/plasma*
-/powermanagementprofilesrc
-/pulse
-/QtProject.conf
-/session
-/skypeforlinux
-/spectaclerc
-/specialmailcollectionsrc
-/startup*
-/systemd
-/systemsettingsrc
-/systemmonitorrc
-/Trolltech.conf
-/user-dirs*
-
-// Partial syncs ---------------------------------------------------------------
-// Some folders contain system-specific files
-// or large amounts of non-personal data.
-// This section whitelists only certain files in such directories.
-
-!/.bundle/config
-/.bundle/*
-
-!/.elinks/elinks.conf
-/.elinks/*
-
-!/.gem/credentials
-/.gem/*
-
+!/.vim
+!/README.md
+!/Transmission\ Remote\ GUI/transgui.ini
+!/alacritty
+!/asciinema
 !/cmus/rc
-/cmus/*
-
-!/lftp/rc
+!/fbterm
+!/fontconfig
+!/git
+/gnupg/S.*
+!/gnupg
+!/htop
+!/hub
 !/lftp/bookmarks
-/lftp/*
-
+!/lftp/rc
+!/mutt
+!/neofetch
+!/pass
 !/qutebrowser/config.py
-/qutebrowser/*
-
+!/ranger/*.conf
+!/ranger/scope.sh
 !/rtv/refresh-token
 !/rtv/rtv.cfg
-/rtv/*
-
-!/Transmission\ Remote\ GUI/transgui.ini
-/Transmission\ Remote\ GUI/*
-
+!/terminal.app
+!/terminfo
+!/tmux
+!/torrench
+!/transmission-remote-gtk
 !/wireshark/preferences
-/wireshark/*
+
+// EXCLUDE EVERYTHING ELSE =====================================================
+/*
