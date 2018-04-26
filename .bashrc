@@ -6,21 +6,21 @@
 # STAGING ======================================================================
 
 # INITIALIZATION ===============================================================
-if [ "$(ps -o comm= $PPID)" = fbterm ]; then
-  export TERM=fbterm
-  source "$HOME/.config/fbterm/colors/hybrid" 2>/dev/null
-fi
+# if [ "$(ps -o comm= $PPID)" = fbterm ]; then
+#   export TERM=fbterm
+#   source "$HOME/.config/fbterm/colors/hybrid" 2>/dev/null
+# fi
 
 if [ -z "$SSH_CONNECTION" ]; then
-  # if in virtual terminal, start fbterm (with 256 color support)
-  if type fbterm >/dev/null 2>&1 && [[ "$(tty)" =~ /dev/tty ]]; then
-    if type fcitx >/dev/null 2>&1 && type fcitx-fbterm-helper >/dev/null 2>&1; then
-      pgrep -x fcitx >/dev/null 2>&1 && fcitx-fbterm-helper || fcitx-fbterm-helper -l
-    else
-      fbterm
-    fi
+  # # if in virtual terminal, start fbterm (with 256 color support)
+  # if type fbterm >/dev/null 2>&1 && [[ "$(tty)" =~ /dev/tty ]]; then
+  #   if type fcitx >/dev/null 2>&1 && type fcitx-fbterm-helper >/dev/null 2>&1; then
+  #     pgrep -x fcitx >/dev/null 2>&1 && fcitx-fbterm-helper || fcitx-fbterm-helper -l
+  #   else
+  #     fbterm
+  #   fi
   # or if not in tmux, set TERM and start tmux (if possible)
-  elif [ -z "$TMUX" ]; then
+  if [ -z "$TMUX" ]; then
     if infocmp xterm-256color-italic >/dev/null 2>&1; then
       export TERM=xterm-256color-italic
     fi
@@ -54,14 +54,14 @@ tty -s && stty -ixon
 
 # .bash_history --------------------------------------------------------------
 # don't put duplicate lines or lines starting with space in the history.
-HISTCONTROL=ignoreboth
+export HISTCONTROL=ignoreboth
 
 # append to the history file, don't overwrite it
 shopt -s histappend
 
 # for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
+export HISTSIZE=1000
+export HISTFILESIZE=2000
 
 # check the window size after each command and, if necessary,
 # update the values of LINES and COLUMNS.
@@ -72,26 +72,17 @@ shopt -s checkwinsize
 if [ "$(uname)" = Linux ]; then
   # Provides programmable tab-completion for, e.g., git branch names.
   # May be redundant if already sourced in /etc/bash.bashrc (via /etc/profile).
-  if ! shopt -oq posix; then
-    for f in /{usr/share/bash-completion,etc}/bash_completion; do
-      if [ -r "$f" ]; then source "$f"; break; fi
-    done
-  fi
-
-  if type xdg-open >/dev/null 2>&1; then
-    alias open="xdg-open"
-  fi
+  # if ! shopt -oq posix; then
+  #   for f in /{usr/share/bash-completion,etc}/bash_completion; do
+  #     if [ -r "$f" ]; then source "$f"; break; fi
+  #   done
+  # fi
 
   # Debian ---------------------------------------------------------------------
   if [ -r /etc/debian_version ]; then
     # make less more friendly for non-text input files, see lesspipe(1)
-    #[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
+    [ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
     
-    # set variable identifying the chroot you work in (used in the prompt below)
-    if [ -z "${debian_chroot:-}" ] && [ -r /etc/debian_chroot ]; then
-      debian_chroot=$(cat /etc/debian_chroot)
-    fi
-
     # Power Management ---------------------------------------------------------
     if type systemctl >/dev/null 2>&1; then
       if [ -z "$(type -t halt)" ];   then alias halt="systemctl poweroff";  fi
@@ -101,63 +92,17 @@ if [ "$(uname)" = Linux ]; then
     fi
 
     # Colors -------------------------------------------------------------------
-    # set a fancy prompt (non-color, unless we know we "want" color)
-    # case "$TERM" in
-    #     xterm-color|*-256color|fbterm) color_prompt=yes;;
-    # esac
-     
-    # uncomment for a colored prompt, if the terminal has the capability; turned
-    # off by default to not distract the user: the focus in a terminal window
-    # should be on the output of commands, not on the prompt
-    # force_color_prompt=yes
-     
-    # if [ -n "$force_color_prompt" ]; then
-    #     if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-    #       # We have color support; assume it's compliant with Ecma-48
-    #       # (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-    #       # a case would tend to support setf rather than setaf.)
-    #       color_prompt=yes
-    #     else
-    #       color_prompt=
-    #     fi
-    # fi
-     
-    # if [ "$color_prompt" = yes ]; then
-    #     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-    # else
-    #     PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-    # fi
-    # unset color_prompt force_color_prompt
-     
-    # enable color support of ls and also add handy aliases
-    if [ -x /usr/bin/dircolors ]; then
-        test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-        alias ls='ls --color=auto'
-        #alias dir='dir --color=auto'
-        #alias vdir='vdir --color=auto'
-     
-        #alias grep='grep --color=auto'
-        #alias fgrep='fgrep --color=auto'
-        #alias egrep='egrep --color=auto'
-    fi
-     
+    export PS1="\[\033[38;5;187m\]\u@\h\[\033[m\]\[\033[38;5;174m\]:\w \$ \[\033[m\]"
     # colored GCC warnings and errors
-    # export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
-     
-    # function EXT_COLOR () { echo -ne "\e[38;5;$1m"; }
-    # function CLOSE_COLOR () { echo -ne '\e[m'; }
-    # export PS1="\[`EXT_COLOR 187`\]\u@\h[`CLOSE_COLOR`\]\[`EXT_COLOR 174`\]:\w \$ \[`CLOSE_COLOR`\]"
-    # export LS_COLORS='di=38;5;108:fi=00;*svn-commit.tmp=31:ln=38;5;116:ex=38;5;186'
+    export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
 
-    # GUI Term Options ---------------------------------------------------------
-    # If this is an xterm set the title to user@host:dir
-    case "$TERM" in
-    xterm*|rxvt*)
-        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-        ;;
-    *)
-        ;;
-    esac
+    if [ -x /usr/bin/dircolors ]; then
+      eval "$(dircolors -b)"
+    fi
+
+    for cmd in ls {,v}dir {,f,e}grep; do
+      alias "$cmd=$cmd --color=auto"
+    done
   fi
 
 # Mac OS -----------------------------------------------------------------------
@@ -192,17 +137,6 @@ if type chruby-exec >/dev/null 2>&1; then
   source "$(pkgpath chruby-exec)/share/chruby/auto.sh" >/dev/null 2>&1
 fi
 
-# node -------------------------------------------------------------------------
-if [ -d "$HOME/.nvm" ]; then
-  export NVM_DIR="$HOME/.nvm"
-  source "$NVM_DIR/nvm.sh" >/dev/null 2>&1
-  source "$NVM_DIR/bash_completion" >/dev/null 2>&1
-fi
-
-if [ -d "$HOME/.avn" ]; then
-  source "$HOME/.avn/bin/avn.sh" >/dev/null 2>&1
-fi
-
 # helper functions -------------------------------------------------------------
 unset -f pkgpath
 
@@ -228,29 +162,30 @@ if stty -a | grep dsusp >/dev/null 2>&1; then
 fi
 
 # $ tmux env -------------------------------------------------------------------
+# TODO: re-enable this with sandboxd? (https://github.com/benvan/sandboxd)
 # Update shell environment variables within a session
 # per https://raimue.blog/2013/01/30/tmux-update-environment/
-if hash tmux >/dev/null 2>&1; then
-  function tmux() {
-    tmux=$(type -P tmux)
-    case "$1" in
-      env)
-        [ -z "$TMUX" ] && return
-
-        while read v; do
-          if [[ $v == -* ]]; then
-            unset ${v/#-/}
-          else
-            v=${v/=/=\"}
-            v=${v/%/\"}
-            eval export $v
-          fi
-        done < <(tmux show-environment)
-        ;;
-      *) $tmux "$@" ;;
-    esac
-  }
-fi
+# if hash tmux >/dev/null 2>&1; then
+#   function tmux() {
+#     tmux=$(type -P tmux)
+#     case "$1" in
+#       env)
+#         [ -z "$TMUX" ] && return
+# 
+#         while read v; do
+#           if [[ $v == -* ]]; then
+#             unset ${v/#-/}
+#           else
+#             v=${v/=/=\"}
+#             v=${v/%/\"}
+#             eval export $v
+#           fi
+#         done < <(tmux show-environment)
+#         ;;
+#       *) $tmux "$@" ;;
+#     esac
+#   }
+# fi
 
 # $ brew find ------------------------------------------------------------------
 # Interactively search-and-install formulae
@@ -328,8 +263,8 @@ if hash fd >/dev/null 2>&1 && hash fzf >/dev/null 2>&1; then
 fi
 
 # Alacritty --------------------------------------------------------------------
-alias light="ln -srf ~/.config/alacritty/alacritty-gruvbox.yml ~/.config/alacritty/alacritty.yml; alias vim=\"vim -c 'colorscheme gruvbox | set bg=light'\""
-alias dark="ln -srf ~/.config/alacritty/alacritty-hybrid.yml ~/.config/alacritty/alacritty.yml; unalias vim"
+# alias light="ln -srf ~/.config/alacritty/alacritty-gruvbox.yml ~/.config/alacritty/alacritty.yml; alias vim=\"vim -c 'colorscheme gruvbox | set bg=light'\""
+# alias dark="ln -srf ~/.config/alacritty/alacritty-hybrid.yml ~/.config/alacritty/alacritty.yml; unalias vim"
 
 # Bundler ----------------------------------------------------------------------
 alias b='bundle exec'

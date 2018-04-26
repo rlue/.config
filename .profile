@@ -3,7 +3,6 @@
 # PER-PLATFORM CONFIGURATION ===================================================
 # Mac OS -----------------------------------------------------------------------
 if [ "`uname`" = Darwin ]; then
-
   # ls colors
   export CLICOLOR=1
 
@@ -11,84 +10,63 @@ if [ "`uname`" = Darwin ]; then
   # per http://superuser.com/a/583502
   export PATH='' && . /etc/profile
 
-  # Add directories to PATH explicitly, idempotently
-  for dir in \
-    "$HOME/Scripts/Mac" \
-    "$HOME/Library/Python/3.6/bin" \
-    "$HOME/Library/Android/sdk/platform-tools" \
-    "/usr/local/opt/gpg/libexec" \
-    "/Applications/MacVim.app/Contents/MacOS" \
-    "/System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources"
-  do
-    if [ -d "$dir" ]; then
-      case "$PATH" in
-        *"$dir"*) :;;
-        *) export PATH="$dir:$PATH";;
-      esac
-    fi
-  done
+  path_entries="$HOME/Scripts/Mac
+                $HOME/Library/Python/3.6/bin
+                $HOME/Library/Android/sdk/platform-tools
+                /usr/local/opt/gpg/libexec
+                /Applications/MacVim.app/Contents/MacOS
+                /System/Library/Frameworks/JavaScriptCore.framework/Versions/A/Resources"
 
   # Prevent `GitHub API rate limit exceeded` error
   # per https://gist.github.com/christopheranderton/8644743
-  if command -v brew >/dev/null 2>&1; then
+  if command -v brew >/dev/null 2>&1 && command -v pass >/dev/null 2>&1; then
     export HOMEBREW_GITHUB_API_TOKEN=`pass env/homebrew_github_api_token 2>/dev/null`
   fi
 
 # Linux ------------------------------------------------------------------------
 elif [ "`uname`" = Linux ]; then
-
-  for dir in \
-    "$HOME/bin" \
-    "$HOME/.local/bin" \
-    "$HOME/Scripts/Linux" \
-    "/usr/lib/gnupg"
-  do
-    if [ -d "$dir" ]; then
-      case "$PATH" in
-        *"$dir"*) :;;
-        *) export PATH="$dir:$PATH";;
-      esac
-    fi
-  done
-
-  # openSUSE -------------------------------------------------------------------
-  if [ -r /etc/SUSE-brand ]; then
-    [ -z "$PROFILEREAD" ] && . /etc/profile
+  path_entries="$HOME/bin
+                $HOME/.local/bin
+                $HOME/Scripts/Linux
+                /usr/lib/gnupg"
 
   # Debian ---------------------------------------------------------------------
-  # elif [ -r /etc/debian_version ]; then
-  #   # the default umask is set in /etc/profile; for setting the umask
-  #   # for ssh logins, install and configure the libpam-umask package.
-  #   # umask 022
-  
-  fi
+  # if [ -r /etc/debian_version ]; then
+  #  the default umask is set in /etc/profile; for setting the umask
+  #  for ssh logins, install and configure the libpam-umask package.
+  #  umask 022
+  # fi
 fi
 
 # USER SETTINGS ================================================================
-
-command -v vim >/dev/null 2>&1 && export EDITOR=vim || export EDITOR=vi
-export VISUAL="$EDITOR"
-
-if [ "$EDITOR" = 'vim' ]; then
-  export MANPAGER="/bin/sh -c \"col -b | vim -c 'runtime ftplugin/man.vim | set ft=man ro nomod nolist nonu iskeyword+=:' -\""
-fi
-
-for dir in \
-  "$HOME/Scripts" \
-  "$HOME/.cargo/bin" \
-  "$HOME/.fzf/bin"
-do
+# Add directories to PATH explicitly, idempotently
+while read -r dir; do
   if [ -d "$dir" ]; then
     case "$PATH" in
-      *":$dir:"*) :;;
-      "$dir:"*) :;;
+      *"$dir:"*) :;;
       *":$dir") :;;
       *) export PATH="$dir:$PATH";;
     esac
   fi
-done
+done <<-EOF
+  $path_entries
+  $HOME/Scripts
+  $HOME/.cargo/bin
+  $HOME/.fzf/bin
+EOF
 
-export DEV_PW=`pass dev/default 2>/dev/null`
+unset path_entries
+
+if command -v vim >/dev/null 2>&1; then
+  export EDITOR=vim VISUAL=vim
+  export MANPAGER="/bin/sh -c \"col -b | vim -c 'runtime ftplugin/man.vim | set ft=man ro nomod nolist nonu iskeyword+=:' -\""
+else
+  export EDITOR=vi VISUAL=vi
+fi
+
+if command -v pass >/dev/null 2>&1; then
+  export DEV_PW=`pass dev/default 2>/dev/null`
+fi
 
 # APPLICATION SETTINGS =========================================================
 # less -------------------------------------------------------------------------
@@ -145,19 +123,3 @@ fi
 if command -v rtv >/dev/null 2>&1 && hash urlscan >/dev/null 2>&1; then
    export RTV_URLVIEWER="`hash -t urlscan`"
 fi
-
-# littleredflag ----------------------------------------------------------------
-# if command -v littleredflag >/dev/null 2>&1; then
-#   mkdir -p "$HOME/.tmp"
-#   PIDFILE="$HOME/.tmp/littleredflag.pid"
-
-#   if [ -e "${PIDFILE}" ] && (ps -u $(whoami) -opid= |
-#                              grep "$(cat ${PIDFILE})" &> /dev/null); then
-#     :
-#   else
-#     littleredflag -v inboxes 2> /dev/null > "$HOME/.tmp/littleredflag.log" &
-
-#     echo $! > "${PIDFILE}"
-#     chmod 644 "${PIDFILE}"
-#   fi
-# fi
