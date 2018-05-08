@@ -38,6 +38,7 @@ Thumbs.db
 # Those files are specific to each particular machine, and are used to 
 # persist installation options between runs of the bundle install command. 
 /.bundle
+/Gemfile.dev*
 
 # Temporary files --------------------------------------------------------------
 *.tmp
@@ -46,3 +47,4 @@ Thumbs.db
 /tags*
 /.envrc
 /Session.vim
+/.sandbox

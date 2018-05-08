@@ -270,6 +270,18 @@ fi
 alias b='bundle exec'
 alias bj='bundle exec jekyll'
 
+function bundle() {
+  bundle="$(type -P bundle)"
+
+  if [ -r "$BUNDLE_GEMFILE" ] && [ -r Gemfile ] && [ "$BUNDLE_GEMFILE" != Gemfile ] &&
+     [[ "$1" =~ ^(|install|update)$ ]]; then
+    BUNDLE_GEMFILE=Gemfile "$bundle" "$@"
+    cp Gemfile.lock "${BUNDLE_GEMFILE}.lock"
+  fi
+
+  "$bundle" "$@"
+}
+
 # ranger -----------------------------------------------------------------------
 # if [ -r "$HOME/.config/ranger/w3mimgdisplay" ]; then
 #   export W3MIMGDISPLAY_PATH="$HOME/.config/ranger/w3mimgdisplay"
