@@ -78,7 +78,7 @@ font:
     # style: Italic
 
   # Point size of the font
-  size: 14.0
+  size: 15.0
 
   # Offset is the extra space around each character. offset.y can be thought of
   # as modifying the linespacing, and offset.x as modifying the letter spacing.
@@ -272,7 +272,7 @@ live_config_reload: true
 # Entries in shell.args are passed unmodified as arguments to the shell.
 
 shell:
-  program: /usr/local/bin/bash
+  program: /bin/bash
   args:
     - --login
 
@@ -316,6 +316,8 @@ shell:
 # (e.g. "\x1b[5~") is? Open another terminal (like xterm) without tmux,
 # then run `showkey -a` to get the sequence associated to a key combination.
 key_bindings:
+  - { key: V,        mods: Control|Shift,    action: Paste               }
+  - { key: C,        mods: Control|Shift,    action: Copy                }
   - { key: V,        mods: Command,          action: Paste               }
   - { key: C,        mods: Command,          action: Copy                }
   - { key: Q,        mods: Command, action: Quit                         }
