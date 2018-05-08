@@ -278,6 +278,13 @@ alias bj='bundle exec jekyll'
 #   export RANGER_LOAD_DEFAULT_RC="FALSE"
 # fi
 
+# wakeonlan --------------------------------------------------------------------
+if type wakeonlan >/dev/null 2>&1 && [ -d "$HOME/.config/pass/network/wol" ]; then
+  function wol() {
+    wakeonlan -i 192.168.0.255 $(pass "network/wol/$1")
+  }
+fi
+
 # DIRENV =======================================================================
 if hash direnv >/dev/null 2>&1; then
   eval "$(direnv hook bash)"
