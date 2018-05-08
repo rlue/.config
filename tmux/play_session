@@ -5,8 +5,10 @@ bind-key X if-shell 'tmux has -t play' \
                       if-shell "type rtv"        "new-window rtv"; \
                       if-shell "type cmus"       "new-window cmus"; \
                       if-shell "type neomutt" \
-		        "new-window \"mbsync inboxes && neomutt\"" \
+		        "new-window \"mbsync inboxes && neomutt && mbsync -a\"" \
 		        "if-shell \"type mutt\" \
-			  \"new-window \\\"mbsync inboxes && mutt\\\"\""'
+			  \"new-window \\\"mbsync inboxes && mutt && mbsync -a\\\"\""; \
+                      if-shell "[ -d \"$HOME/Documents/Notes/Daylogs\" ]" \
+		        "new-window vim -c \"call daylog#enter_log()\""'
 
 # vim:ft=tmux
