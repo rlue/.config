@@ -137,6 +137,11 @@ if type chruby-exec >/dev/null 2>&1; then
   source "$(pkgpath chruby-exec)/share/chruby/auto.sh" >/dev/null 2>&1
 fi
 
+# direnv -----------------------------------------------------------------------
+if hash direnv >/dev/null 2>&1; then
+  eval "$(direnv hook bash)"
+fi
+
 # helper functions -------------------------------------------------------------
 unset -f pkgpath
 
@@ -295,9 +300,4 @@ if type wakeonlan >/dev/null 2>&1 && [ -d "$HOME/.config/pass/network/wol" ]; th
   function wol() {
     wakeonlan -i 192.168.0.255 $(pass "network/wol/$1")
   }
-fi
-
-# DIRENV =======================================================================
-if hash direnv >/dev/null 2>&1; then
-  eval "$(direnv hook bash)"
 fi
