@@ -152,8 +152,7 @@ unset -f pkgpath
 # Scroll up in interactive programs (instead of sending DSUSP)
 # shellcheck disable=SC2154
 if stty -a | grep dsusp >/dev/null 2>&1; then
-  function no_dsusp()
-  {
+  function no_dsusp() {
     term_settings=$(stty -g)                      # Capture old termio params
     target_bin=$(type -P $1)                      # Capture target program
     shift                                         # Remove from pos. parameters
@@ -164,10 +163,14 @@ if stty -a | grep dsusp >/dev/null 2>&1; then
     stty $term_settings                           # Restore termios on exit
   }
 
-  hash mutt >/dev/null 2>&1 && alias mutt="no_dsusp $(type -P mutt) && mbsync inboxes"
-  hash neomutt >/dev/null 2>&1 && alias mutt="no_dsusp $(type -P neomutt) && mbsync inboxes"
   hash newsboat >/dev/null 2>&1 && alias newsboat="no_dsusp $(type -P newsboat)"
 fi
+
+function mutt() {
+  mutt="$(type -P mutt || type -P neomutt)"
+  [ "$(type -t no_dsusp)" = "function" ] && no_dsusp "$mutt" "$@" || "$mutt" "$@"
+  mbsync -a 2>/dev/null
+}
 
 # $ tmux env -------------------------------------------------------------------
 # TODO: re-enable this with sandboxd? (https://github.com/benvan/sandboxd)
