@@ -39,6 +39,7 @@ Thumbs.db
 # persist installation options between runs of the bundle install command. 
 /.bundle
 /Gemfile.dev*
+/Gemfile.local*
 
 # Temporary files --------------------------------------------------------------
 *.tmp
