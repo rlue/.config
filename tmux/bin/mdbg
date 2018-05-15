@@ -22,7 +22,7 @@ else
 
   # rudimentary check for presence of Chinese characters
   if query.split('').none? { |char| char.bytes.length > 1 }
-    raise ArgumentError 'query string contains no Chinese characters'
+    raise ArgumentError, 'query string contains no Chinese characters'
   end
 
   `open "https://www.mdbg.net/chinese/dictionary?page=worddict&wdrst=1&wdqb=#{query}"`

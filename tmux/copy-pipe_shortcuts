@@ -1,7 +1,6 @@
-if-shell -b '[ "$(uname)" = "Darwin" ] && [ -x "$HOME/.config/tmux/bin/mdbg" ]' \
-  "if-shell -b '[ \"$(echo \"$TMUX_VERSION >= 2.4\" | bc)\" = 1 ]' \
-         \"bind-key -T copy-mode-vi z send-keys -X copy-pipe '$HOME/.config/tmux/bin/mdbg -'\" \
-         \"bind-key -t vi-copy z copy-pipe '$HOME/.config/tmux/bin/mdbg -'\""
+if-shell -b '[ "$(echo "$TMUX_VERSION >= 2.4" | bc)" = 1 ] && type moedict >/dev/null 2>&1' \
+  "bind-key -T copy-mode-vi z send-keys -X copy-pipe 'xclip && tmux split-window -h moedict -i $(xclip -o)'" \
+  "bind-key -t vi-copy z copy-pipe 'xclip && tmux split-window -h moedict -i $(xclip -o)'"
 
 if-shell -b '[ "$(uname)" = "Darwin" ] && [ -x "$HOME/.config/tmux/bin/quicklook" ]' \
   "if-shell -b '[ \"$(echo \"$TMUX_VERSION >= 2.4\" | bc)\" = 1 ]' \
