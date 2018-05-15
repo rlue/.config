@@ -283,11 +283,14 @@ alias bj='bundle exec jekyll'
 
 function bundle() {
   bundle="$(type -P bundle)"
+  project_root="$(git rev-parse --show-toplevel 2>/dev/null)/"
+  local_gemfile="$(realpath "$BUNDLE_GEMFILE")" # NOTE: not OSX-portable
 
-  if [ -r "$BUNDLE_GEMFILE" ] && [ -r Gemfile ] && [ "$BUNDLE_GEMFILE" != Gemfile ] &&
+  if [ -r "$local_gemfile" ] && [ -r "${project_root}Gemfile" ] &&
+     ! [[ "$local_gemfile" =~ $(printf %s '\bGemfile$') ]] &&
      [[ "$1" =~ ^(|install|update)$ ]]; then
-    BUNDLE_GEMFILE=Gemfile "$bundle" "$@"
-    cp Gemfile.lock "${BUNDLE_GEMFILE}.lock"
+    BUNDLE_GEMFILE="${project_root}Gemfile" "$bundle" "$@"
+    cp "${project_root}Gemfile.lock" "$local_gemfile.lock"
   fi
 
   "$bundle" "$@"
