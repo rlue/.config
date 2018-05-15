@@ -72,6 +72,7 @@
 !/torrench
 !/transmission-remote-gtk
 !/wireshark/preferences
+!/youtube-dl/config
 
 // EXCLUDE EVERYTHING ELSE =====================================================
 /*

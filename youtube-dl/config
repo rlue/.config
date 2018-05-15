@@ -1,0 +1,5 @@
+-o ~/Downloads/%(title)s.%(ext)s
+--write-auto-sub
+--write-sub
+--sub-lang en,zh-Hant
+--embed-subs
