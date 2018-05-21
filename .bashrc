@@ -289,6 +289,11 @@ function bundle() {
   "$bundle" "$@"
 }
 
+# xdg-open ---------------------------------------------------------------------
+if hash xdg-open >/dev/null 2>&1; then
+  alias open='xdg-open'
+fi
+
 # ranger -----------------------------------------------------------------------
 # if [ -r "$HOME/.config/ranger/w3mimgdisplay" ]; then
 #   export W3MIMGDISPLAY_PATH="$HOME/.config/ranger/w3mimgdisplay"
