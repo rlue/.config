@@ -133,13 +133,6 @@ if type fzf >/dev/null 2>&1; then
   for f in "$(pkgpath fzf)/shell/"*.bash; do source "$f" >/dev/null 2>&1; done
 fi
 
-# chruby -----------------------------------------------------------------------
-if type chruby-exec >/dev/null 2>&1; then
-  # chruby.sh _must_ be sourced first
-  source "$(pkgpath chruby-exec)/share/chruby/chruby.sh" >/dev/null 2>&1
-  source "$(pkgpath chruby-exec)/share/chruby/auto.sh" >/dev/null 2>&1
-fi
-
 # direnv -----------------------------------------------------------------------
 if hash direnv >/dev/null 2>&1; then
   eval "$(direnv hook bash)"

@@ -51,11 +51,16 @@ while read -r dir; do
 done <<-EOF
   $path_entries
   $HOME/Scripts
+  $HOME/.rbenv/bin
   $HOME/.cargo/bin
   $HOME/.fzf/bin
 EOF
 
 unset path_entries
+
+if command -v rbenv >/dev/null 2>&1; then
+  eval "$(rbenv init -)"
+fi
 
 if command -v vim >/dev/null 2>&1; then
   export EDITOR=vim VISUAL=vim
