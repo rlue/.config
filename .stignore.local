@@ -33,7 +33,8 @@
 !/.pocket-index
 !/.profile
 !/.ruby-version
-!/.ssh
+!/.ssh/authorized_keys
+!/.ssh/config
 !/.stfolder
 !/.stignore
 !/.stignore.global
