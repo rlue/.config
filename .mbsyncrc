@@ -32,7 +32,7 @@ SSLVersions TLSv1.2
 
 # rl@zammad.com ---------------------------------------------------------------
 IMAPAccount zammad
-Host mx1.zammad.com
+Host mx2.zammad.com
 Port 993
 User rl@zammad.com
 PassCmd "pass web/email/rl@zammad.com"
