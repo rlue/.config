@@ -24,6 +24,7 @@
 !/.ruby-version
 !/.ssh/authorized_keys
 !/.ssh/config
+!/.stignore
 !/.stow-local-ignore
 !/.tmux.conf
 !/README.md
