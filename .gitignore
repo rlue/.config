@@ -24,15 +24,12 @@
 !/.ruby-version
 !/.ssh/authorized_keys
 !/.ssh/config
-!/.stignore.global
-!/.stignore.local
 !/.stow-local-ignore
 !/.tmux.conf
 !/README.md
 !/alacritty
 !/cmus/rc
 !/fbterm
-!/fontconfig
 !/git
 !/htop
 !/hub
