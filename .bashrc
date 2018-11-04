@@ -6,20 +6,8 @@
 # STAGING ======================================================================
 
 # INITIALIZATION ===============================================================
-# if [ "$(ps -o comm= $PPID)" = fbterm ]; then
-#   export TERM=fbterm
-#   source "$HOME/.config/fbterm/colors/hybrid" 2>/dev/null
-# fi
-
+# Auto-launch tmux
 if [ -z "$SSH_CONNECTION" ]; then
-  # # if in virtual terminal, start fbterm (with 256 color support)
-  # if type fbterm >/dev/null 2>&1 && [[ "$(tty)" =~ /dev/tty ]]; then
-  #   if type fcitx >/dev/null 2>&1 && type fcitx-fbterm-helper >/dev/null 2>&1; then
-  #     pgrep -x fcitx >/dev/null 2>&1 && fcitx-fbterm-helper || fcitx-fbterm-helper -l
-  #   else
-  #     fbterm
-  #   fi
-  # or if not in tmux, set TERM and start tmux (if possible)
   if [ -z "$TMUX" ]; then
     if infocmp xterm-256color-italic >/dev/null 2>&1; then
       export TERM=xterm-256color-italic
@@ -73,14 +61,6 @@ shopt -s checkwinsize
 # PER-PLATFORM CONFIGURATION ===================================================
 # Linux ------------------------------------------------------------------------
 if [ "$(uname)" = Linux ]; then
-  # Provides programmable tab-completion for, e.g., git branch names.
-  # May be redundant if already sourced in /etc/bash.bashrc (via /etc/profile).
-  # if ! shopt -oq posix; then
-  #   for f in /{usr/share/bash-completion,etc}/bash_completion; do
-  #     if [ -r "$f" ]; then source "$f"; break; fi
-  #   done
-  # fi
-
   # Debian ---------------------------------------------------------------------
   if [ -r /etc/debian_version ]; then
     # make less more friendly for non-text input files, see lesspipe(1)
@@ -165,32 +145,6 @@ function mutt() {
   mbsync -a 2>/dev/null
 }
 
-# $ tmux env -------------------------------------------------------------------
-# TODO: re-enable this with sandboxd? (https://github.com/benvan/sandboxd)
-# Update shell environment variables within a session
-# per https://raimue.blog/2013/01/30/tmux-update-environment/
-# if hash tmux >/dev/null 2>&1; then
-#   function tmux() {
-#     tmux=$(type -P tmux)
-#     case "$1" in
-#       env)
-#         [ -z "$TMUX" ] && return
-# 
-#         while read v; do
-#           if [[ $v == -* ]]; then
-#             unset ${v/#-/}
-#           else
-#             v=${v/=/=\"}
-#             v=${v/%/\"}
-#             eval export $v
-#           fi
-#         done < <(tmux show-environment)
-#         ;;
-#       *) $tmux "$@" ;;
-#     esac
-#   }
-# fi
-
 # $ brew find ------------------------------------------------------------------
 # Interactively search-and-install formulae
 if hash brew >/dev/null 2>&1; then
@@ -227,33 +181,32 @@ if hash brew >/dev/null 2>&1; then
   }
 fi
 
-# gpg --------------------------------------------------------------------------
-# # Update gpg-agent tty before SSH login
-# if [ "$(type -t ssh)" = 'file' ]; then
-#   ssh()
-#   {
-#     gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
-#     $(type -P ssh) "$@"
-#   }
-# fi
-
-# if [ "$(type -t scp)" = 'file' ]; then
-#   scp()
-#   {
-#     gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
-#     $(type -P scp) "$@"
-#   }
-# fi
-
-# if [ "$(type -t lftp)" = 'file' ]; then
-#   lftp()
-#   {
-#     gpg-connect-agent updatestartuptty /bye >/dev/null 2>&1
-#     $(type -P lftp) "$@"
-#   }
-# fi
-
 # ALIASES ======================================================================
+# better UNIX tools ------------------------------------------------------------
+if hash bat >/dev/null 2>&1; then
+  alias cat='bat'
+fi
+
+if hash fd >/dev/null 2>&1; then
+  alias find='fd'
+fi
+
+if hash rg >/dev/null 2>&1; then
+  alias grep='rg'
+fi
+
+if hash prettyping >/dev/null 2>&1; then
+  alias ping='prettyping --nolegend'
+fi
+
+if hash htop >/dev/null 2>&1; then
+  alias top='htop'
+fi
+
+if hash ncdu >/dev/null 2>&1; then
+  alias ncdu='ncdu --color dark -rr -x --exclude .git --exclude node_modules'
+fi
+
 # cd ---------------------------------------------------------------------------
 # to root directory of current git repo
 if hash git >/dev/null 2>&1; then
@@ -265,10 +218,6 @@ fi
 if hash fd >/dev/null 2>&1 && hash fzf >/dev/null 2>&1; then
   alias fzd='cd ./$(fd --type d | fzf-tmux +m --preview="ls {}")'
 fi
-
-# Alacritty --------------------------------------------------------------------
-# alias light="ln -srf ~/.config/alacritty/alacritty-gruvbox.yml ~/.config/alacritty/alacritty.yml; alias vim=\"vim -c 'colorscheme gruvbox | set bg=light'\""
-# alias dark="ln -srf ~/.config/alacritty/alacritty-hybrid.yml ~/.config/alacritty/alacritty.yml; unalias vim"
 
 # Bundler ----------------------------------------------------------------------
 alias b='bundle exec'
@@ -292,19 +241,4 @@ function bundle() {
 # xdg-open ---------------------------------------------------------------------
 if hash xdg-open >/dev/null 2>&1; then
   alias open='xdg-open'
-fi
-
-# ranger -----------------------------------------------------------------------
-# if [ -r "$HOME/.config/ranger/w3mimgdisplay" ]; then
-#   export W3MIMGDISPLAY_PATH="$HOME/.config/ranger/w3mimgdisplay"
-# fi
-# if [ -r "$HOME/.config/ranger/rc.conf" ]; then
-#   export RANGER_LOAD_DEFAULT_RC="FALSE"
-# fi
-
-# wakeonlan --------------------------------------------------------------------
-if type wakeonlan >/dev/null 2>&1 && [ -d "$HOME/.config/pass/network/wol" ]; then
-  function wol() {
-    wakeonlan -i 192.168.0.255 $(pass "network/wol/$1")
-  }
 fi

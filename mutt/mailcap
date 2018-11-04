@@ -1,8 +1,8 @@
 # MS Word documents
-application/msword; open %s
+application/msword; libreoffice %s
 
 # Images
-image/*; qlmanage -p %s >/dev/null 2>&1
+image/*; xdg-open %s >/dev/null 2>&1
 # image/jpg; qlmanage -p %s >/dev/null 2>&1
 # image/jpeg; qlmanage -p %s >/dev/null 2>&1
 # image/pjpeg; qlmanage -p %s >/dev/null 2>&1
@@ -10,11 +10,12 @@ image/*; qlmanage -p %s >/dev/null 2>&1
 # image/gif; qlmanage -p %s >/dev/null 2>&1
 
 # PDFs
-application/pdf; qlmanage -p %s 2>&1 /dev/null
+application/pdf; xdg-open %s 2>&1 /dev/null
 
 # HTML
-# text/html; open -a Firefox %s & sleep 5; copiousoutput
-text/html; elinks -dump-charset %{charset} -default-mime-type text/html -dump %s; copiousoutput
+text/html; sleep 1 && firefox %s; copiousoutput
+# text/html; ruby -rwebrick -e'WEBrick::HTTPServer.new(:Port => 3000, :DocumentRoot => "/").start' & WEBRICK_PID=$!\; browsh --startup-url http://127.0.0.1:3000%s\; kill $WEBRICK_PID; copiousoutput
+
 
 # Unidentified files
-application; open %s
+application; xdg-open %s
