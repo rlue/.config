@@ -25,5 +25,19 @@
 !/Music
 !/Scripts
 
+// Whitelist: .config ==========================================================
+// These files contain sensitive secrets and are ignored in the .config git repo
+!/.config/Transmission Remote GUI/transgui.ini
+!/.config/asciinema/config
+!/.config/gnupg
+!/.config/hub
+!/.config/pass
+!/.config/transmission-remote-gtk/config.json
+!/.config/.gem/credentials
+!/.config/.netrc
+!/.config/.ngrok2/ngrok.yml
+!/.config/.pocket-config
+!/.config/.pocket-index
+
 // EXCLUDE EVERYTHING ELSE =====================================================
 /*
