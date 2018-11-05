@@ -1,0 +1,5 @@
+{
+    "taskbookDirectory": "~/.local/share/taskbook",
+    "displayCompleteTasks": true,
+    "displayProgressOverview": true
+}

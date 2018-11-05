@@ -25,6 +25,7 @@
 !/Music
 !/Scripts
 !/.local/share/buku
+!/.local/share/taskbook
 
 // Whitelist: .config ==========================================================
 // These files contain sensitive secrets and are ignored in the .config git repo
