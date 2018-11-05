@@ -20,7 +20,7 @@ if [ "`uname`" = Darwin ]; then
   # Prevent `GitHub API rate limit exceeded` error
   # per https://gist.github.com/christopheranderton/8644743
   if command -v brew >/dev/null 2>&1 && command -v pass >/dev/null 2>&1; then
-    export HOMEBREW_GITHUB_API_TOKEN=`pass env/homebrew_github_api_token 2>/dev/null`
+    export HOMEBREW_GITHUB_API_TOKEN=`pass web/github/rlue-homebrew-token 2>/dev/null`
   fi
 
 # Linux ------------------------------------------------------------------------
@@ -126,5 +126,12 @@ fi
 
 # rtv --------------------------------------------------------------------------
 if command -v rtv >/dev/null 2>&1 && hash urlscan >/dev/null 2>&1; then
-   export RTV_URLVIEWER="`hash -t urlscan`"
+  export RTV_URLVIEWER="`hash -t urlscan`"
+fi
+
+# restic -----------------------------------------------------------------------
+if command -v restic >/dev/null 2>&1; then
+  export B2_ACCOUNT_ID="$(pass web/backblaze/account-id)"
+  export B2_ACCOUNT_KEY="$(pass web/backblaze/master-key)"
+  export RESTIC_REPOSITORY="b2:home-archive"
 fi
