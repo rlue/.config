@@ -24,6 +24,7 @@
 // !/Memories (pending organization)
 !/Music
 !/Scripts
+!/.local/share/buku
 
 // Whitelist: .config ==========================================================
 // These files contain sensitive secrets and are ignored in the .config git repo
