@@ -142,7 +142,7 @@ fi
 function mutt() {
   mutt="$(type -P mutt || type -P neomutt)"
   [ "$(type -t no_dsusp)" = "function" ] && no_dsusp "$mutt" "$@" || "$mutt" "$@"
-  mbsync -a 2>/dev/null
+  mbsync -a >/dev/null 2>&1 &
 }
 
 # $ brew find ------------------------------------------------------------------
