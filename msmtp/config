@@ -1,12 +1,9 @@
-# Set default values for all following accounts.
-
 defaults
 auth on
 port 465
 tls on
 tls_starttls off
 tls_trust_file /etc/ssl/certs/ca-certificates.crt
-# (Mac) tls_trust_file /usr/local/etc/openssl/cert.pem
 
 account gmail
 host smtp.gmail.com

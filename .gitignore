@@ -17,7 +17,6 @@
 !/.ignore
 !/.irbrc
 !/.mbsyncrc
-!/.msmtprc
 !/.newsboat
 !/.notmuch-config
 !/.profile
@@ -37,7 +36,7 @@
 !/hub
 !/lftp/bookmarks
 !/lftp/rc
-!/Mumble
+!/msmtp
 !/mutt
 !/neofetch
 !/qutebrowser/config.py
