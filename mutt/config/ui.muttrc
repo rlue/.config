@@ -107,8 +107,8 @@ bind  index          tat tag-thread
 bind  pager          tt  tag-message
 macro pager          tat "<exit><mark-message>q<enter><tag-thread>'q<display-message>"    "tag-thread"
 macro pager          ~   "<exit><mark-message>"                                           "create a hotkey macro for the current message"
-macro index,pager    gx  "<pipe-message>urlscan<Enter>"                                   "call urlscan to extract URLs out of a message"
-macro attach,compose gx  "<pipe-entry>urlscan<Enter>"                                     "call urlscan to extract URLs out of a message"
+macro index,pager    gx  "<pipe-message>urlscan --compact --dedupe<Enter>"                "call urlscan to extract URLs out of a message"
+macro attach,compose gx  "<pipe-entry>urlscan --compact --dedupe<Enter>"                  "call urlscan to extract URLs out of a message"
 macro attach         s   <save-entry><bol>~/Downloads/<eol><enter>
 
 # Command Line -----------------------------------------------------------------
