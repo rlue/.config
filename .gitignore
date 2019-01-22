@@ -40,6 +40,7 @@
 !/mutt
 !/neofetch
 !/qutebrowser/config.py
+!/qutebrowser/quickmarks
 !/ranger/*.conf
 !/ranger/scope.sh
 !/rtv/refresh-token

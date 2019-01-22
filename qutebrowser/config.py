@@ -1,5 +1,6 @@
 config.bind('<Ctrl-e>', 'scroll down')
 config.bind('<Ctrl-y>', 'scroll up')
+c.auto_save.session = True
 # c.zoom.default = '140%'
 c.url.searchengines = {
     "DEFAULT": "https://duckduckgo.com/?q={}",
@@ -23,11 +24,11 @@ c.url.searchengines = {
     "rt":      "https://www.rottentomatoes.com/search/?search={}&sitesearch=rt",
     "sf":      "https://scrabblefinder.com/contains/{}",
     "so":      "https://www.yellowbridge.com/chinese/character-stroke-order.php?searchChinese=1&zi={}",
-    "tpb":     "https://thepiratebay.org/s/?q={}&=on&page=0&orderby=99",
-    "pba":     "https://thepiratebay.org/search/{}/0/99/100",
-    "pbp":     "https://thepiratebay.org/search/{}/0/99/500",
-    "pbs":     "https://thepiratebay.org/search/{}/0/99/300",
-    "pbv":     "https://thepiratebay.org/search/{}/0/99/200",
+    "tpb":     "https://thepiratebay.rocks/s/?q={}&=on&page=0&orderby=99",
+    "pba":     "https://thepiratebay.rocks/search/{}/0/99/100",
+    "pbp":     "https://thepiratebay.rocks/search/{}/0/99/500",
+    "pbs":     "https://thepiratebay.rocks/search/{}/0/99/300",
+    "pbv":     "https://thepiratebay.rocks/search/{}/0/99/200",
     "es":      "https://translate.google.com/#en|es|{}",
     "se":      "https://translate.google.com/#es|en|{}",
     "ud":      "https://www.urbandictionary.com/define.php?term={}",
