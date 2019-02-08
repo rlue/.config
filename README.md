@@ -16,9 +16,6 @@ $ cd ~/.config
 
 # add the ‘-n’ flag to perform a dry-run and manually audit what stow would do
 $ stow -Sv .
-
-# for use with Syncthing
-$ ln -s .stignore.local .stignore
 ```
 
 ### Dependencies
