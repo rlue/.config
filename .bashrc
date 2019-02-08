@@ -96,30 +96,15 @@ elif [ "$(uname)" = Darwin ]; then
 fi
 
 # APPLICATION SETUP ============================================================
-# helper functions -------------------------------------------------------------
-function pkgpath() {
-  if type realpath >/dev/null 2>&1; then
-    binpath="$(realpath "$(type -p $1)")"
-  elif type perl >/dev/null 2>&1; then
-    binpath="$(perl -MCwd -le 'print Cwd::abs_path(shift)' "$(type -p $1)")"
-  fi
-
-  echo "$(dirname "$(dirname $binpath)")"
-}
-
 # fzf --------------------------------------------------------------------------
 # Auto-completion & key bindings
-if type fzf >/dev/null 2>&1; then
-  for f in "$(pkgpath fzf)/shell/"*.bash; do source "$f" >/dev/null 2>&1; done
-fi
+source "/usr/share/bash-completion/completions/fzf" >/dev/null 2>&1
+source "/usr/share/doc/fzf/examples/key-bindings.bash" >/dev/null 2>&1
 
 # direnv -----------------------------------------------------------------------
 if hash direnv >/dev/null 2>&1; then
   eval "$(direnv hook bash)"
 fi
-
-# helper functions -------------------------------------------------------------
-unset -f pkgpath
 
 # <C-y> (mutt, newsbeuter) -----------------------------------------------------
 # Scroll up in interactive programs (instead of sending DSUSP)

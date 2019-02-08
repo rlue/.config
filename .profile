@@ -53,7 +53,6 @@ done <<-EOF
   $HOME/Scripts
   $HOME/.rbenv/bin
   $HOME/.cargo/bin
-  $HOME/.fzf/bin
 EOF
 
 unset path_entries
