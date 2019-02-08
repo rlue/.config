@@ -2,6 +2,8 @@ config.bind('<Ctrl-e>', 'scroll down')
 config.bind('<Ctrl-y>', 'scroll up')
 c.auto_save.session = True
 # c.zoom.default = '140%'
+c.content.cookies.accept = "no-3rdparty"
+c.content.headers.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.230 Safari/537.36"
 c.url.searchengines = {
     "DEFAULT": "https://duckduckgo.com/?q={}",
     "amz":     "https://www.amazon.com/s/?field-keywords={}",
