@@ -2,4 +2,5 @@
 
 set from      = "lists@ryanlue.com"
 set sendmail  = "msmtp -a lists"
+set record    = "=<<Lists>>"
 set spoolfile = "=<Lists>"
