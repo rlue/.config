@@ -25,7 +25,6 @@
 !/Music
 !/Scripts
 !/.local/share/buku
-!/.local/share/taskbook
 !/.vim/viminfo
 !/.vim/vimundo/
 

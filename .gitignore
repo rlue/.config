@@ -25,7 +25,6 @@
 !/.ssh/config
 !/.stignore
 !/.stow-local-ignore
-!/.taskbook.json
 !/.tmux.conf
 !/README.md
 !/alacritty
