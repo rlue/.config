@@ -1,3 +1,5 @@
 bc http://localhost:8080/view/all/balsheet
 mr https://git.znuny.com/zammad/zammad/merge_requests
 br https://git.znuny.com/zammad/zammad/branches
+hn https://news.ycombinator.com/
+st https://localhost:8384/
