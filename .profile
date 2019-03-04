@@ -31,11 +31,12 @@ elif [ "`uname`" = Linux ]; then
                 /usr/lib/gnupg"
 
   # Debian ---------------------------------------------------------------------
-  # if [ -r /etc/debian_version ]; then
-  #  the default umask is set in /etc/profile; for setting the umask
-  #  for ssh logins, install and configure the libpam-umask package.
-  #  umask 022
-  # fi
+  if [ -r /etc/debian_version ]; then
+    # the default umask is set in /etc/profile; for setting the umask
+    # for ssh logins, install and configure the libpam-umask package.
+    # umask 022
+    export AUDIODRIVER=alsa
+  fi
 fi
 
 # USER SETTINGS ================================================================
