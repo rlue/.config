@@ -55,8 +55,8 @@ IMAPStore zammad
 Account zammad
 
 MaildirStore local
-Path ~/Mail/
-Inbox ~/Mail/\<\<Gmail\>\>
+Path ~/mail/
+Inbox ~/mail/\<\<Gmail\>\>
 Flatten "."
 
 # CHANNELS ====================================================================

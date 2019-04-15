@@ -1,7 +1,7 @@
 # vim: filetype=muttrc
 
 set realname  = "Ryan Lue"
-set folder    = ~/Mail/
+set folder    = ~/mail/
 set postponed = "=<Drafts>"
 set trash     = "=<Trash>"
 source ~/.config/mutt/config/accounts_gmail.muttrc
