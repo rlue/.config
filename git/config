@@ -12,11 +12,13 @@
 [push]
 	default = simple
 [alias]
-	st = status
-	cm = commit
 	br = branch
 	co = checkout
+	cm = commit
+	df = diff
+	dt = difftool
+	lg = log --color --graph --pretty=format:'%Cred %h %Creset-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
 	mg = merge
 	mc = merge --no-ff
 	rb = rebase
-	lg = log --color --graph --pretty=format:'%Cred %h %Creset-%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'
+	st = status
