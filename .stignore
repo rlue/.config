@@ -1,3 +1,28 @@
+// Whitelist ===================================================================
+!/bin
+!/doc
+!/media
+!/notes
+!/.local/share/buku
+!/.vim/viminfo
+!/.vim/vimundo/
+!/src/zammad/.tmp
+
+// Whitelist: .config ----------------------------------------------------------
+// These files contain sensitive secrets and are ignored in the .config git repo
+!/.config/Transmission Remote GUI/transgui.ini
+!/.config/asciinema/config
+!/.config/gnupg
+!/.config/hub
+!/.config/pass
+!/.config/transmission-remote-gtk/config.json
+!/.config/.gem/credentials
+!/.config/.netrc
+!/.config/.ngrok2/ngrok.yml
+!/.config/.pocket-config
+!/.config/.pocket-index
+
+// General Exclusions ==========================================================
 // Mac OS metadata files
 (?d).DS_Store
 (?d)Icon
@@ -16,31 +41,6 @@
 (?d).#*
 (?d)#*#
 (?d)*~
-
-// WHITELIST ===================================================================
-!/Desktop
-!/Documents
-!/Downloads
-// !/Memories (pending organization)
-!/Music
-!/Scripts
-!/.local/share/buku
-!/.vim/viminfo
-!/.vim/vimundo/
-
-// Whitelist: .config ==========================================================
-// These files contain sensitive secrets and are ignored in the .config git repo
-!/.config/Transmission Remote GUI/transgui.ini
-!/.config/asciinema/config
-!/.config/gnupg
-!/.config/hub
-!/.config/pass
-!/.config/transmission-remote-gtk/config.json
-!/.config/.gem/credentials
-!/.config/.netrc
-!/.config/.ngrok2/ngrok.yml
-!/.config/.pocket-config
-!/.config/.pocket-index
 
 // EXCLUDE EVERYTHING ELSE =====================================================
 /*

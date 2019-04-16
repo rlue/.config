@@ -10,7 +10,7 @@ if [ "`uname`" = Darwin ]; then
   # per http://superuser.com/a/583502
   export PATH='' && . /etc/profile
 
-  path_entries="$HOME/Scripts/Mac
+  path_entries="$HOME/bin/Mac
                 $HOME/Library/Python/3.6/bin
                 $HOME/Library/Android/sdk/platform-tools
                 /usr/local/opt/gpg/libexec
@@ -27,7 +27,7 @@ if [ "`uname`" = Darwin ]; then
 elif [ "`uname`" = Linux ]; then
   path_entries="$HOME/bin
                 $HOME/.local/bin
-                $HOME/Scripts/Linux
+                $HOME/bin/Linux
                 /usr/lib/gnupg"
 
   # Debian ---------------------------------------------------------------------
@@ -51,7 +51,7 @@ while read -r dir; do
   fi
 done <<-EOF
   $path_entries
-  $HOME/Scripts
+  $HOME/bin
   $HOME/.rbenv/bin
   $HOME/.cargo/bin
 EOF

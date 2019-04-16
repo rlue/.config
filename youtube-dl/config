@@ -1,4 +1,4 @@
--o ~/Sandbox/%(title)s.%(ext)s
+-o ~/tmp/%(title)s.%(ext)s
 --write-auto-sub
 --write-sub
 --sub-lang en,zh-Hant

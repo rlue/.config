@@ -109,7 +109,7 @@ macro pager          tat "<exit><mark-message>q<enter><tag-thread>'q<display-mes
 macro pager          ~   "<exit><mark-message>"                                           "create a hotkey macro for the current message"
 macro index,pager    gx  "<pipe-message>urlscan --compact --dedupe<Enter>"                "call urlscan to extract URLs out of a message"
 macro attach,compose gx  "<pipe-entry>urlscan --compact --dedupe<Enter>"                  "call urlscan to extract URLs out of a message"
-macro attach         s   <save-entry><bol>~/Downloads/<eol><enter>
+macro attach         s   <save-entry><bol>~/tmp/<eol>
 
 # Command Line -----------------------------------------------------------------
 bind editor \Cp history-up
