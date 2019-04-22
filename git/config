@@ -1,6 +1,8 @@
 # This is Git's per-user configuration file.
 [credential "https://github.com"]
-	helper = !pass web/github/rlue-repo-token
+	helper = !pass git/rlue@github
+[credential "smtp://hello%40ryanlue.com@mail.privateemail.com%3a465"]
+	helper = !pass git/hello@ryanlue.com
 [user]
 	name = Ryan Lue
 	email = hello@ryanlue.com
@@ -22,3 +24,8 @@
 	mc = merge --no-ff
 	rb = rebase
 	st = status
+[sendemail]
+	smtpserver = mail.privateemail.com
+	smtpuser = hello@ryanlue.com
+	smtpencryption = ssl
+	smtpserverport = 465
