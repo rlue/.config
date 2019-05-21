@@ -180,6 +180,10 @@ if hash rg >/dev/null 2>&1; then
   alias grep='rg'
 fi
 
+if hash exa >/dev/null 2>&1; then
+  alias ls='exa'
+fi
+
 if hash prettyping >/dev/null 2>&1; then
   alias ping='prettyping --nolegend'
 fi
