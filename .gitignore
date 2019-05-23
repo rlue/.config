@@ -31,6 +31,8 @@
 !/cmus/rc
 !/fbterm
 !/git
+!/gnupg/gpg.conf
+!/gnupg/gpg-agent.conf
 !/htop
 !/hub
 !/i3
