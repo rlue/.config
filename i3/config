@@ -43,10 +43,15 @@ bindsym $mod+space exec dmenu_run
 # bindsym $mod+d exec --no-startup-id i3-dmenu-desktop
 
 # change focus
+focus_wrapping no
 bindsym $mod+h exec --no-startup-id /home/rlue/.config/i3/bin/fullscreen_nav.sh focus left
 bindsym $mod+j exec --no-startup-id /home/rlue/.config/i3/bin/fullscreen_nav.sh focus down
 bindsym $mod+k exec --no-startup-id /home/rlue/.config/i3/bin/fullscreen_nav.sh focus up
 bindsym $mod+l exec --no-startup-id /home/rlue/.config/i3/bin/fullscreen_nav.sh focus right
+bindsym $mod+Left exec --no-startup-id /home/rlue/.config/i3/bin/fullscreen_nav.sh focus left
+bindsym $mod+Down exec --no-startup-id /home/rlue/.config/i3/bin/fullscreen_nav.sh focus down
+bindsym $mod+Up exec --no-startup-id /home/rlue/.config/i3/bin/fullscreen_nav.sh focus up
+bindsym $mod+Right exec --no-startup-id /home/rlue/.config/i3/bin/fullscreen_nav.sh focus right
 # bindsym $mod+h focus left
 # bindsym $mod+j focus down
 # bindsym $mod+k focus up
@@ -65,7 +70,7 @@ bindsym $mod+v split h
 bindsym $mod+w split v
 
 # enter fullscreen mode for the focused container
-bindsym $mod+f fullscreen toggle
+bindsym F11 fullscreen toggle
 
 # change container layout (stacked, tabbed, toggle split)
 bindsym $mod+s layout stacking
@@ -73,10 +78,10 @@ bindsym $mod+t layout tabbed
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
-# bindsym $mod+Shift+space floating toggle
+bindsym $mod+f floating toggle
 
 # change focus between tiling / floating windows
-# bindsym $mod+space focus mode_toggle
+bindsym $mod+Shift+f focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
@@ -212,6 +217,6 @@ mode "$mode_gaps_outer" {
 }
 
 exec --no-startup-id feh --bg-center /usr/share/wallpapers/wallpaper.jpg
-exec --no-startup-id wmctrl -c Plasma
-for_window [title="Desktop — Plasma"] kill, floating enable, border none
+for_window [title="Desktop — Plasma"] kill
 for_window [class="plasmashell"] floating enable
+no_focus [class="plasmashell" window_type="notification"]
