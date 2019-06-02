@@ -1,5 +1,7 @@
 config.bind('<Ctrl-e>', 'scroll down')
 config.bind('<Ctrl-y>', 'scroll up')
+config.bind('T', 'tab-focus last')
+config.bind('~', 'open -t ~')
 c.auto_save.session = True
 # c.zoom.default = '140%'
 c.downloads.location.directory = "~/tmp"
