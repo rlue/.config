@@ -1,9 +1,10 @@
 // Whitelist ===================================================================
 !/bin
 !/doc
-!/media
+!/memories
 !/notes
 !/.local/share/buku
+!/.local/share/digikam
 !/.vim/viminfo
 !/.vim/vimundo/
 !/src/zammad/.tmp
