@@ -1,5 +1,8 @@
-bc http://localhost:8080/view/all/balsheet
-mr https://git.znuny.com/zammad/zammad/merge_requests
+bc http://localhost:8080/view/year/2019/balsheet
+td https://git.znuny.com/dashboard/todos
 br https://git.znuny.com/zammad/zammad/branches
+ci https://git.znuny.com/zammad/zammad/pipelines
+is https://git.znuny.com/zammad/zammad/issues
+mr https://git.znuny.com/zammad/zammad/merge_requests
 hn https://news.ycombinator.com/
-st https://localhost:8384/
+phml http://60.251.123.91:5566/RCHouse/UserLogin.aspx
