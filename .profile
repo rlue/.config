@@ -28,7 +28,8 @@ elif [ "`uname`" = Linux ]; then
   path_entries="$HOME/bin
                 $HOME/.local/bin
                 $HOME/bin/Linux
-                /usr/lib/gnupg"
+                /usr/lib/gnupg
+                /usr/local/bin"
 
   # Debian ---------------------------------------------------------------------
   if [ -r /etc/debian_version ]; then
