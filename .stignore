@@ -3,10 +3,7 @@
 !/doc
 !/memories
 !/notes
-!/.local/share/buku
 !/.local/share/digikam
-!/.local/share/fonts
-!/.local/share/xsessions
 !/.vim/viminfo
 !/.vim/vimundo/
 

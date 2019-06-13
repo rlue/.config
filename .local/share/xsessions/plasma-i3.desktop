@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=XSession
+Exec=/home/rlue/.local/bin/startkde-i3
+TryExec=/home/rlue/.local/bin/startkde-i3
+DesktopNames=KDE
+Name=Plasma-i3

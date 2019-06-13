@@ -1,0 +1,287 @@
+#!/bin/bash
+
+if [ "$(whoami)" != "root" ]; then
+  >&2 echo "$(basename "$0"): requires superuser privileges (use sudo -E)"
+  exit 1
+fi
+
+if [ "$HOME" != "$(eval echo ~$(logname))" ]; then
+  >&2 echo "$(basename "$0"): requires sudo with --preserve-env option (use -E)"
+  exit 1
+fi
+
+# INIT =========================================================================
+sandbox="$(mktemp -d)"
+tmpfile="$(mktemp)"
+
+# accepts a github repo (e.g., "sharkdp/fd") and returns the latest version tag
+function latest_version() {
+  cd "$sandbox" >/dev/null
+  git init >/dev/null
+  git remote remove origin >/dev/null 2>&1
+  git remote add origin "https://github.com/$1" >/dev/null
+  echo "$(git ls-remote --tags 2>/dev/null | cut -d/ -f3 | sed 's/^v//' | grep -v "[^0-9.]" | sort -V | tail -n1)"
+}
+
+# via https://stackoverflow.com/a/24067243/4865822
+function version_gt() {
+  test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
+}
+
+> "$HOME/upgrade.log"
+chown $(logname).$(logname) "$HOME/upgrade.log"
+
+echo "Looking for outdated packages..."
+
+# firefox ----------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == firefox ] && [ -d /opt/firefox ] >/dev/null 2>&1; then
+  ff_stable=$(curl -sSfL https://product-details.mozilla.org/1.0/firefox_versions.json | grep DEVEDITION | awk '{ print $ NF }' | tr -d \",)
+  ff_installed=$(sudo -su $(logname) /opt/firefox/firefox --version | awk '{ print $NF }')
+
+  if version_gt "$ff_stable" "$ff_installed"; then
+    echo "Upgrading Firefox Developer Edition..."
+    curl -sSfL "https://download.mozilla.org/?product=firefox-devedition-latest-ssl&os=linux64&lang=en-US" | tar xj -C "/opt" -f - >> "$HOME/upgrade.log"
+  fi
+fi
+
+# rust -------------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == rust ] && [ -x "$HOME/.cargo/bin/rustup" ] >/dev/null 2>&1; then
+  if sudo -su $(logname) "$HOME/.cargo/bin/rustup" update 2>>"$HOME/upgrade.log" | grep updated >/dev/null; then
+    echo "Upgrading Rust..."
+  fi
+fi
+
+if [ $# -eq 0 ] || [ "$1" == cargo-deb ] && [ -x "$HOME/.cargo/bin/cargo" ] >/dev/null 2>&1; then
+  cargodeb_stable=$(latest_version "mmstick/cargo-deb")
+  cargodeb_installed=$(sudo -su $(logname) "$HOME/.cargo/bin/cargo" deb --version)
+
+  if version_gt "$cargodeb_stable" "$cargodeb_installed"; then
+    echo "Upgrading cargo-deb..."
+    sudo -su $(logname) "$HOME/.cargo/bin/cargo" install cargo-deb --force >> "$HOME/upgrade.log"
+  fi
+fi
+
+# pip --------------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == pip ]; then
+  for package in pip beancount pocket-cli rtv speedtest-cli youtube_dl; do
+    if HOME=/root pip3 show "$package" >/dev/null 2>&1; then
+      HOME=/root pip3 install --upgrade "$package" >> "$HOME/upgrade.log"
+    fi
+  done
+
+  if HOME=/root pip3 show subsync >/dev/null 2>&1; then
+    HOME=/root pip3 install --upgrade git+https://github.com/smacke/subsync >> "$HOME/upgrade.log" 2>&1
+  fi
+fi
+
+# bat --------------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == bat ] && dpkg -s bat >/dev/null 2>&1; then
+  bat_stable=$(latest_version "sharkdp/bat")
+  bat_installed=$(bat --version | awk '{ print $NF }')
+  bat_release="https://github.com/sharkdp/bat/releases/download/v${bat_stable}/bat_${bat_stable}_amd64.deb"
+
+  if version_gt "$bat_stable" "$bat_installed"; then
+    echo "Upgrading bat..."
+    curl -sSf -o "$tmpfile" -L "$bat_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/upgrade.log"
+  fi
+fi
+
+# fd ---------------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == fd ] && dpkg -s fd >/dev/null 2>&1; then
+  fd_stable=$(latest_version "sharkdp/fd")
+  fd_installed=$(fd --version | awk '{ print $NF }')
+  fd_release="https://github.com/sharkdp/fd/releases/download/v${fd_stable}/fd_${fd_stable}_amd64.deb"
+
+  if version_gt "$fd_stable" "$fd_installed"; then
+    echo "Upgrading fd..."
+    curl -sSf -o "$tmpfile" -L "$fd_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/upgrade.log"
+  fi
+fi
+
+# ripgrep ----------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == rg ] && dpkg -s ripgrep >/dev/null 2>&1; then
+  rg_stable=$(latest_version "burntsushi/ripgrep")
+  rg_installed=$(rg --version | head -n1 | awk '{ print $2 }')
+  rg_release="https://github.com/BurntSushi/ripgrep/releases/download/${rg_stable}/ripgrep_${rg_stable}_amd64.deb"
+
+  if version_gt "$rg_stable" "$rg_installed"; then
+    echo "Upgrading ripgrep..."
+    curl -sSf -o "$tmpfile" -L "$rg_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/upgrade.log"
+  fi
+fi
+
+# # prettyping -------------------------------------------------------------------
+# if [ $# -eq 0 ] || [ "$1" == prettyping ] && command -v prettyping >/dev/null 2>&1; then
+#   echo "Upgrading prettyping..."
+#   curl -o /usr/local/bin/prettyping https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping >> "$HOME/upgrade.log"
+#   chown root.staff /usr/local/bin/prettyping
+#   chmod +x /usr/local/bin/prettyping
+# fi
+
+# diff-so-fancy ----------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == diff-so-fancy ] && command -v diff-so-fancy >/dev/null 2>&1; then
+  dsf_stable=$(latest_version "so-fancy/diff-so-fancy")
+  dsf_installed=$(diff-so-fancy --version 2>&1 | tail -n1 | awk '{ print $NF }')
+
+  if version_gt "$dsf_stable" "$dsf_installed"; then
+    echo "Upgrading diff-so-fancy..."
+    curl -sSfLo /usr/local/bin/diff-so-fancy https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy >> "$HOME/upgrade.log"
+    chown root.staff /usr/local/bin/diff-so-fancy
+    chmod +x /usr/local/bin/diff-so-fancy
+  fi
+fi
+
+# rbspy ------------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == rbspy ] && command -v rbspy >/dev/null 2>&1; then
+  rbspy_stable=$(latest_version "rbspy/rbspy")
+  rbspy_installed=$(rbspy --version | awk '{ print $NF }')
+  rbspy_release="https://github.com/rbspy/rbspy/releases/download/v${rbspy_stable}/rbspy-v${rbspy_stable}-x86_64-unknown-linux-musl.tar.gz"
+
+  if version_gt "$rbspy_stable" "$rbspy_installed"; then
+    echo "Upgrading rbspy..."
+    curl -sSf -L "$rbspy_release" | tar xz -C /usr/local/bin -f - >> "$HOME/upgrade.log" && \
+      chown root.staff /usr/local/bin/rbspy
+  fi
+fi
+
+# # forego -----------------------------------------------------------------------
+# if [ $# -eq 0 ] || [ "$1" == forego ] && dpkg -s forego >/dev/null 2>&1; then
+#   echo "Upgrading forego..."
+#   cd "$sandbox"
+#   forego_release="https://bin.equinox.io/c/ekMN3bCZFUn/forego-stable-linux-amd64.deb"
+#   curl -sSf -o "$tmpfile" -L "$forego_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/upgrade.log"
+# fi
+
+# geckodriver ------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == geckodriver ] && command -v geckodriver >/dev/null 2>&1; then
+  geckodriver_stable=$(latest_version "mozilla/geckodriver")
+  geckodriver_installed=$(geckodriver --version | head -n1 | awk '{ print $NF }')
+  geckodriver_release="https://github.com/mozilla/geckodriver/releases/download/v${geckodriver_stable}/geckodriver-v${geckodriver_stable}-linux64.tar.gz"
+
+  if version_gt "$geckodriver_stable" "$geckodriver_installed"; then
+    echo "Upgrading geckodriver..."
+    curl -sSf -L "$geckodriver_release" | tar xz -C /usr/local/bin -f - >> "$HOME/upgrade.log" && \
+      chown root.staff /usr/local/bin/geckodriver
+  fi
+fi
+
+# docker-credential-pass -------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == docker-credential-pass ] && command -v docker-credential-pass >/dev/null 2>&1; then
+  dcp_stable=$(latest_version "docker/docker-credential-helpers")
+  dcp_installed=$(docker-credential-pass version)
+  dcp_release="https://github.com/docker/docker-credential-helpers/releases/download/v${dcp_stable}/docker-credential-pass-v${dcp_stable}-amd64.tar.gz"
+
+  if version_gt "$dcp_stable" "$dcp_installed"; then
+    echo "Upgrading docker-credential-pass..."
+    curl -sSf -L "$dcp_release" | tar xz -C "$HOME/.local/bin" -f - >> "$HOME/upgrade.log" && \
+      chown root.staff /usr/local/bin/docker-credential-pass
+  fi
+fi
+
+# Mattermost -------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == mattermost ] && dpkg -s mattermost-desktop >/dev/null 2>&1; then
+  mattermost_stable=$(latest_version "mattermost/desktop")
+  mattermost_installed=$(dpkg -s mattermost-desktop | grep Version | awk '{ print $NF }')
+  mattermost_release="https://releases.mattermost.com/desktop/${mattermost_stable}/mattermost-desktop-${mattermost_stable}-linux-amd64.deb"
+
+  if version_gt "$mattermost_stable" "$mattermost_installed"; then
+    echo "Upgrading Mattermost..."
+    curl -sSf -o "$tmpfile" -L "$mattermost_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/upgrade.log"
+  fi
+fi
+
+# alacritty --------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == alacritty ] && dpkg -s alacritty >/dev/null 2>&1; then
+  alacritty_stable=$(latest_version "jwilm/alacritty")
+  alacritty_installed=$(alacritty --version | awk '{ print $2 }')
+
+  if version_gt "$alacritty_stable" "$alacritty_installed"; then
+    echo "Upgrading alacritty..."
+
+    chmod 777 $sandbox
+
+    sudo -su $(logname) git clone https://github.com/jwilm/alacritty "$sandbox/alacritty" 2>>"$HOME/upgrade.log"
+    cd "$sandbox/alacritty"
+    sudo -su $(logname) "$HOME/.cargo/bin/cargo" deb --install --manifest-path "$sandbox/alacritty/alacritty/Cargo.toml" >>"$HOME/provision.log"
+  fi
+fi
+
+# # timer ------------------------------------------------------------------------
+# if [ $# -eq 0 ] || [ "$1" == timer ] && command -v timer >/dev/null 2>&1; then
+#   echo "Upgrading timer..."
+#   curl -o /usr/local/bin/timer https://raw.githubusercontent.com/rlue/timer/master/bin/timer >> "$HOME/upgrade.log"
+#   chown root.staff /usr/local/bin/timer
+#   chmod +x /usr/local/bin/timer
+# fi
+
+# ruby -------------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == rbenv ] && [ -d "$HOME/.rbenv/.git" ]; then
+  cd $HOME/.rbenv
+  if [ -n "$(sudo -su $(logname) git pull 2>&1 1>>"$HOME/upgrade.log" )" ]; then
+    echo "Upgrading rbenv..."
+    sudo -su $(logname) src/configure >> "$HOME/upgrade.log"
+    sudo -su $(logname) make -C src >> "$HOME/upgrade.log"
+  fi
+
+  if [ -d "$HOME/.rbenv/plugins/ruby-build/.git" ]; then
+    cd $HOME/.rbenv/plugins/ruby-build
+    if [ -n "$(sudo -su $(logname) git pull 2>&1 1>>"$HOME/upgrade.log" )" ]; then
+      echo "Upgrading ruby-build..."
+    fi
+  fi
+
+  if [ -d "$HOME/.rbenv/plugins/ruby-build/.git" ]; then
+    cd $HOME/.rbenv/plugins/ruby-update
+    if [ -n "$(sudo -su $(logname) git pull 2>&1 1>>"$HOME/upgrade.log" )" ]; then
+      echo "Upgrading ruby-update..."
+    fi
+
+    if [ -n "$(sudo -su $(logname) "$HOME/.rbenv/bin/rbenv" update | tee -a "$HOME/upgrade.log" | grep -v Updating)" ]; then
+      echo "Updating rbenv..."
+    fi
+  fi
+
+  if [ -r "$HOME/.ruby-version" ] && ! [ -d "$HOME/.rbenv/versions/$(cat "$HOME/.ruby-version")" ]; then
+    echo "Installing Ruby $(cat "$HOME/.ruby-version")..."
+    sudo -su $(logname) rbenv install $(cat "$HOME/.ruby-version") >> "$HOME/upgrade.log"
+  fi
+fi
+
+# i3-gaps ----------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == i3 ] && command -v i3 >/dev/null 2>&1 && ! i3 --version | grep gaps >/dev/null 2>&1; then
+  i3g_stable=$(latest_version "Airblader/i3")
+  i3g_installed=$(i3 --version | awk '{ print $3 }')
+
+  if version_gt "$i3g_stable" "$i3g_installed"; then
+    echo "Upgrading i3-gaps..."
+    git clone https://github.com/maestrogerardo/i3-gaps-deb "$sandbox/i3-gaps-deb" >> "$HOME/upgrade.log"
+    cd "$sandbox/i3-gaps-deb"
+    yes | ./i3-gaps-deb >> "$HOME/upgrade.log"
+    rm -rf /root/.config/i3
+  fi
+fi
+
+# anki -------------------------------------------------------------------------
+if [ "$1" == anki ] && command -v anki >/dev/null 2>&1; then
+  anki_stable=$(latest_version "dae/anki")
+  anki_release="https://apps.ankiweb.net/downloads/current/anki-${anki_stable}-linux-amd64.tar.bz2"
+  # anki_installed=$(i3 --version | awk '{ print $3 }')
+
+  # if version_gt "$anki_stable" "$anki_installed"; then
+    echo "Upgrading Anki..."
+    curl -sSf -L "$anki_release" | tar xz -C "$sandbox" -f - >> "$HOME/provision.log"
+    cd "$sandbox/anki-${anki_stable}-linux-amd64"
+    make install
+  # fi
+fi
+
+# vim plugins ------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == vim-plug ] && command -v vim >/dev/null 2>&1; then
+  echo "Upgrading vim-plug..."
+  sudo -su $(logname) curl -sSfLo "$HOME/.vim/autoload/plug.vim" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  sudo -su $(logname) vim -c PlugUpdate -c qall
+fi
+
+# clean up ---------------------------------------------------------------------
+# echo "Cleaning up tmpfiles..."
+# cd / && rm -rf "$sandbox" "$tmpfile"
