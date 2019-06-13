@@ -29,6 +29,7 @@
 !/.tmux.conf
 !/README.md
 !/alacritty
+!/autostart-scripts
 !/cmus/rc
 !/fbterm
 !/git

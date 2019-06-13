@@ -1,0 +1,5 @@
+#!/bin/sh
+
+[ "$(hostname)" = "herringbone" ] || exit
+
+sudo sh -c 'echo XHCI > /proc/acpi/wakeup'
