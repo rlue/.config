@@ -215,7 +215,7 @@ desktop_packages=(
   fontconfig
   fonts-moe-standard-{kai,song}
   gimp{,-plugin-registry,-python}
-  i3
+  {i3,compton}
   isync
   pulseaudio-module-bluetooth
   mkusb

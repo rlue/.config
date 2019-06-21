@@ -165,7 +165,7 @@ bindsym $mod+r mode "resize"
 ## i3-gaps stuff ###
 
 # Necessary for i3-gaps to work properly (pixel can be any value)
-for_window [class="^.*"] border pixel 3
+for_window [class="^.*"] border pixel 0
 
 # Smart Gaps
 smart_gaps on
@@ -218,5 +218,8 @@ mode "$mode_gaps_outer" {
 
 exec --no-startup-id feh --bg-center /usr/share/wallpapers/wallpaper.jpg
 for_window [title="Desktop — Plasma"] kill
-for_window [class="plasmashell"] floating enable
+for_window [class="plasmashell"] floating enable, border pixel 0
 no_focus [class="plasmashell" window_type="notification"]
+no_focus [class="plasmashell" window_type="on_screen_display"]
+
+exec --no-startup-id compton -b --config ~/.config/compton/compton.conf
