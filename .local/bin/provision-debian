@@ -28,6 +28,18 @@ esac
 
 > "$HOME/provision.log"
 chown $(logname).$(logname) "$HOME/provision.log"
+exec 3>>"$HOME/provision.log"
+
+function finish {
+  echo -e "\nCLEANUP ========================================================================"
+  echo "Closing file descriptor 3..."
+  exec 3>&-
+
+  echo "Removing tmpfiles..."
+  cd / && rm -rf "$sandbox" "$tmpfile"
+}
+
+trap finish EXIT
 
 # accepts a github repo (e.g., "sharkdp/fd") and returns the latest version tag
 function latest_version() {
@@ -54,18 +66,18 @@ deb-src http://security.debian.org/debian-security ${release}/updates main contr
 EOF
 
 echo "Refreshing package information..."
-apt update >> "$HOME/provision.log" 2>/dev/null
+apt update >&3 2>/dev/null
 
 if [ "${release,,}" = "stable" ]; then
   echo "Upgrading installed packages..."
-  apt upgrade -y >> "$HOME/provision.log" 2>/dev/null
+  apt upgrade -y >&3 2>/dev/null
 else
   echo "Upgrading distro..."
-  apt dist-upgrade -y >> "$HOME/provision.log" 2>/dev/null
+  apt dist-upgrade -y >&3 2>/dev/null
 fi
 
 echo "Installing packages to enable https for APT..."
-apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common >> "$HOME/provision.log" 2>/dev/null
+apt install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common >&3 2>/dev/null
 
 printf "Adding and authenticating third-party sources: Syncthing... "
 curl -sSf https://syncthing.net/release-key.txt | apt-key add -
@@ -100,13 +112,15 @@ deb-src https://packages.gitlab.com/runner/gitlab-runner/debian/ $(lsb_release -
 SOURCE
 
 if [ "${desktop,,}" = "y" ]; then
-  printf "Adding and authenticating third-party sources: Papirus (icons)... "
+  printf "Authenticating third-party sources: Launchpad PPA... "
   apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E58A9D36647CAE7F >/dev/null 2>>"$HOME/provision.log" && echo OK
+
+  echo "Adding third-party sources: Papirus (icons)... "
   cat <<-SOURCE > /etc/apt/sources.list.d/papirus.list
 	deb http://ppa.launchpad.net/papirus/papirus/ubuntu xenial main
 	SOURCE
 
-  printf "Adding and authenticating third-party sources: mkusb... "
+  echo "Adding third-party sources: mkusb... "
   cat <<-SOURCE > /etc/apt/sources.list.d/dus.list
 	deb http://ppa.launchpad.net/mkusb/unstable/ubuntu xenial main
 	SOURCE
@@ -122,7 +136,7 @@ fi
 # SOURCE
 
 echo "Refreshing package information..."
-apt update >> "$HOME/provision.log" 2>/dev/null
+apt update >&3 2>/dev/null
 
 base_system_packages=(
   apt-rdepends
@@ -244,7 +258,7 @@ if [ "${desktop,,}" = "y" ]; then
 fi
 
 echo "Installing new packages via APT..."
-apt install -y "${to_install[@]}" >> "$HOME/provision.log" 2>/dev/null
+apt install -y "${to_install[@]}" >&3 2>/dev/null
 
 if [ ${#unlocatable[@]} -gt 0 ]; then
   echo -e "\033[1;31mWARNING:\033[0m Some packages failed to install. Please see $HOME/apt_unlocatable.log for a list of them."
@@ -277,7 +291,7 @@ usermod -aG docker "$(logname)"
 # postgresql -------------------------------------------------------------------
 echo "Configuring postgres..."
 if ! sudo -su postgres psql template1 -c '\du' | grep "^ $(logname)" >/dev/null 2>&1; then
-  sudo -su postgres createuser -s $(logname) >> "$HOME/provision.log"
+  sudo -su postgres createuser -s $(logname) >&3
 fi
 
 # fbterm -----------------------------------------------------------------------
@@ -312,69 +326,69 @@ echo -e "\nHOMEDIR =============================================================
 
 echo "Removing default home directory folders..."
 for dir in Documents Downloads; do
-  rm -rf "$HOME/$dir" >> "$HOME/provision.log"
+  rm -rf "$HOME/$dir" >&3
 done
 
 echo "Adding base home directory folders..."
 for dir in mail tmp src .local/share .local/bin; do
-  sudo -u $(logname) mkdir -p "$HOME/$dir" >> "$HOME/provision.log"
+  sudo -u $(logname) mkdir -p "$HOME/$dir" >&3
 done
 
 echo "Cloning XDG_CONFIG directory..."
 if ! [ -d "$HOME/.config" ]; then
-  sudo -u $(logname) git clone https://github.com/rlue/.config "$HOME/.config" >> "$HOME/provision.log"
+  sudo -u $(logname) git clone https://github.com/rlue/.config "$HOME/.config" >&3
 elif ! [ -d "$HOME/.config/.git" ]; then
-  cd "$HOME/.config" >> "$HOME/provision.log"
-  git init >> "$HOME/provision.log"
-  git remote add origin https://github.com/rlue/.config >> "$HOME/provision.log"
-  git fetch origin >> "$HOME/provision.log"
-  git checkout master >> "$HOME/provision.log"
+  cd "$HOME/.config" >&3
+  git init >&3
+  git remote add origin https://github.com/rlue/.config >&3
+  git fetch origin >&3
+  git checkout master >&3
 fi
 
 # Syncthing --------------------------------------------------------------------
 if [ -f "$HOME/.stignore" ] && [ ! -L "$HOME/.stignore" ]; then
   echo "Existing .stignore file found. Moving to backup location..."
-  mv "$HOME/.stignore" "$HOME/tmp/stignore.bak" >> "$HOME/provision.log"
+  mv "$HOME/.stignore" "$HOME/tmp/stignore.bak" >&3
 fi
 
 if [ -f "$HOME/.config/.stignore" ]; then
   echo "Linking .stignore..."
-  sudo -u $(logname) ln -sf .config/.stignore "$HOME/.stignore" >> "$HOME/provision.log"
+  sudo -u $(logname) ln -sf .config/.stignore "$HOME/.stignore" >&3
 fi
 
 if ! [ -d "$HOME/.config/syncthing" ]; then
   echo "Generating syncthing config directory..."
-  sudo -u $(logname) STNODEFAULTFOLDER=true syncthing -generate="$HOME/.config/syncthing" >> "$HOME/provision.log"
+  sudo -u $(logname) STNODEFAULTFOLDER=true syncthing -generate="$HOME/.config/syncthing" >&3
 fi
 
 echo "Configuring syncthing..."
 
-xmlstarlet edit --inplace --omit-decl --update /configuration/gui/address -v 0.0.0.0:8384 "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
+xmlstarlet edit --inplace --omit-decl --update /configuration/gui/address -v 0.0.0.0:8384 "$HOME/.config/syncthing/config.xml" >&3
 
 if ! xmlstarlet select --template --copy-of '/configuration/device[@name="madras"]' "$HOME/.config/syncthing/config.xml" >/dev/null 2>&1; then
-  xmlstarlet edit --inplace --omit-decl --append '/configuration/device[last()]' --type elem -n device "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
+  xmlstarlet edit --inplace --omit-decl --append '/configuration/device[last()]' --type elem -n device "$HOME/.config/syncthing/config.xml" >&3
   # TODO This ID is hardcoded. Is there a way to get it programmatically?
-  xmlstarlet edit --inplace --omit-decl --insert '/configuration/device[last()]' --type attr -n id -v Z3ZWWJV-4D3NDUT-B4PO2VY-JWUVMOS-B2EKDIK-3EZ6O6P-XB4ENNQ-EQRFAQ4 "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
-  xmlstarlet edit --inplace --omit-decl --insert '/configuration/device[last()]' --type attr -n name -v madras "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
-  xmlstarlet edit --inplace --omit-decl --insert '/configuration/device[last()]' --type attr -n introducer -v true "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
+  xmlstarlet edit --inplace --omit-decl --insert '/configuration/device[last()]' --type attr -n id -v Z3ZWWJV-4D3NDUT-B4PO2VY-JWUVMOS-B2EKDIK-3EZ6O6P-XB4ENNQ-EQRFAQ4 "$HOME/.config/syncthing/config.xml" >&3
+  xmlstarlet edit --inplace --omit-decl --insert '/configuration/device[last()]' --type attr -n name -v madras "$HOME/.config/syncthing/config.xml" >&3
+  xmlstarlet edit --inplace --omit-decl --insert '/configuration/device[last()]' --type attr -n introducer -v true "$HOME/.config/syncthing/config.xml" >&3
 fi
 
 if ! xmlstarlet select --template --copy-of '/configuration/folder[@label="Home"]' "$HOME/.config/syncthing/config.xml" >/dev/null 2>&1; then
-  xmlstarlet edit --inplace --omit-decl --insert '/configuration/*[1]' --type elem -n folder "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
+  xmlstarlet edit --inplace --omit-decl --insert '/configuration/*[1]' --type elem -n folder "$HOME/.config/syncthing/config.xml" >&3
   # TODO This ID is hardcoded. Is there a way to get it programmatically?
-  xmlstarlet edit --inplace --omit-decl --insert '/configuration/folder[1]' --type attr -n id -v jwbul-zqfqy "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
-  xmlstarlet edit --inplace --omit-decl --insert '/configuration/folder[1]' --type attr -n label -v Home "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
-  xmlstarlet edit --inplace --omit-decl --insert '/configuration/folder[1]' --type attr -n path -v /home/rlue "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
-  xmlstarlet edit --inplace --omit-decl --subnode '/configuration/folder[1]' --type elem -n device "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
-  xmlstarlet edit --inplace --omit-decl --insert '/configuration/folder/device[1]' --type attr -n id -v Z3ZWWJV-4D3NDUT-B4PO2VY-JWUVMOS-B2EKDIK-3EZ6O6P-XB4ENNQ-EQRFAQ4 "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
+  xmlstarlet edit --inplace --omit-decl --insert '/configuration/folder[1]' --type attr -n id -v jwbul-zqfqy "$HOME/.config/syncthing/config.xml" >&3
+  xmlstarlet edit --inplace --omit-decl --insert '/configuration/folder[1]' --type attr -n label -v Home "$HOME/.config/syncthing/config.xml" >&3
+  xmlstarlet edit --inplace --omit-decl --insert '/configuration/folder[1]' --type attr -n path -v /home/rlue "$HOME/.config/syncthing/config.xml" >&3
+  xmlstarlet edit --inplace --omit-decl --subnode '/configuration/folder[1]' --type elem -n device "$HOME/.config/syncthing/config.xml" >&3
+  xmlstarlet edit --inplace --omit-decl --insert '/configuration/folder/device[1]' --type attr -n id -v Z3ZWWJV-4D3NDUT-B4PO2VY-JWUVMOS-B2EKDIK-3EZ6O6P-XB4ENNQ-EQRFAQ4 "$HOME/.config/syncthing/config.xml" >&3
 fi
 
 if ! xmlstarlet select --template --copy-of /configuration/gui/user "$HOME/.config/syncthing/config.xml" >/dev/null 2>&1; then
-  xmlstarlet edit --inplace --omit-decl --subnode /configuration/gui --type elem -n user -v rlue "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
+  xmlstarlet edit --inplace --omit-decl --subnode /configuration/gui --type elem -n user -v rlue "$HOME/.config/syncthing/config.xml" >&3
 fi
 
 if ! xmlstarlet select --template --copy-of /configuration/gui/password "$HOME/.config/syncthing/config.xml" >/dev/null 2>&1; then
-  xmlstarlet edit --inplace --omit-decl --subnode /configuration/gui --type elem -n password -v $2a$10$0PIwbHnGUdssa.t.dEM.ee44kl7PXAgR/Usyu.BU1k1DQIFObeh0m "$HOME/.config/syncthing/config.xml" >> "$HOME/provision.log"
+  xmlstarlet edit --inplace --omit-decl --subnode /configuration/gui --type elem -n password -v $2a$10$0PIwbHnGUdssa.t.dEM.ee44kl7PXAgR/Usyu.BU1k1DQIFObeh0m "$HOME/.config/syncthing/config.xml" >&3
 fi
 
 if ! grep max_user_watches /etc/sysctl.conf >/dev/null 2>&1; then
@@ -384,11 +398,11 @@ fi
 echo "Launching syncthing..."
 
 if [ "${desktop,,}" = "y" ]; then
-  sudo -sEu $(logname) systemctl --user enable syncthing.service >> "$HOME/provision.log"
-  sudo -sEu $(logname) systemctl --user start syncthing.service >> "$HOME/provision.log"
+  sudo -sEu $(logname) systemctl --user enable syncthing.service >&3
+  sudo -sEu $(logname) systemctl --user start syncthing.service >&3
 else
-  systemctl enable syncthing@$(logname).service >> "$HOME/provision.log"
-  systemctl start syncthing@$(logname).service >> "$HOME/provision.log"
+  systemctl enable syncthing@$(logname).service >&3
+  systemctl start syncthing@$(logname).service >&3
 fi
 
 # Dotfiles ---------------------------------------------------------------------
@@ -403,12 +417,12 @@ for file in $(grep '^!/\.config/\..*' "$HOME/.config/.stignore" | sed 's/^!\/\.c
 done
 
 echo "Stowing dotfiles..."
-sudo -su $(logname) stow -Sv . >> "$HOME/provision.log"
+sudo -su $(logname) stow -Sv . >&3
 
 # Maildir ----------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && command -v mbsync >/dev/null 2>&1; then
   echo "Fetching mail..."
-  sudo -sEu $(logname) mbsync -a >> "$HOME/provision.log"
+  sudo -sEu $(logname) mbsync -a >&3
 fi
 
 # MISC. INSTALLATIONS ==========================================================
@@ -417,18 +431,18 @@ echo -e "\nOUT-OF-REPO INSTALLATIONS ===========================================
 # firefox ----------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && ! [ -x "/opt/firefox/firefox" ]; then
   echo "Installing Firefox Developer Edition..."
-  curl -sSfL "https://download.mozilla.org/?product=firefox-devedition-latest-ssl&os=linux64&lang=en-US" | tar xj -C "/opt" -f - >> "$HOME/provision.log"
+  curl -sSfL "https://download.mozilla.org/?product=firefox-devedition-latest-ssl&os=linux64&lang=en-US" | tar xj -C "/opt" -f - >&3
 fi
 
 # rust -------------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && ! [ -x "$HOME/.cargo/bin/cargo" ] >/dev/null 2>&1; then
   echo "Installing Rust..."
-  sudo -su $(logname) curl -sSf https://sh.rustup.rs/ | sh >> "$HOME/provision.log"
+  sudo -su $(logname) curl -sSf https://sh.rustup.rs/ | sh >&3
 fi
 
 if [ "${desktop,,}" = "y" ] && ! [ -x "$HOME/.cargo/bin/cargo-deb" ] >/dev/null 2>&1; then
   echo "Installing cargo-deb..."
-  sudo -su $(logname) cargo install cargo-deb >> "$HOME/provision.log"
+  sudo -su $(logname) cargo install cargo-deb >&3
 fi
 
 # pip --------------------------------------------------------------------------
@@ -436,13 +450,13 @@ if [ "${desktop,,}" = "y" ]; then
   for package in pip beancount pocket-cli rtv speedtest-cli youtube_dl; do
     if HOME=/root ! pip3 show "$package" >/dev/null 2>&1; then
       echo "Installing $package..."
-      HOME=/root pip3 install --upgrade "$package" >> "$HOME/provision.log"
+      HOME=/root pip3 install --upgrade "$package" >&3
     fi
   done
 
   if HOME=/root ! pip3 show subsync >/dev/null 2>&1; then
     echo "Installing subsync..."
-    HOME=/root pip3 install --upgrade git+https://github.com/smacke/subsync >> "$HOME/provision.log"
+    HOME=/root pip3 install --upgrade git+https://github.com/smacke/subsync >&3
   fi
 fi
 
@@ -451,7 +465,7 @@ if ! dpkg -s bat >/dev/null 2>&1; then
   echo "Installing bat..."
   bat_stable=$(latest_version "sharkdp/bat")
   bat_release="https://github.com/sharkdp/bat/releases/download/v${bat_stable}/bat_${bat_stable}_amd64.deb"
-  curl -sSf -o "$tmpfile" -L "$bat_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/provision.log"
+  curl -sSf -o "$tmpfile" -L "$bat_release" && dpkg -i --skip-same-version "$tmpfile" >&3
 fi
 
 # fd ---------------------------------------------------------------------------
@@ -459,7 +473,7 @@ if ! dpkg -s fd >/dev/null 2>&1; then
   echo "Installing fd..."
   fd_stable=$(latest_version "sharkdp/fd")
   fd_release="https://github.com/sharkdp/fd/releases/download/v${fd_stable}/fd_${fd_stable}_amd64.deb"
-  curl -sSf -o "$tmpfile" -L "$fd_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/provision.log"
+  curl -sSf -o "$tmpfile" -L "$fd_release" && dpkg -i --skip-same-version "$tmpfile" >&3
 fi
 
 # ripgrep ----------------------------------------------------------------------
@@ -467,13 +481,13 @@ if ! dpkg -s ripgrep >/dev/null 2>&1; then
   echo "Installing ripgrep..."
   rg_stable=$(latest_version "burntsushi/ripgrep")
   rg_release="https://github.com/BurntSushi/ripgrep/releases/download/${rg_stable}/ripgrep_${rg_stable}_amd64.deb"
-  curl -sSf -o "$tmpfile" -L "$rg_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/provision.log"
+  curl -sSf -o "$tmpfile" -L "$rg_release" && dpkg -i --skip-same-version "$tmpfile" >&3
 fi
 
 # prettyping -------------------------------------------------------------------
 if ! command -v prettyping >/dev/null 2>&1; then
   echo "Installing prettyping..."
-  curl -o /usr/local/bin/prettyping https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping >> "$HOME/provision.log"
+  curl -o /usr/local/bin/prettyping https://raw.githubusercontent.com/denilsonsa/prettyping/master/prettyping >&3
   chown root.staff /usr/local/bin/prettyping
   chmod +x /usr/local/bin/prettyping
 fi
@@ -481,7 +495,7 @@ fi
 # diff-so-fancy ----------------------------------------------------------------
 if ! command -v diff-so-fancy >/dev/null 2>&1; then
   echo "Installing diff-so-fancy..."
-  curl -o /usr/local/bin/diff-so-fancy https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy >> "$HOME/provision.log"
+  curl -o /usr/local/bin/diff-so-fancy https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy >&3
   chown root.staff /usr/local/bin/diff-so-fancy
   chmod +x /usr/local/bin/diff-so-fancy
 fi
@@ -491,7 +505,7 @@ if [ "${desktop,,}" = "y" ] && ! command -v rbspy >/dev/null 2>&1; then
   echo "Installing rbspy..."
   rbspy_stable=$(latest_version "rbspy/rbspy")
   rbspy_release="https://github.com/rbspy/rbspy/releases/download/v${rbspy_stable}/rbspy-v${rbspy_stable}-x86_64-unknown-linux-musl.tar.gz"
-  curl -sSf -L "$rbspy_release" | tar xz -C "/usr/local/bin" -f - >> "$HOME/provision.log" && \
+  curl -sSf -L "$rbspy_release" | tar xz -C "/usr/local/bin" -f - >&3 && \
     chown root.staff /usr/local/bin/rbspy
 fi
 
@@ -500,7 +514,7 @@ if ! dpkg -s forego >/dev/null 2>&1; then
   echo "Installing forego..."
   cd "$sandbox"
   forego_release="https://bin.equinox.io/c/ekMN3bCZFUn/forego-stable-linux-amd64.deb"
-  curl -sSf -o "$tmpfile" -L "$forego_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/provision.log"
+  curl -sSf -o "$tmpfile" -L "$forego_release" && dpkg -i --skip-same-version "$tmpfile" >&3
 fi
 
 # geckodriver ------------------------------------------------------------------
@@ -508,7 +522,7 @@ if [ "${desktop,,}" = "y" ] && ! command -v geckodriver >/dev/null 2>&1; then
   echo "Installing geckodriver..."
   geckodriver_stable=$(latest_version "mozilla/geckodriver")
   geckodriver_release="https://github.com/mozilla/geckodriver/releases/download/v${geckodriver_stable}/geckodriver-v${geckodriver_stable}-linux64.tar.gz"
-  curl -sSf -L "$geckodriver_release" | tar xz -C /usr/local/bin -f - >> "$HOME/provision.log" && \
+  curl -sSf -L "$geckodriver_release" | tar xz -C /usr/local/bin -f - >&3 && \
     chown root.staff /usr/local/bin/geckodriver
 fi
 
@@ -517,7 +531,7 @@ if  ! command -v docker-credential-pass >/dev/null 2>&1; then
   echo "Installing docker-credential-pass..."
   dcp_stable=$(latest_version "docker/docker-credential-helpers")
   dcp_release="https://github.com/docker/docker-credential-helpers/releases/download/v${dcp_stable}/docker-credential-pass-v${dcp_stable}-amd64.tar.gz"
-  curl -sSf -L "$dcp_release" | tar xz -C /usr/local/bin -f - >> "$HOME/provision.log" && \
+  curl -sSf -L "$dcp_release" | tar xz -C /usr/local/bin -f - >&3 && \
     chown root.staff /usr/local/bin/docker-credential-pass
 fi
 
@@ -526,7 +540,7 @@ if [ "${desktop,,}" = "y" ] && ! dpkg -s teamviewer >/dev/null 2>&1; then
   echo "Installing TeamViewer..."
   cd "$sandbox"
   teamviewer_release="https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
-  curl -sSf -o "$tmpfile" -L "$teamviewer_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/provision.log"
+  curl -sSf -o "$tmpfile" -L "$teamviewer_release" && dpkg -i --skip-same-version "$tmpfile" >&3
 fi
 
 # Mattermost -------------------------------------------------------------------
@@ -534,25 +548,25 @@ if [ "${desktop,,}" = "y" ] && ! dpkg -s mattermost-desktop >/dev/null 2>&1; the
   echo "Installing Mattermost..."
   mattermost_stable=$(latest_version "mattermost/desktop")
   mattermost_release="https://releases.mattermost.com/desktop/${mattermost_stable}/mattermost-desktop-${mattermost_stable}-linux-amd64.deb"
-  curl -sSf -o "$tmpfile" -L "$mattermost_release" && dpkg -i --skip-same-version "$tmpfile" >> "$HOME/provision.log"
+  curl -sSf -o "$tmpfile" -L "$mattermost_release" && dpkg -i --skip-same-version "$tmpfile" >&3
 fi
 
 # alacritty --------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && ! dpkg -s alacritty >/dev/null 2>&1; then
   echo "Installing alacritty..."
-  apt install -y cmake libfreetype6-dev libfontconfig1-dev xclip >> "$HOME/provision.log" 2>/dev/null
+  apt install -y cmake libfreetype6-dev libfontconfig1-dev xclip >&3 2>/dev/null
 
   chmod 777 $sandbox
 
-  sudo -su $(logname) git clone https://github.com/jwilm/alacritty "$sandbox/alacritty" >> "$HOME/provision.log"
+  sudo -su $(logname) git clone https://github.com/jwilm/alacritty "$sandbox/alacritty" >&3
   cd "$sandbox/alacritty"
-  sudo -su $(logname) "$HOME/.cargo/bin/cargo" deb --install --manifest-path "$sandbox/alacritty/alacritty/Cargo.toml" --output "$tmpfile" >> "$HOME/provision.log"
+  sudo -su $(logname) "$HOME/.cargo/bin/cargo" deb --install --manifest-path "$sandbox/alacritty/alacritty/Cargo.toml" --output "$tmpfile" >&3
 fi
 
 # timer ------------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && ! command -v timer >/dev/null 2>&1; then
   echo "Installing timer..."
-  curl -o /usr/local/bin/timer https://raw.githubusercontent.com/rlue/timer/master/bin/timer >> "$HOME/provision.log"
+  curl -o /usr/local/bin/timer https://raw.githubusercontent.com/rlue/timer/master/bin/timer >&3
   chown root.staff /usr/local/bin/timer
   chmod +x /usr/local/bin/timer
 fi
@@ -560,43 +574,57 @@ fi
 # ruby -------------------------------------------------------------------------
 usermod -aG staff $(logname)
 
-echo "Installing ruby build dependencies..."
-apt install -y autoconf build-essential bison zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libffi-dev >> "$HOME/provision.log" 2>/dev/null
+ruby_build_deps=(
+  autoconf
+  build-essential
+  bison
+  zlib1g-dev
+  libyaml-dev
+  libssl-dev
+  libgdbm-dev
+  libreadline-dev
+  libffi-dev 
+)
+
+if dpkg -s $ruby_build_deps[@] >/dev/null 2>&1; then
+  echo "Installing ruby build dependencies..."
+  apt install -y ${ruby_build_deps[@]} >&3 2>/dev/null
+fi
 
 mkdir -p /usr/local/share/doc
 chown root.staff /usr/local/share/doc
 chmod g+w /usr/local/share/doc
 
 if ! [ -d "$HOME/.rbenv" ]; then
-  sudo -su $(logname) git clone https://github.com/rbenv/rbenv.git "$HOME/.rbenv" >> "$HOME/provision.log"
+  sudo -su $(logname) git clone https://github.com/rbenv/rbenv.git "$HOME/.rbenv" >&3
 fi
 
 if ! [ -f "$HOME/.rbenv/libexec/rbenv-realpath.dylib" ]; then
   echo "Installing rbenv..."
   cd $HOME/.rbenv
-  sudo -su $(logname) src/configure >> "$HOME/provision.log"
-  sudo -su $(logname) make -C src >> "$HOME/provision.log"
+  sudo -su $(logname) src/configure >&3
+  sudo -su $(logname) make -C src >&3
 fi
 
 if ! [ -d "$HOME/.rbenv/plugins/ruby-build" ]; then
-  sudo -su $(logname) git clone https://github.com/rbenv/ruby-build.git "$HOME/.rbenv/plugins/ruby-build" >> "$HOME/provision.log"
+  sudo -su $(logname) git clone https://github.com/rbenv/ruby-build.git "$HOME/.rbenv/plugins/ruby-build" >&3
 fi
 
 if ! [ -d "$HOME/.rbenv/plugins/ruby-update" ]; then
-  sudo -su $(logname) git clone https://github.com/rkh/rbenv-update.git "$HOME/.rbenv/plugins/ruby-update" >> "$HOME/provision.log"
+  sudo -su $(logname) git clone https://github.com/rkh/rbenv-update.git "$HOME/.rbenv/plugins/ruby-update" >&3
 fi
 
 if [ -r "$HOME/.ruby-version" ] && ! [ -d "$HOME/.rbenv/versions/$(cat "$HOME/.ruby-version")" ]; then
   echo "Installing Ruby $(cat "$HOME/.ruby-version")..."
-  sudo -su $(logname) rbenv install $(cat "$HOME/.ruby-version") >> "$HOME/provision.log"
+  sudo -su $(logname) rbenv install $(cat "$HOME/.ruby-version") >&3
 fi
 
 # i3-gaps ----------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && command -v i3 >/dev/null 2>&1 && ! i3 --version | grep gaps >/dev/null 2>&1; then
   echo "Installing i3-gaps..."
-  git clone https://github.com/maestrogerardo/i3-gaps-deb "$sandbox/i3-gaps-deb" >> "$HOME/provision.log"
+  git clone https://github.com/maestrogerardo/i3-gaps-deb "$sandbox/i3-gaps-deb" >&3
   cd "$sandbox/i3-gaps-deb"
-  yes | ./i3-gaps-deb >> "$HOME/provision.log"
+  yes | ./i3-gaps-deb >&3
   rm -rf /root/.config/i3
 fi
 
@@ -606,7 +634,7 @@ if [ "${desktop,,}" = "y" ] && ! command -v anki >/dev/null 2>&1; then
   anki_stable=$(latest_version "dae/anki")
   anki_release="https://apps.ankiweb.net/downloads/current/anki-${anki_stable}-linux-amd64.tar.bz2"
 
-  curl -sSf -L "$anki_release" | tar xz -C "$sandbox" -f - >> "$HOME/provision.log"
+  curl -sSf -L "$anki_release" | tar xz -C "$sandbox" -f - >&3
   cd "$sandbox/anki-${anki_stable}-linux-amd64"
   make install
 fi
@@ -616,10 +644,3 @@ if command -v vim >/dev/null 2>&1; then
   echo "Installing vim plugins..."
   sudo -su $(logname) vim -c PlugInstall -c qall
 fi
-
-# CLEANUP ======================================================================
-echo -e "\nCLEANUP ========================================================================"
-echo "Removing tmpfiles..."
-cd / && rm -rf "$sandbox" "$tmpfile"
-
-echo "Provisioning complete!"
