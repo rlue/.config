@@ -1,0 +1,43 @@
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ avahi-daemon\[[0-9]+\]: New relevant interface .* for mDNS\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ avahi-daemon\[[0-9]+\]: Interface .* no longer relevant for mDNS\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ avahi-daemon\[[0-9]+\]: (Joining|Leaving) mDNS multicast group on interface .* with address .*\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ avahi-daemon\[[0-9]+\]: (Registering new|Withdrawing) address record for .* on .*\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ bluetoothd\[[0-9]+\]: .* ready$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ bluetoothd\[[0-9]+\]: Endpoint registered: .* path=/MediaEndpoint/A2DP(Sink|Source)$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ containerd\[[0-9]+\]: time="[0-9T:.+-]+" level=info .*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ dbus-daemon\[[0-9]+\]: \[[^]]+\] Activating (via systemd: )?service name=.*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ dbus-daemon\[[0-9]+\]: \[(system|session uid=1000 pid=2422)\] Successfully activated service '.+'$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ dhclient\[[0-9]+\]: DHCPREQUEST .*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ dockerd\[[0-9]+\]: time="[0-9T:.+-]+" level=info .*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ gitlab-runner\[[0-9]+\]: .*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kcheckpass\[[0-9]+\]: pam_unix\(kde:auth\): authentication failure; .*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kcheckpass\[[0-9]+\]: Authentication failure for .*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: \[[0-9. ]+\] IPv6: ADDRCONF.*link (becomes|is not) ready$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: \[[0-9. ]+\] device \w+ (entered|left) promiscuous mode$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: \[[0-9. ]+\] docker0: port .* entered (blocking|disabled|forwarding) state$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ kernel: \[[0-9. ]+\] \w+: renamed from \w+$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ NetworkManager\[[0-9]+\]: <info> .+$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ nm-dispatcher: req:1 '(up|dhcp4-change)' \[[[:alnum:]]+\]: (new request \([0-9] scripts\)|start running ordered scripts...)$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ nm-dispatcher: req:2 'connectivity-change': (new request \([0-9] scripts\)|start running ordered scripts...)$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ nm-dispatcher: req:3 'up' \[docker0\]: (new request \([0-9] scripts\)|start running ordered scripts...)$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ PackageKit: uid 1000 (is trying to obtain|obtained auth for) org\.freedesktop\.packagekit\.system-sources-refresh.*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ PackageKit: daemon (start|quit)$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ PackageKit: (get-updates|refresh-cache) transaction .* from uid 1000 finished with success.*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ rsyslogd: .* rsyslogd was HUPed$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ rtkit-daemon\[[0-9]+\]: Supervising [0-9] threads of 1 processes of 1 users\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ rtkit-daemon\[[0-9]+\]: Successfully made thread [0-9]+ of process [0-9]+ \(n/a\) owned by '1000' .*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ syncthing\[[0-9]+\]: \[[[:alnum:]]{5}\] INFO: .+$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd\[[0-9]+\]: Start(ing|ed) Daily man-db regeneration\.+$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd\[[0-9]+\]: [[:alnum:]\@.-]+\.(service|socket|scope|mount): Succeeded\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd\[[0-9]+\]: packagekit\.service: Main process exited, code=killed, status=15/TERM$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd\[[0-9]+\]: run-docker-netns-[0-9a-f]+.mount: Succeeded\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd\[[0-9]+\]: run-docker-runtime\\x2drunc-moby-[0-9a-f]+-runc\.\w+.mount: Succeeded\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd\[[0-9]+\]: var-lib-docker-containers-[0-9a-f]+-mounts-shm.mount: Succeeded\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd\[[0-9]+\]: var-lib-docker-overlay2-[0-9a-f]+(\\x2dinit)?-merged.mount: Succeeded\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd-logind\[[0-9]+\]: Watching system buttons on /dev/input/event[0-9]+ \([[:alnum:]:]+\)$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd-udevd\[[0-9]+\]: Could not generate persistent MAC address for \w+: No such file or directory$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd-udevd\[[0-9]+\]: Could not set offload features of \w+: No such device$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd-udevd\[[0-9]+\]: Using default interface naming scheme 'v240'\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ systemd-udevd\[[0-9]+\]: link_config: autonegotiation is unset or enabled, the speed and duplex are not writable\.$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ Tor\[[0-9]+\]: Bootstrapped .*$
+^\w{3} [ :0-9]{11} [._[:alnum:]-]+ Tor\[[0-9]+\]: Problem bootstrapping\. .*$
