@@ -111,6 +111,12 @@ deb https://packages.gitlab.com/runner/gitlab-runner/debian/ $(lsb_release -cs) 
 deb-src https://packages.gitlab.com/runner/gitlab-runner/debian/ $(lsb_release -cs) main
 SOURCE
 
+printf "Adding and authenticating third-party sources: FileBot... "
+curl -sSfL https://get.filebot.net/filebot/KEYS | apt-key add -
+cat <<-SOURCE > /etc/apt/sources.list.d/filebot.list
+deb [arch=all] https://get.filebot.net/deb/ universal main
+SOURCE
+
 if [ "${desktop,,}" = "y" ]; then
   printf "Adding and authenticating third-party sources: Papirus (icons)... "
   apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E58A9D36647CAE7F >/dev/null 2>>"$HOME/provision.log" && echo OK
@@ -143,6 +149,7 @@ base_system_packages=(
   bash-completion
   bc
   exa
+  filebot
   fzf
   git
   glances
