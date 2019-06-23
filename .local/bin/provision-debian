@@ -112,15 +112,14 @@ deb-src https://packages.gitlab.com/runner/gitlab-runner/debian/ $(lsb_release -
 SOURCE
 
 if [ "${desktop,,}" = "y" ]; then
-  printf "Authenticating third-party sources: Launchpad PPA... "
+  printf "Adding and authenticating third-party sources: Papirus (icons)... "
   apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E58A9D36647CAE7F >/dev/null 2>>"$HOME/provision.log" && echo OK
-
-  echo "Adding third-party sources: Papirus (icons)... "
   cat <<-SOURCE > /etc/apt/sources.list.d/papirus.list
 	deb http://ppa.launchpad.net/papirus/papirus/ubuntu xenial main
 	SOURCE
 
-  echo "Adding third-party sources: mkusb... "
+  printf "Adding and authenticating third-party sources: mkusb... "
+  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 54B8C8AC >/dev/null 2>>"$HOME/provision.log" && echo OK
   cat <<-SOURCE > /etc/apt/sources.list.d/dus.list
 	deb http://ppa.launchpad.net/mkusb/unstable/ubuntu xenial main
 	SOURCE
@@ -325,7 +324,7 @@ fi
 echo -e "\nHOMEDIR ========================================================================"
 
 echo "Removing default home directory folders..."
-for dir in Documents Downloads; do
+for dir in Desktop Documents Downloads Music Pictures Public Templates Videos; do
   rm -rf "$HOME/$dir" >&3
 done
 
@@ -336,7 +335,7 @@ done
 
 echo "Cloning XDG_CONFIG directory..."
 if ! [ -d "$HOME/.config" ]; then
-  sudo -u $(logname) git clone https://github.com/rlue/.config "$HOME/.config" >&3
+  sudo -u $(logname) git clone --recurse-submodules https://github.com/rlue/.config "$HOME/.config" >&3 2>&3
 elif ! [ -d "$HOME/.config/.git" ]; then
   cd "$HOME/.config" >&3
   git init >&3
@@ -406,27 +405,41 @@ else
 fi
 
 # Dotfiles ---------------------------------------------------------------------
-cd $HOME/.config
+echo "Waiting for gnupg to be synced..."
 
-for file in $(grep '^!/\.config/\..*' "$HOME/.config/.stignore" | sed 's/^!\/\.config\/\(\.\)/\1/'); do
-  echo "Waiting for $file to be synced..."
+while [ ! -e "$HOME/.config/gnupg" ]; do
+  inotifywait -qqt 2 -e create -e moved_to "$(dirname $HOME/.config/gnupg)"
+done
+chmod 700 "$HOME/.config/gnupg"
 
-  while [ ! -e "$file" ]; do
-    inotifywait -qqt 2 -e create -e moved_to "$(dirname $file)"
+if [ -f "$HOME/.config/secrets.tar.gpg" ]; then
+  for file in $(grep '^!/\.config/\..*' "$HOME/.config/.stignore" | sed 's/^!\/\.config\/\(\.\)/\1/'); do
+    sudo -u $(logname) mkdir -p "$HOME/.config/$(dirname "$file")"
   done
+
+  GNUPGHOME="$HOME/.config/gnupg" gpg --decrypt -d "$HOME/.config/secrets.tar.gpg" 2>&3 | sudo -su $(logname) tar xvf - -C "$HOME/.config" >&3
+fi
+
+for file in .bashrc .profile; do
+  [ -L "$HOME/$file" ] || rm -f "$HOME/$file"
 done
 
 echo "Stowing dotfiles..."
-sudo -su $(logname) stow -Sv . >&3
+sudo -su $(logname) stow -Svd "$HOME/.config" . >&3
 
 # Maildir ----------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && command -v mbsync >/dev/null 2>&1; then
+  if ! [ -e "$HOME/.config/pass" ]; then
+    # TODO This address is hardcoded. Is there a way to get it programmatically?
+    sudo -sEu $(logname) scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -qr madras.local:/media/data/rlue/home/.config/pass "$HOME/.config/pass"
+  fi
+
   echo "Fetching mail..."
   sudo -sEu $(logname) mbsync -a >&3
 fi
 
-# MISC. INSTALLATIONS ==========================================================
-echo -e "\nOUT-OF-REPO INSTALLATIONS ======================================================"
+# THIRD-PARTY INSTALLATIONS ====================================================
+echo -e "\nTHIRD-PARTY INSTALLATIONS ======================================================"
 
 # firefox ----------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && ! [ -x "/opt/firefox/firefox" ]; then
@@ -437,24 +450,25 @@ fi
 # rust -------------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && ! [ -x "$HOME/.cargo/bin/cargo" ] >/dev/null 2>&1; then
   echo "Installing Rust..."
-  sudo -su $(logname) curl -sSf https://sh.rustup.rs/ | sh >&3
+  sudo -su $(logname) curl -sSf https://sh.rustup.rs/ | bash -s -- -y --no-modify-path >&3
+  sudo chown -R "$(logname)"."$(logname)" "$HOME/.cargo"
 fi
 
 if [ "${desktop,,}" = "y" ] && ! [ -x "$HOME/.cargo/bin/cargo-deb" ] >/dev/null 2>&1; then
   echo "Installing cargo-deb..."
-  sudo -su $(logname) cargo install cargo-deb >&3
+  sudo -su $(logname) "$HOME/.cargo/bin/cargo" install cargo-deb >&3
 fi
 
 # pip --------------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ]; then
   for package in pip beancount pocket-cli rtv speedtest-cli youtube_dl; do
-    if HOME=/root ! pip3 show "$package" >/dev/null 2>&1; then
+    if ! pip3 show "$package" >/dev/null 2>&1; then
       echo "Installing $package..."
       HOME=/root pip3 install --upgrade "$package" >&3
     fi
   done
 
-  if HOME=/root ! pip3 show subsync >/dev/null 2>&1; then
+  if ! pip3 show subsync >/dev/null 2>&1; then
     echo "Installing subsync..."
     HOME=/root pip3 install --upgrade git+https://github.com/smacke/subsync >&3
   fi
@@ -543,24 +557,35 @@ if [ "${desktop,,}" = "y" ] && ! dpkg -s teamviewer >/dev/null 2>&1; then
   curl -sSf -o "$tmpfile" -L "$teamviewer_release" && dpkg -i --skip-same-version "$tmpfile" >&3
 fi
 
-# Mattermost -------------------------------------------------------------------
-if [ "${desktop,,}" = "y" ] && ! dpkg -s mattermost-desktop >/dev/null 2>&1; then
-  echo "Installing Mattermost..."
-  mattermost_stable=$(latest_version "mattermost/desktop")
-  mattermost_release="https://releases.mattermost.com/desktop/${mattermost_stable}/mattermost-desktop-${mattermost_stable}-linux-amd64.deb"
-  curl -sSf -o "$tmpfile" -L "$mattermost_release" && dpkg -i --skip-same-version "$tmpfile" >&3
-fi
+# # Mattermost -------------------------------------------------------------------
+# if [ "${desktop,,}" = "y" ] && ! dpkg -s mattermost-desktop >/dev/null 2>&1; then
+#   echo "Installing Mattermost..."
+#   mattermost_stable=$(latest_version "mattermost/desktop")
+#   mattermost_release="https://releases.mattermost.com/desktop/${mattermost_stable}/mattermost-desktop-${mattermost_stable}-linux-amd64.deb"
+#   curl -sSf -o "$tmpfile" -L "$mattermost_release" && dpkg -i --skip-same-version "$tmpfile" >&3
+# fi
 
 # alacritty --------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && ! dpkg -s alacritty >/dev/null 2>&1; then
-  echo "Installing alacritty..."
-  apt install -y cmake libfreetype6-dev libfontconfig1-dev xclip >&3 2>/dev/null
+  alacritty_build_deps=(
+    cmake
+    libfreetype6-dev
+    libfontconfig1-dev
+    libxcb-xfixes0-dev
+    xclip
+  )
 
+  if dpkg -s $alacritty_build_deps[@] >/dev/null 2>&1; then
+    echo "Installing alacritty build dependencies..."
+    apt install -y ${alacritty_build_deps[@]} >&3 2>/dev/null
+  fi
+
+  echo "Installing alacritty..."
   chmod 777 $sandbox
 
-  sudo -su $(logname) git clone https://github.com/jwilm/alacritty "$sandbox/alacritty" >&3
+  sudo -su $(logname) git clone https://github.com/jwilm/alacritty "$sandbox/alacritty" >&3 2>&3
   cd "$sandbox/alacritty"
-  sudo -su $(logname) "$HOME/.cargo/bin/cargo" deb --install --manifest-path "$sandbox/alacritty/alacritty/Cargo.toml" --output "$tmpfile" >&3
+  sudo -su $(logname) "$HOME/.cargo/bin/cargo" deb --install --manifest-path "$sandbox/alacritty/alacritty/Cargo.toml" >&3
 fi
 
 # timer ------------------------------------------------------------------------
@@ -586,7 +611,7 @@ ruby_build_deps=(
   libffi-dev 
 )
 
-if dpkg -s $ruby_build_deps[@] >/dev/null 2>&1; then
+if ! dpkg -s $ruby_build_deps[@] >/dev/null 2>&1; then
   echo "Installing ruby build dependencies..."
   apt install -y ${ruby_build_deps[@]} >&3 2>/dev/null
 fi
@@ -596,7 +621,7 @@ chown root.staff /usr/local/share/doc
 chmod g+w /usr/local/share/doc
 
 if ! [ -d "$HOME/.rbenv" ]; then
-  sudo -su $(logname) git clone https://github.com/rbenv/rbenv.git "$HOME/.rbenv" >&3
+  sudo -su $(logname) git clone https://github.com/rbenv/rbenv.git "$HOME/.rbenv" >&3 2>&3
 fi
 
 if ! [ -f "$HOME/.rbenv/libexec/rbenv-realpath.dylib" ]; then
@@ -607,25 +632,27 @@ if ! [ -f "$HOME/.rbenv/libexec/rbenv-realpath.dylib" ]; then
 fi
 
 if ! [ -d "$HOME/.rbenv/plugins/ruby-build" ]; then
-  sudo -su $(logname) git clone https://github.com/rbenv/ruby-build.git "$HOME/.rbenv/plugins/ruby-build" >&3
+  sudo -su $(logname) git clone https://github.com/rbenv/ruby-build.git "$HOME/.rbenv/plugins/ruby-build" >&3 2>&3
 fi
 
 if ! [ -d "$HOME/.rbenv/plugins/ruby-update" ]; then
-  sudo -su $(logname) git clone https://github.com/rkh/rbenv-update.git "$HOME/.rbenv/plugins/ruby-update" >&3
+  sudo -su $(logname) git clone https://github.com/rkh/rbenv-update.git "$HOME/.rbenv/plugins/ruby-update" >&3 2>&3
 fi
 
 if [ -r "$HOME/.ruby-version" ] && ! [ -d "$HOME/.rbenv/versions/$(cat "$HOME/.ruby-version")" ]; then
   echo "Installing Ruby $(cat "$HOME/.ruby-version")..."
-  sudo -su $(logname) rbenv install $(cat "$HOME/.ruby-version") >&3
+  sudo -su $(logname) "$HOME/.rbenv/bin/rbenv" install $(cat "$HOME/.ruby-version") >&3
 fi
 
 # i3-gaps ----------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && command -v i3 >/dev/null 2>&1 && ! i3 --version | grep gaps >/dev/null 2>&1; then
   echo "Installing i3-gaps..."
-  git clone https://github.com/maestrogerardo/i3-gaps-deb "$sandbox/i3-gaps-deb" >&3
+  git clone https://github.com/maestrogerardo/i3-gaps-deb "$sandbox/i3-gaps-deb" >&3 2>&3
   cd "$sandbox/i3-gaps-deb"
   yes | ./i3-gaps-deb >&3
-  rm -rf /root/.config/i3
+
+  cd "$HOME/.config"
+  git checkout -- i3/config
 fi
 
 # anki -------------------------------------------------------------------------
@@ -634,7 +661,7 @@ if [ "${desktop,,}" = "y" ] && ! command -v anki >/dev/null 2>&1; then
   anki_stable=$(latest_version "dae/anki")
   anki_release="https://apps.ankiweb.net/downloads/current/anki-${anki_stable}-linux-amd64.tar.bz2"
 
-  curl -sSf -L "$anki_release" | tar xz -C "$sandbox" -f - >&3
+  curl -sSf -L "$anki_release" | tar xj -C "$sandbox" -f - >&3
   cd "$sandbox/anki-${anki_stable}-linux-amd64"
   make install
 fi
