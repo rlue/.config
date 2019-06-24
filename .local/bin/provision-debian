@@ -264,6 +264,7 @@ fi
 
 echo "Installing new packages via APT..."
 apt install -y "${to_install[@]}" >&3 2>/dev/null
+apt remove -y firefox-esr --autoremove >&3 2>/dev/null
 
 if [ ${#unlocatable[@]} -gt 0 ]; then
   echo -e "\033[1;31mWARNING:\033[0m Some packages failed to install. Please see $HOME/apt_unlocatable.log for a list of them."
@@ -335,7 +336,7 @@ for dir in Desktop Documents Downloads Music Pictures Public Templates Videos; d
 done
 
 echo "Adding base home directory folders..."
-for dir in mail tmp src .local/share .local/bin; do
+for dir in mail tmp src .local/share/applications .local/bin; do
   sudo -u $(logname) mkdir -p "$HOME/$dir" >&3
 done
 
