@@ -245,7 +245,6 @@ desktop_packages=(
   transmission-remote-gtk
   trimage
   unclutter
-  urlscan
   vim-gtk3
   wakeonlan
   wpasupplicant
@@ -468,7 +467,7 @@ fi
 
 # pip --------------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ]; then
-  for package in pip beancount pocket-cli rtv speedtest-cli youtube_dl; do
+  for package in pip beancount pocket-cli rtv speedtest-cli urlscan youtube_dl; do
     if ! pip3 show "$package" >/dev/null 2>&1; then
       echo "Installing $package..."
       HOME=/root pip3 install --upgrade "$package" >&3
