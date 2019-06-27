@@ -222,6 +222,7 @@ desktop_packages=(
   gimp{,-plugin-registry,-python}
   {i3,compton}
   isync
+  live-task-localisation-desktop
   pulseaudio-module-bluetooth
   mkusb
   msmtp{,-mta}
@@ -263,7 +264,7 @@ fi
 
 echo "Installing new packages via APT..."
 apt install -y "${to_install[@]}" >&3 2>/dev/null
-apt remove -y firefox-esr --autoremove >&3 2>/dev/null
+apt remove -y firefox-esr calamares ibus --autoremove >&3 2>/dev/null
 
 if [ ${#unlocatable[@]} -gt 0 ]; then
   echo -e "\033[1;31mWARNING:\033[0m Some packages failed to install. Please see $HOME/apt_unlocatable.log for a list of them."
