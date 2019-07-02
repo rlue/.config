@@ -1,0 +1,10 @@
+[Unit]
+Description=Gnubiff Headless Email Fetcher
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/gnubiff --noconfigure --nogui --config=/home/rlue/.config/gnubiff/config
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
