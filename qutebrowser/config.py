@@ -7,6 +7,7 @@ c.auto_save.session = True
 c.downloads.location.directory = "~/tmp"
 c.content.cookies.accept = "no-3rdparty"
 c.content.headers.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.230 Safari/537.36"
+c.fonts.monospace = 'PragmataPro, "xos4 Terminus", Terminus, Monospace, "DejaVu Sans Mono", Monaco, "Bitstream Vera Sans Mono", "Andale Mono", "Courier New", Courier, "Liberation Mono", monospace, Fixed, Consolas, Terminal'
 c.url.searchengines = {
     "DEFAULT": "https://duckduckgo.com/?q={}",
     "amz":     "https://www.amazon.com/s/?field-keywords={}",
