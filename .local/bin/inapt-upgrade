@@ -31,6 +31,17 @@ function version_gt() {
 > "$HOME/upgrade.log"
 chown $(logname).$(logname) "$HOME/upgrade.log"
 
+function finish {
+  echo -e "\nCLEANUP ========================================================================"
+  echo "Closing file descriptor 3..."
+  exec 3>&-
+
+  echo "Removing tmpfiles..."
+  cd / && rm -rf "$sandbox" "$tmpfile"
+}
+
+trap finish EXIT
+
 echo "Looking for outdated packages..."
 
 # firefox ----------------------------------------------------------------------
@@ -281,7 +292,3 @@ if [ $# -eq 0 ] || [ "$1" == vim-plug ] && command -v vim >/dev/null 2>&1; then
   sudo -su $(logname) curl -sSfLo "$HOME/.vim/autoload/plug.vim" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
   sudo -su $(logname) vim -c PlugUpdate -c qall
 fi
-
-# clean up ---------------------------------------------------------------------
-# echo "Cleaning up tmpfiles..."
-# cd / && rm -rf "$sandbox" "$tmpfile"

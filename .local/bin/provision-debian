@@ -394,7 +394,7 @@ if ! xmlstarlet select --template --copy-of /configuration/gui/user "$HOME/.conf
 fi
 
 if ! xmlstarlet select --template --copy-of /configuration/gui/password "$HOME/.config/syncthing/config.xml" >/dev/null 2>&1; then
-  xmlstarlet edit --inplace --omit-decl --subnode /configuration/gui --type elem -n password -v $2a$10$0PIwbHnGUdssa.t.dEM.ee44kl7PXAgR/Usyu.BU1k1DQIFObeh0m "$HOME/.config/syncthing/config.xml" >&3
+  xmlstarlet edit --inplace --omit-decl --subnode /configuration/gui --type elem -n password -v $2a$10$Pf.a5GvC.bWuQpAe62XjC.DO8RY/MROv3GrnvlHAYFHZUuI3isoIu "$HOME/.config/syncthing/config.xml" >&3
 fi
 
 if ! grep max_user_watches /etc/sysctl.conf >/dev/null 2>&1; then
