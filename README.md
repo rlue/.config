@@ -1,7 +1,7 @@
 .config
 =======
 
-My `$XDG_CONFIG_HOME` for user accounts on \*NIX systems (mostly macOS, but sometimes Linux).
+My `$XDG_CONFIG_HOME` for user accounts on \*NIX systems (mostly Linux, but should still work on macOS).
 
 This repo also contains the dotfiles that typically belong at the top level of the user’s `$HOME` directory, and relies on [GNU Stow](https://www.gnu.org/software/stow/) to generate symlinks accordingly.
 
@@ -31,6 +31,6 @@ Some config files contain data that should not be publicly exposed, such as API 
 
 ```
 $ cd ~/.config
-$ gpg --decrypt -d secrets.tar.gpg | tar xvf -
+$ gpg -d secrets.tar.gpg | tar xv
 $ stow -Sv .
 ```
