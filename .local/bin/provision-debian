@@ -186,6 +186,7 @@ dev_packages=(
   docker-{ce,compose}
   exuberant-ctags
   git{k,-gui,-email}
+  hub
   inotify-tools
   default-libmysqlclient-dev
   mariadb-server
