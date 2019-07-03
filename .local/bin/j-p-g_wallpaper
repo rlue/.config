@@ -5,10 +5,9 @@
 
 require 'optionparser'
 require 'fileutils'
-require 'resolv'
-require 'prime'
 require 'open3'
 
+# constants --------------------------------------------------------------------
 DATESTAMP = Time.now.strftime('%F')
 WALLPAPER_HOME = '/usr/share/wallpapers'
 SET_WALLPAPER_SCRIPT = <<~SCRIPT
@@ -25,61 +24,27 @@ SET_WALLPAPER_COMMAND = 'qdbus org.kde.plasmashell /PlasmaShell '\
                         'org.kde.PlasmaShell.evaluateScript '\
                         "'#{SET_WALLPAPER_SCRIPT}'"
 
-# parse options ----------------------------------------------------------------
-options = {}
-OptionParser.new do |opts|
-  opts.banner = "Usage: #{File.basename(__FILE__)} [options]"
-
-  opts.on('-f', '--force', 'overwrite today’s wallpaper') do
-    options[:force] = true
-  end
-
-  opts.on('-h', '--help', 'Prints this help') do
-    puts opts
-    exit
-  end
-end.parse!
-
-if options[:force].nil? &&
-   Dir.entries(WALLPAPER_HOME).grep(/^#{DATESTAMP}\.(jpg|png|gif)$/).any?
-  puts 'Wallpaper already set today (use --force to set a new one)'
-  exit
-end
-
-# wait for Internet connection -------------------------------------------------
-Prime.each.with_object([]) do |interval, all_intervals|
-  begin
-    if all_intervals.push(interval).reduce(&:+) > 60
-      puts "Operation timed out after #{all_intervals.reduce(&:+)} seconds"
-      exit 1
+# methods ----------------------------------------------------------------------
+def set_wallpaper(image, wm: :i3)
+  case wm
+  when :i3
+    system("feh --bg-center #{image}")
+    FileUtils.ln_sf(image, File.join(WALLPAPER_HOME, "wallpaper.jpg"))
+  when :kwin
+    Open3.popen2(SET_WALLPAPER_COMMAND % image) do |_, stdout|
+      if stdout.read.match?(/Widgets are locked/)
+        puts 'Cannot change the wallpaper while widgets are locked'
+        exit 1
+      end
     end
-
-    break if Resolv::DNS.new.getaddress('icann.org')
-  rescue Resolv::ResolvError
-    puts "Not connected; trying again in #{interval} seconds..."
-    sleep(interval)
-    next
   end
 end
 
-# download random wallpaper ----------------------------------------------------
-outfile = ''
-
-loop do
-  url = "http://78.media.tumblr.com/#{DATA.readlines.sample.chomp}"
-  outfile = File.join(WALLPAPER_HOME, "#{DATESTAMP}#{File.extname(url)}")
-  break if system("wget -O #{outfile} #{url}")
+def format_image(image)
+  resize_for_screen(image)
+  add_border(image)
 end
 
-FileUtils.ln_sf(outfile, File.join(WALLPAPER_HOME, 'wallpaper.jpg'))
-
-# clean up wallpaper home ------------------------------------------------------
-Dir.glob("#{WALLPAPER_HOME}/*")
-   .grep(%r{/\d{4}(?:-\d\d){2}\.(jpg|gif|png)$})
-   .reject { |f| f == outfile }
-   .each(&File.method(:delete))
-
-# format image -----------------------------------------------------------------
 def resize_for_screen(image)
   `xrandr`
     .scan(/current (\d+) x (\d+)/).flatten
@@ -108,16 +73,50 @@ def frame_color(image)
   end
 end
 
-resize_for_screen(outfile)
-add_border(outfile)
 
-# set wallpaper ----------------------------------------------------------------
-Open3.popen2(SET_WALLPAPER_COMMAND % outfile) do |_, stdout|
-  if stdout.read.match?(/Widgets are locked/)
-    puts 'Cannot change the wallpaper while widgets are locked'
-    exit 1
+# parse options ----------------------------------------------------------------
+options = {}
+OptionParser.new do |opts|
+  opts.banner = "Usage: #{File.basename(__FILE__)} [options]"
+
+  opts.on('-f', '--force', 'overwrite today’s wallpaper') do
+    options[:force] = true
   end
+
+  opts.on('-h', '--help', 'Prints this help') do
+    puts opts
+    exit
+  end
+end.parse!
+
+# purge old wallpapers ---------------------------------------------------------
+current_wallpapers = Dir.glob("#{WALLPAPER_HOME}/#{DATESTAMP}.*")
+                        .map { |file| !system(%(file "#{file}" | grep "^#{file}: empty$")) }
+
+all_wallpapers = Dir.glob("#{WALLPAPER_HOME}/*")
+                    .grep(%r{/(?:\d{4}(?:-\d\d){2})\.(?:jpg|gif|png)$})
+
+(all_wallpapers - current_wallpapers).each(&File.method(:delete))
+
+# early exit for 'force' flag --------------------------------------------------
+if options[:force].nil? && current_wallpapers.any?
+  puts 'Wallpaper already fetched today (use --force to set a new one)'
+  set_wallpaper(current_wallpapers.first)
+  exit
 end
+
+# download random wallpaper ----------------------------------------------------
+outfile = ''
+url = ''
+
+loop do
+  url = "http://78.media.tumblr.com/#{DATA.readlines.sample.chomp}"
+  outfile = File.join(WALLPAPER_HOME, "#{DATESTAMP}#{File.extname(url)}")
+  break if system("wget -O #{outfile} #{url}") && system(%(! file "#{outfile}" | grep "^#{outfile}: empty$"))
+end
+
+format_image(outfile)
+set_wallpaper(outfile)
 
 __END__
 08c8aa51695aba484bba6d7047834f2d/tumblr_nkrtgf0qvd1rddc1oo1_500.jpg

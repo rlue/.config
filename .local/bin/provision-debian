@@ -443,6 +443,12 @@ if [ "${desktop,,}" = "y" ] && [ -f "$HOME/.local/share/systemd/user/gnubiff.ser
   sudo -sEu $(logname) systemctl --user start gnubiff.service >&3
 fi
 
+if [ "${desktop,,}" = "y" ] && [ -f "$HOME/.local/share/systemd/user/j-p-g.service" ]; then
+  systemctl daemon-reload
+  sudo -sEu $(logname) systemctl --user enable "j-p-g.service" >&3
+  sudo -sEu $(logname) systemctl --user start "j-p-g.service" >&3
+fi
+
 if [ "${desktop,,}" = "y" ] && command -v mbsync >/dev/null 2>&1; then
   if ! [ -e "$HOME/.config/pass" ]; then
     # TODO This address is hardcoded. Is there a way to get it programmatically?

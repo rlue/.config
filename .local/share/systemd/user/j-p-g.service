@@ -1,0 +1,12 @@
+[Unit]
+Description=Daily J-P-G Wallpaper Fetcher
+After=network.target
+StartLimitIntervalSec=10
+StartLimitBurst=32
+
+[Service]
+ExecStart=/home/rlue/.local/bin/j-p-g_wallpaper
+Restart=on-failure
+
+[Install]
+WantedBy=default.target
