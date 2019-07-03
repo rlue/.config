@@ -3,6 +3,7 @@
 !/doc
 !/memories
 !/notes
+!/share
 !/.local/share/digikam
 !/.vim/viminfo
 !/.vim/vimundo/
