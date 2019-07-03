@@ -3,6 +3,7 @@ application/msword; libreoffice %s
 
 # Images
 image/*; xdg-open %s >/dev/null 2>&1
+# use QuickLook on macOS
 # image/jpg; qlmanage -p %s >/dev/null 2>&1
 # image/jpeg; qlmanage -p %s >/dev/null 2>&1
 # image/pjpeg; qlmanage -p %s >/dev/null 2>&1
@@ -12,9 +13,9 @@ image/*; xdg-open %s >/dev/null 2>&1
 # PDFs
 application/pdf; xdg-open %s 2>&1 /dev/null
 
-# HTML
-text/html; qutebrowser %s; nametemplate=%s.html
-# text/html; ruby -rwebrick -e'WEBrick::HTTPServer.new(:Port => 3000, :DocumentRoot => "/").start' & WEBRICK_PID=$!\; browsh --startup-url http://127.0.0.1:3000%s\; kill $WEBRICK_PID; copiousoutput
+# HTML (displayed in mutt via w3m by default; use `vm` to view in qutebrowser)
+text/html; qutebrowser %s; nametemplate=%s.html;
+text/html; w3m -I %{charset} -T text/html; copiousoutput;
 
 
 # Unidentified files
