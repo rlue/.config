@@ -221,5 +221,6 @@ for_window [title="Desktop — Plasma"] kill
 for_window [class="plasmashell"] floating enable, border pixel 0
 no_focus [class="plasmashell" window_type="notification"]
 no_focus [class="plasmashell" window_type="on_screen_display"]
+no_focus [class="digikam" window_type="utility"]
 
 exec --no-startup-id compton -b --config ~/.config/compton/compton.conf
