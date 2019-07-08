@@ -236,6 +236,7 @@ desktop_packages=(
   obs-studio
   okular-extra-backends
   papirus-icon-theme
+  picard
   qutebrowser
   {redshift,plasma-applet-redshift-control}
   sddm-theme-breeze
