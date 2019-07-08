@@ -29,7 +29,8 @@ elif [ "`uname`" = Linux ]; then
                 $HOME/.local/bin
                 $HOME/bin/Linux
                 /usr/lib/gnupg
-                /usr/local/bin"
+                /usr/local/bin 
+                /opt/firefox"
 
   # Debian ---------------------------------------------------------------------
   if [ -r /etc/debian_version ]; then
