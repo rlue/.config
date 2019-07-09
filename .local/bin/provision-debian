@@ -473,7 +473,7 @@ fi
 if [ "${desktop,,}" = "y" ] && ! [ -x "$HOME/.cargo/bin/cargo" ] >/dev/null 2>&1; then
   echo "Installing Rust..."
   sudo -su $(logname) curl -sSf https://sh.rustup.rs/ | bash -s -- -y --no-modify-path >&3
-  sudo chown -R "$(logname)"."$(logname)" "$HOME/.cargo"
+  sudo chown -R "$(logname)"."$(logname)" "$HOME/.cargo" "$HOME/.rustup"
 fi
 
 if [ "${desktop,,}" = "y" ] && ! [ -x "$HOME/.cargo/bin/cargo-deb" ] >/dev/null 2>&1; then
