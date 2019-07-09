@@ -119,13 +119,13 @@ SOURCE
 
 if [ "${desktop,,}" = "y" ]; then
   printf "Adding and authenticating third-party sources: Papirus (icons)... "
-  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E58A9D36647CAE7F >/dev/null 2>>"$HOME/provision.log" && echo OK
+  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com E58A9D36647CAE7F >/dev/null 2>&3 && echo OK
   cat <<-SOURCE > /etc/apt/sources.list.d/papirus.list
 	deb http://ppa.launchpad.net/papirus/papirus/ubuntu xenial main
 	SOURCE
 
   printf "Adding and authenticating third-party sources: mkusb... "
-  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 54B8C8AC >/dev/null 2>>"$HOME/provision.log" && echo OK
+  apt-key adv --recv-keys --keyserver keyserver.ubuntu.com 54B8C8AC >/dev/null 2>&3 && echo OK
   cat <<-SOURCE > /etc/apt/sources.list.d/dus.list
 	deb http://ppa.launchpad.net/mkusb/unstable/ubuntu xenial main
 	SOURCE
@@ -282,7 +282,7 @@ echo -e "\nSYSTEM CONFIGURATION ================================================
 # grub -------------------------------------------------------------------------
 echo "Configuring grub..."
 sed -i 's/GRUB_TIMEOUT=5/GRUB_TIMEOUT=1/' /etc/default/grub
-update-grub 2>>"$HOME/provision.log"
+update-grub 2>&3
 
 # keyboard & pointer -----------------------------------------------------------
 echo "Configuring xkboptions..."
