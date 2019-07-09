@@ -6,6 +6,7 @@
 require 'optionparser'
 require 'fileutils'
 require 'open3'
+require 'pry'
 
 # constants --------------------------------------------------------------------
 DATESTAMP = Time.now.strftime('%F')
@@ -73,6 +74,15 @@ def frame_color(image)
   end
 end
 
+def current_wallpapers
+  Dir.glob("#{WALLPAPER_HOME}/#{DATESTAMP}.*")
+     .select { |file| !system(%(file "#{file}" | grep "^#{file}: empty$")) }
+end
+
+def all_wallpapers
+  Dir.glob("#{WALLPAPER_HOME}/*")
+     .grep(%r{/(?:\d{4}(?:-\d\d){2})\.(?:jpg|gif|png)$})
+end
 
 # parse options ----------------------------------------------------------------
 options = {}
@@ -89,23 +99,14 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-# purge old wallpapers ---------------------------------------------------------
-current_wallpapers = Dir.glob("#{WALLPAPER_HOME}/#{DATESTAMP}.*")
-                        .map { |file| !system(%(file "#{file}" | grep "^#{file}: empty$")) }
-
-all_wallpapers = Dir.glob("#{WALLPAPER_HOME}/*")
-                    .grep(%r{/(?:\d{4}(?:-\d\d){2})\.(?:jpg|gif|png)$})
-
-(all_wallpapers - current_wallpapers).each(&File.method(:delete))
-
 # early exit for 'force' flag --------------------------------------------------
 if options[:force].nil? && current_wallpapers.any?
   puts 'Wallpaper already fetched today (use --force to set a new one)'
-  set_wallpaper(current_wallpapers.first)
+  set_wallpaper(all_wallpapers.max)
+  (all_wallpapers - current_wallpapers).each(&File.method(:delete)) if current_wallpapers.any?
   exit
 end
 
-# download random wallpaper ----------------------------------------------------
 outfile = ''
 url = ''
 
@@ -114,6 +115,8 @@ loop do
   outfile = File.join(WALLPAPER_HOME, "#{DATESTAMP}#{File.extname(url)}")
   break if system("wget -O #{outfile} #{url}") && system(%(! file "#{outfile}" | grep "^#{outfile}: empty$"))
 end
+
+(all_wallpapers - current_wallpapers).each(&File.method(:delete)) if current_wallpapers.any?
 
 format_image(outfile)
 set_wallpaper(outfile)
