@@ -26,9 +26,9 @@ case "${release,,}" in
   "") release="stable";;
 esac
 
-> "$HOME/provision.log"
-chown $(logname).$(logname) "$HOME/provision.log"
-exec 3>>"$HOME/provision.log"
+> "/tmp/provision-debian.log"
+chown $(logname).$(logname) "/tmp/provision-debian.log"
+exec 3>>"/tmp/provision-debian.log"
 
 function finish {
   echo -e "\nCLEANUP ========================================================================"

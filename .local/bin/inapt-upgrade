@@ -28,9 +28,9 @@ function version_gt() {
   test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
 }
 
-> "$HOME/upgrade.log"
-chown $(logname).$(logname) "$HOME/upgrade.log"
-exec 3>>"$HOME/upgrade.log"
+> "/tmp/inapt-upgrade.log"
+chown $(logname).$(logname) "/tmp/inapt-upgrade.log"
+exec 3>>"/tmp/inapt-upgrade.log"
 
 function finish {
   echo -e "\nCLEANUP ========================================================================"
@@ -248,7 +248,7 @@ if [ $# -eq 0 ] || [ "$1" == rbenv ] && [ -d "$HOME/.rbenv/.git" ]; then
       echo "Upgrading ruby-update..."
     fi
 
-    if [ -n "$(sudo -su $(logname) "$HOME/.rbenv/bin/rbenv" update | tee -a "$HOME/upgrade.log" | grep -v Updating)" ]; then
+    if [ -n "$(sudo -su $(logname) "$HOME/.rbenv/bin/rbenv" update | tee -a "/tmp/inapt-upgrade.log" | grep -v Updating)" ]; then
       echo "Updating rbenv..."
     fi
   fi
