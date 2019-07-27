@@ -633,6 +633,7 @@ ruby_build_deps=(
   libgdbm-dev
   libreadline-dev
   libffi-dev 
+  libjemalloc-dev
 )
 
 if ! dpkg -s $ruby_build_deps[@] >/dev/null 2>&1; then
@@ -665,7 +666,7 @@ fi
 
 if [ -r "$HOME/.ruby-version" ] && ! [ -d "$HOME/.rbenv/versions/$(cat "$HOME/.ruby-version")" ]; then
   echo "Installing Ruby $(cat "$HOME/.ruby-version")..."
-  sudo -su $(logname) "$HOME/.rbenv/bin/rbenv" install $(cat "$HOME/.ruby-version") >&3
+  sudo RUBY_CONFIGURE_OPTS=--with-jemalloc su $(logname) -c '"$HOME/.rbenv/bin/rbenv" install $(cat "$HOME/.ruby-version")' >&3
 fi
 
 # i3-gaps ----------------------------------------------------------------------
