@@ -148,6 +148,7 @@ base_system_packages=(
   avahi-daemon
   bash-completion
   bc
+  dnsutils
   exa
   filebot
   fzf
