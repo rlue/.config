@@ -16,6 +16,7 @@
 [alias]
 	br = branch
 	co = checkout
+	cp = cherry-pick
 	cm = commit
 	df = diff
 	dt = difftool
