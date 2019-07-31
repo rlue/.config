@@ -3,10 +3,8 @@ config.bind('<Ctrl-y>', 'scroll up')
 config.bind('T', 'tab-focus last')
 config.bind('~', 'open -t ~')
 c.auto_save.session = True
-# c.zoom.default = '140%'
 c.downloads.location.directory = "~/tmp"
 c.content.cookies.accept = "no-3rdparty"
-c.content.headers.user_agent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.230 Safari/537.36"
 c.fonts.monospace = 'PragmataPro, "xos4 Terminus", Terminus, Monospace, "DejaVu Sans Mono", Monaco, "Bitstream Vera Sans Mono", "Andale Mono", "Courier New", Courier, "Liberation Mono", monospace, Fixed, Consolas, Terminal'
 c.url.searchengines = {
     "DEFAULT": "https://duckduckgo.com/?q={}",
@@ -43,3 +41,7 @@ c.url.searchengines = {
     "dict":    "https://en.wiktionary.org/wiki/Special:Search?search={}",
     "yt":      "https://www.youtube.com/results?search_query={}",
 }
+with config.pattern('*://slack.com/') as p:
+    p.content.headers.user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99999.0.3578.98 Safari/537.36'
+with config.pattern('*://*.whatsapp.com/') as p:
+    p.content.headers.user_agent = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99999.0.3578.98 Safari/537.36'
