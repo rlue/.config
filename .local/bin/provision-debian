@@ -224,7 +224,6 @@ desktop_packages=(
   gimp{,-plugin-registry,-python}
   gnubiff
   {i3,compton,xdotool}
-  isync
   live-task-localisation-desktop
   pulseaudio-module-bluetooth
   mkusb
@@ -441,26 +440,10 @@ echo "Stowing dotfiles..."
 sudo -su $(logname) stow -Svd "$HOME/.config" . >&3
 
 # Maildir ----------------------------------------------------------------------
-if [ "${desktop,,}" = "y" ] && [ -f "$HOME/.local/share/systemd/user/gnubiff.service" ]; then
-  systemctl daemon-reload
-  sudo -sEu $(logname) systemctl --user enable gnubiff.service >&3
-  sudo -sEu $(logname) systemctl --user start gnubiff.service >&3
-fi
-
 if [ "${desktop,,}" = "y" ] && [ -f "$HOME/.local/share/systemd/user/j-p-g.service" ]; then
   systemctl daemon-reload
   sudo -sEu $(logname) systemctl --user enable "j-p-g.service" >&3
   sudo -sEu $(logname) systemctl --user start "j-p-g.service" >&3
-fi
-
-if [ "${desktop,,}" = "y" ] && command -v mbsync >/dev/null 2>&1; then
-  if ! [ -e "$HOME/.config/pass" ]; then
-    # TODO This address is hardcoded. Is there a way to get it programmatically?
-    sudo -sEu $(logname) scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -qr madras.local:/media/data/rlue/home/.config/pass "$HOME/.config/pass"
-  fi
-
-  echo "Fetching mail..."
-  sudo -sEu $(logname) mbsync -a >&3
 fi
 
 # THIRD-PARTY INSTALLATIONS ====================================================

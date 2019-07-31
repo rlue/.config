@@ -4,7 +4,7 @@ bind-key X if-shell 'tmux has -t play' \
                       if-shell "type newsboat"   "new-window newsboat"; \
                       if-shell "type rtv"        "new-window rtv"; \
                       if-shell "type cmus"       "new-window cmus"; \
-                      if-shell "type mutt"       "new-window \"mbsync inboxes && mutt\""; \
+                      if-shell "type mutt"       "new-window mutt"; \
                       if-shell "[ -d \"$HOME/Documents/Notes/Daylogs\" ]" \
 		        "new-window vim -c \"call daylog#enter_log()\""'
 

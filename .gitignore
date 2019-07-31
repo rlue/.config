@@ -42,6 +42,7 @@
 !/lftp/bookmarks
 !/lftp/rc
 !/logcheck
+!/mbsync
 !/msmtp
 !/mutt
 !/neofetch
@@ -62,7 +63,7 @@
 # the listed files for safe dissemination. Do NOT add comments, file globs, or
 # anything else other than valid, literal filenames.
 # Secrets ======================================================================
-/gnubiff
+/gnubiff/config
 /hub
 /transmission-remote-gtk/config.json
 /.gem/credentials

@@ -124,11 +124,14 @@ if stty -a | grep dsusp >/dev/null 2>&1; then
   hash newsboat >/dev/null 2>&1 && alias newsboat="no_dsusp $(type -P newsboat)"
 fi
 
-function mutt() {
-  mutt="$(type -P mutt || type -P neomutt)"
-  [ "$(type -t no_dsusp)" = "function" ] && no_dsusp "$mutt" "$@" || "$mutt" "$@"
-  mbsync -a >/dev/null 2>&1 &
-}
+mutt="$(type -P mutt || type -P neomutt)"
+
+if [ -n "$mutt" ]; then
+  function mutt() {
+    [ "$(type -t no_dsusp)" = "function" ] && no_dsusp "$mutt" "$@" || "$mutt" "$@"
+    ssh -f madras.local 'export GNUPGHOME="$HOME/.config/gnupg"; export PASSWORD_STORE_DIR="$HOME/.config/pass"; sleep 60; pgrep mbsync >/dev/null || mbsync --all --verbose --config "$HOME/.config/mbsync/config" >log/mbsync.log 2>&1'
+  }
+fi
 
 # $ brew find ------------------------------------------------------------------
 # Interactively search-and-install formulae
