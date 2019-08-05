@@ -554,6 +554,7 @@ if  ! command -v docker-credential-pass >/dev/null 2>&1; then
   dcp_stable=$(latest_version "docker/docker-credential-helpers")
   dcp_release="https://github.com/docker/docker-credential-helpers/releases/download/v${dcp_stable}/docker-credential-pass-v${dcp_stable}-amd64.tar.gz"
   curl -sSf -L "$dcp_release" | tar xz -C /usr/local/bin -f - >&3 && \
+    chmod +x /usr/local/bin/docker-credential-pass &&
     chown root.staff /usr/local/bin/docker-credential-pass
 fi
 

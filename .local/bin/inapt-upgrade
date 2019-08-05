@@ -185,7 +185,8 @@ if [ $# -eq 0 ] || [ "$1" == docker-credential-pass ] && command -v docker-crede
 
   if version_gt "$dcp_stable" "$dcp_installed"; then
     echo "Upgrading docker-credential-pass..."
-    curl -sSf -L "$dcp_release" | tar xz -C "$HOME/.local/bin" -f - >&3 && \
+    curl -sSf -L "$dcp_release" | tar xz -C /usr/local/bin >&3 && \
+      chmod +x /usr/local/bin/docker-credential-pass &&
       chown root.staff /usr/local/bin/docker-credential-pass
   fi
 fi
