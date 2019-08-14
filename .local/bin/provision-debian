@@ -168,7 +168,6 @@ base_system_packages=(
   openssh-server
   pass
   python3-pip
-  ranger
   reportbug
   restic
   stow
@@ -238,6 +237,7 @@ desktop_packages=(
   papirus-icon-theme
   picard
   qutebrowser
+  {ffmpegthumbnailer,poppler-utils}
   {redshift,plasma-applet-redshift-control}
   sddm-theme-breeze
   {sox,libsox-fmt-mp3}
@@ -469,7 +469,7 @@ fi
 
 # pip --------------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ]; then
-  for package in pip beancount pocket-cli rtv speedtest-cli urlscan youtube_dl; do
+  for package in pip beancount pocket-cli rtv speedtest-cli ueberzug urlscan youtube_dl; do
     if ! pip3 show "$package" >/dev/null 2>&1; then
       echo "Installing $package..."
       HOME=/root pip3 install --upgrade "$package" >&3
@@ -520,6 +520,15 @@ if ! command -v diff-so-fancy >/dev/null 2>&1; then
   curl -o /usr/local/bin/diff-so-fancy https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy >&3
   chown root.staff /usr/local/bin/diff-so-fancy
   chmod +x /usr/local/bin/diff-so-fancy
+fi
+
+# ranger -----------------------------------------------------------------------
+# (master branch required for ueberzug compatibility)
+if ! command -v ranger >/dev/null 2>&1; then
+  echo "Installing ranger..."
+  sudo -su $(logname) git clone https://github.com/ranger/ranger "$sandbox/ranger" >&3 2>&3
+  cd "$sandbox/ranger"
+  make install
 fi
 
 # rbspy ------------------------------------------------------------------------

@@ -75,7 +75,7 @@ fi
 
 # pip --------------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == pip ]; then
-  for package in pip beancount pocket-cli rtv speedtest-cli youtube_dl; do
+  for package in pip beancount pocket-cli rtv speedtest-cli ueberzug urlscan youtube_dl; do
     if HOME=/root pip3 show "$package" >/dev/null 2>&1; then
       HOME=/root pip3 install --upgrade "$package" >&3
     fi

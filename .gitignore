@@ -48,8 +48,7 @@
 !/neofetch
 !/qutebrowser/config.py
 !/qutebrowser/quickmarks
-!/ranger/*.conf
-!/ranger/scope.sh
+!/ranger/
 !/rtv/refresh-token
 !/rtv/rtv.cfg
 !/terminal.app
