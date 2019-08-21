@@ -25,6 +25,15 @@
 	mc = merge --no-ff
 	rb = rebase
 	st = status
+	; review = log -p --reverse
+	review = "!f() { \
+	  git log --reverse --format=format:'%h' \"$1\" | \
+	  xargs -I {} /bin/bash -c \"cat <(git show --color --compact-summary {}) <(echo) <(git show --color --format='' {}) | less -R\"; \
+	}; f"
+	review-from = "!f() { \
+	  git log --reverse --format=format:'%h' \"$1..HEAD\" | \
+	  xargs -I {} /bin/bash -c \"cat <(git show --color --compact-summary {}) <(echo) <(git show --color --format='' {}) | less -R\"; \
+	}; f"
 [sendemail]
 	smtpserver = mail.privateemail.com
 	smtpuser = hello@ryanlue.com
