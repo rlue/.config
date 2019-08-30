@@ -1,4 +1,4 @@
-bc http://localhost:8080/view/year/2019/balsheet
+bc http://localhost:5000/my-personal-ledger/income_statement/?conversion=TWD
 td https://git.znuny.com/dashboard/todos
 br https://git.znuny.com/zammad/zammad/branches
 ci https://git.znuny.com/zammad/zammad/pipelines
