@@ -1,0 +1,74 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require 'date'
+require 'fileutils'
+require 'pathname'
+
+require 'exif' # faster than mini_exiftool, but doesn't support MOVs
+require 'mini_exiftool'
+
+DCIM_ROOT = Pathname.new('/media/ricoh-gr/DCIM')
+DEST_DIR  = Pathname.new('/media/data/rlue/home/memories')
+OWNER_UID = `stat -c '%u' #{DEST_DIR}`.chomp.to_i
+OWNER_GID = `stat -c '%g' #{DEST_DIR}`.chomp.to_i
+
+system('mount -L RICOH_GR /media/ricoh-gr')
+
+if Dir.empty?(DCIM_ROOT)
+  system('umount /media/ricoh-gr')
+  exit
+end
+
+Dir[DCIM_ROOT.join('**', '*.JPG')]
+  .sort
+  .each do |f|
+    timestamp = MiniExiftool.new(f).create_date.strftime('%F %H.%M.%S')
+    puts "Processing #{f} with timestamp #{timestamp}"
+
+    dest_basename = DEST_DIR.join(timestamp[0, 4], timestamp)
+    FileUtils.mkdir_p(File.dirname(dest_basename))
+
+    if Dir["#{dest_basename}*.jpg"].one?
+      puts 'Conflicting timestamp found; adding counter to existing file'
+      FileUtils.mv("#{dest_basename}.jpg", "#{dest_basename}a.jpg")
+      FileUtils.mv("#{dest_basename}.dng", "#{dest_basename}a.dng", force: true)
+    end
+
+    counter = Dir["#{dest_basename}*.jpg"].max&.slice(/.(?=\.jpg$)/)
+    raise 'Unresolved timestamp conflict' unless counter.nil? || ('a'..'z') === counter
+
+    puts "#{f} -> #{dest_basename}#{counter&.next}.jpg"
+    FileUtils.mv(f, "#{dest_basename}#{counter&.next}.jpg")
+    puts "#{f.sub(/JPG$/, 'DNG')} -> #{dest_basename}#{counter&.next}.dng"
+    FileUtils.mv(f.sub(/JPG$/, 'DNG'), "#{dest_basename}#{counter&.next}.dng", force: true)
+  end
+
+Dir[DCIM_ROOT.join('**', '*.MOV')]
+  .sort
+  .each do |f|
+    timestamp = MiniExiftool.new(f).createdate.strftime('%F %H.%M.%S')
+    puts "Processing #{f} with timestamp #{timestamp}"
+
+    dest_basename = DEST_DIR.join(timestamp[0, 4], timestamp)
+    FileUtils.mkdir_p(File.dirname(dest_basename))
+
+    if Dir["#{dest_basename}*.mov"].one?
+      puts 'Conflicting timestamp found; adding counter to existing file'
+      FileUtils.mv("#{dest_basename}.mov", "#{dest_basename}a.mov")
+    end
+
+    counter = Dir["#{dest_basename}*.mov"].max&.slice(/.(?=\.mov$)/)
+    raise 'Unresolved timestamp conflict' unless counter.nil? || ('a'..'z') === counter
+
+    puts "#{f} -> #{dest_basename}#{counter&.next}.mov"
+    FileUtils.mv(f, "#{dest_basename}#{counter&.next}.mov")
+  end
+
+FileUtils.chown_R(OWNER_UID, OWNER_GID, DEST_DIR)
+
+Dir[DCIM_ROOT.join('**/')]
+  .drop(1)
+  .reverse_each { |d| Dir.rmdir(d) if (Dir.entries(d) - %w[. ..]).empty? }
+
+system('umount /media/ricoh-gr')

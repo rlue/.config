@@ -1,0 +1,12 @@
+# per https://bbs.archlinux.org/viewtopic.php?pid=1165168#p1165168
+
+[Unit]
+Description=Digital Photo Ingester for Ricoh GR
+After=dev-disk-by\x2dlabel-RICOH_GR.device
+
+[Service]
+ExecStart=/home/rlue/.local/bin/dcim-ingester
+Restart=on-failure
+
+[Install]
+WantedBy=dev-disk-by\x2dlabel-RICOH_GR.device
