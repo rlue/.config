@@ -24,7 +24,9 @@
 	mg = merge
 	mc = merge --no-ff
 	rb = rebase
+	rs = restore
 	st = status
+	sw = switch
 	; review = log -p --reverse
 	review = "!f() { \
 	  git log --reverse --format=format:'%h' \"$1\" | \
