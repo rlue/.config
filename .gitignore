@@ -33,7 +33,8 @@
 !/cmus/rc
 !/compton
 !/fbterm
-!/git
+!/git/config
+!/git/ignore
 !/gnupg/gpg.conf
 !/gnupg/gpg-agent.conf
 !/htop
