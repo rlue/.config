@@ -5,6 +5,7 @@
 /*
 *cache*
 *history*
+/.local/share/fonts/**/.uuid
 
 !/.bash_profile
 !/.bashrc
