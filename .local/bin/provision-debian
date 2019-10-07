@@ -222,7 +222,7 @@ desktop_packages=(
   fonts-moe-standard-{kai,song}
   gimp{,-plugin-registry,-python}
   gnubiff
-  {i3,compton,xdotool}
+  {i3,compton,xdotool,blueman,scrot}
   live-task-localisation-desktop
   pulseaudio-module-bluetooth
   mkusb

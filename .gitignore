@@ -45,6 +45,7 @@
 !/lftp/rc
 !/logcheck
 !/mbsync
+!/mimeapps.list
 !/msmtp
 !/mutt
 !/neofetch
