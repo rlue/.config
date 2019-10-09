@@ -30,7 +30,7 @@
 !/.tmux.conf
 !/README.md
 !/alacritty
-!/autostart-scripts
+!/autostart
 !/cmus/rc
 !/compton
 !/fbterm
