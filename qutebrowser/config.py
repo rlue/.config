@@ -2,6 +2,7 @@ config.bind('<Ctrl-e>', 'scroll down')
 config.bind('<Ctrl-y>', 'scroll up')
 config.bind('T', 'tab-focus last')
 config.bind('~', 'open -t ~')
+config.bind(';D', 'hint all download')
 c.auto_save.session = True
 c.downloads.location.directory = "~/tmp"
 c.content.cookies.accept = "no-3rdparty"
