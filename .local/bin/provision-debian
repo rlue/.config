@@ -212,6 +212,7 @@ desktop_packages=(
   axel
   buku
   chromium
+  cifs-utils
   cmus
   digikam
   {fbterm,libcap2-bin}
