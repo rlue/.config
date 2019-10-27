@@ -13,6 +13,8 @@
 	tool = vimdiff
 [push]
 	default = simple
+[commit]
+	verbose = true
 [alias]
 	br = branch
 	co = checkout
