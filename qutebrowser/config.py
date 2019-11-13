@@ -4,8 +4,9 @@ config.bind('T', 'tab-focus last')
 config.bind('~', 'open -t ~')
 config.bind(';D', 'hint all download')
 c.auto_save.session = True
-c.downloads.location.directory = "~/tmp"
 c.content.cookies.accept = "no-3rdparty"
+c.downloads.location.directory = "~/tmp"
+c.editor.command = ["gvim", "-f", "{file}", "-c", "set filetype=markdown", "-c", "normal {line}G{column0}l"]
 c.fonts.monospace = 'PragmataPro, "xos4 Terminus", Terminus, Monospace, "DejaVu Sans Mono", Monaco, "Bitstream Vera Sans Mono", "Andale Mono", "Courier New", Courier, "Liberation Mono", monospace, Fixed, Consolas, Terminal'
 c.url.searchengines = {
     "DEFAULT": "https://duckduckgo.com/?q={}",
