@@ -12,7 +12,7 @@
 // Whitelist: .config ----------------------------------------------------------
 // These files contain sensitive secrets and are ignored in the .config git repo
 !/.config/Transmission Remote GUI/transgui.ini
-!/.config/asciinema/config
+!/.config/asciinema/install-id
 !/.config/gnubiff
 !/.config/gnupg
 !/.config/hub
