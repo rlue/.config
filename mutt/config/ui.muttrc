@@ -44,6 +44,9 @@ set sidebar_format = " %B%*  [%N] "
 # pager   - where the contents of the message are displayed
 # query   - menu displaying results of query command
 
+# Composing --------------------------------------------------------------------
+macro compose K "| pandoc -f gfm -o /tmp/neomutt-alternative.html<enter><attach-file>/tmp/neomutt-alternative.html<enter><tag-entry><previous-entry><tag-entry><group-alternatives>"
+
 # Navigation -------------------------------------------------------------------
 bind generic             z         noop
 bind index,pager,attach  g         noop

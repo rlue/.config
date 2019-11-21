@@ -235,6 +235,7 @@ desktop_packages=(
   {ruby-,}notmuch
   obs-studio
   okular-extra-backends
+  pandoc
   papirus-icon-theme
   picard
   qutebrowser
