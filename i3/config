@@ -28,6 +28,7 @@ exec --no-startup-id compton -b --config ~/.config/compton/compton.conf
 bindsym $mod+q kill
 # bindsym $mod+space exec --no-startup-id i3-dmenu-desktop
 bindsym $mod+space exec dmenu_run -fn PragmataPro
+# bindsym $mod+Return exec env GLFW_IM_MODULE=fcitx kitty
 bindsym $mod+Return exec env WINIT_HIDPI_FACTOR=1.0 alacritty
 # bindsym --release Print exec scrot -s -e 'mv $f ~/tmp/'
 # bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5%
