@@ -30,6 +30,7 @@
 !/README.md
 !/alacritty
 !/autostart
+!/broot/conf.toml
 !/cmus/rc
 !/compton
 !/fbterm

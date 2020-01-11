@@ -101,6 +101,9 @@ fi
 source "/usr/share/bash-completion/completions/fzf" >/dev/null 2>&1
 source "/usr/share/doc/fzf/examples/key-bindings.bash" >/dev/null 2>&1
 
+# broot ------------------------------------------------------------------------
+source "$HOME/.config/broot/launcher/bash/br" >/dev/null 2>&1
+
 # direnv -----------------------------------------------------------------------
 if hash direnv >/dev/null 2>&1; then
   eval "$(direnv hook bash)"

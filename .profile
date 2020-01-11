@@ -141,3 +141,8 @@ if command -v restic >/dev/null 2>&1; then
     export RESTIC_PASSWORD_COMMAND="pass web/backblaze/$(hostname).repo"
   fi
 fi
+
+# broot ------------------------------------------------------------------------
+if command -v broot >/dev/null 2>&1; then
+  source "$HOME/.config/broot/launcher/bash/br" >/dev/null 2>&1
+fi
