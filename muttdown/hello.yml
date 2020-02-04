@@ -1,6 +1,0 @@
-smtp_host: mail.privateemail.com
-smtp_port: 465
-smtp_ssl: true
-smtp_username: hello@ryanlue.com
-smtp_password_command: pass web/email/hello@ryanlue.com
-# css_file: ~/.muttdown.css
