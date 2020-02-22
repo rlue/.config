@@ -1,3 +1,0 @@
-#!/bin/sh
-
-KDEWM=/usr/bin/i3 startkde

@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=XSession
-Exec=/usr/bin/startkde
-TryExec=/usr/bin/startkde
+Exec=/usr/bin/startplasma-x11
+TryExec=/usr/bin/startplasma-x11
 DesktopNames=KDE
 Name=Plasma
 Name[ar]=بلازما
@@ -71,7 +71,7 @@ Comment[is]=Plasma frá KDE
 Comment[it]=Plasma di KDE
 Comment[ja]=Plasma by KDE
 Comment[ko]=KDE Plasma
-Comment[lt]=Plasmą sukūrė KDE
+Comment[lt]=Plasmą pagal KDE
 Comment[nb]=Plasma av KDE
 Comment[nds]=Plasma vun KDE
 Comment[nl]=Plasma door KDE
@@ -91,6 +91,6 @@ Comment[sv]=Plasma av KDE
 Comment[tr]=KDE Plasma
 Comment[uk]=Плазма KDE
 Comment[x-test]=xxPlasma by KDExx
-Comment[zh_CN]=KDE 的 Plasma
+Comment[zh_CN]=KDE Plasma
 Comment[zh_TW]=Plasma by KDE
-X-KDE-PluginInfo-Version=5.14.5
+X-KDE-PluginInfo-Version=5.17.5
