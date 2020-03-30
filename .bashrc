@@ -270,6 +270,6 @@ function waitfor() {
 
 if hash timer >/dev/null 2>&1; then
   function lmk() {
-    waitfor "$1" && timer 0 >/dev/null
+    waitfor "$1" 2>/dev/null || $@ ; timer 0 >/dev/null
   }
 fi
