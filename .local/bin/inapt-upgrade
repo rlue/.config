@@ -29,7 +29,7 @@ function version_gt() {
 }
 
 > "/tmp/inapt-upgrade.log"
-chown $(logname).$(logname) "/tmp/inapt-upgrade.log"
+# chown $(logname).$(logname) "/tmp/inapt-upgrade.log"
 exec 3>>"/tmp/inapt-upgrade.log"
 
 function finish {
