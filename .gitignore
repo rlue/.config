@@ -6,6 +6,7 @@
 *cache*
 *history*
 /.local/share/fonts/**/.uuid
+/.local/share/fonts/PragmataPro/
 
 !/.bash_profile
 !/.bashrc
