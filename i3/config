@@ -95,6 +95,7 @@ set $ws9 "9"
 set $ws10 "10"
 
 # switch to workspace
+bindsym $mod+grave workspace back_and_forth
 bindsym $mod+Tab workspace next_on_output
 bindsym $mod+Shift+Tab workspace prev_on_output
 bindsym $mod+1 workspace $ws1
