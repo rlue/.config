@@ -55,6 +55,7 @@ done <<-EOF
   $path_entries
   $HOME/bin
   $HOME/.rbenv/bin
+  $HOME/.pyenv/bin
   $HOME/.cargo/bin
 EOF
 
@@ -62,6 +63,10 @@ unset path_entries
 
 if command -v rbenv >/dev/null 2>&1; then
   eval "$(rbenv init -)"
+fi
+
+if command -v pyenv >/dev/null 2>&1; then
+  eval "$(pyenv init -)"
 fi
 
 if command -v vim >/dev/null 2>&1; then
@@ -145,4 +150,9 @@ fi
 # broot ------------------------------------------------------------------------
 if command -v broot >/dev/null 2>&1; then
   source "$HOME/.config/broot/launcher/bash/br" >/dev/null 2>&1
+fi
+
+# pyenv ------------------------------------------------------------------------
+if command -v pyenv >/dev/null 2>&1; then
+  export PYENV_ROOT="$(dirname $(dirname $(which pyenv)))"
 fi

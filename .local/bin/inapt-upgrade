@@ -260,6 +260,14 @@ if [ $# -eq 0 ] || [ "$1" == rbenv ] && [ -d "$HOME/.rbenv/.git" ]; then
   fi
 fi
 
+# pyenv ------------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == pyenv ] && [ -d "$HOME/.pyenv/.git" ]; then
+  cd $HOME/.pyenv
+  if [ -n "$(sudo -su $(logname) git pull 2>&1 1>&3 )" ]; then
+    echo "Upgrading pyenv..."
+  fi
+fi
+
 # i3-gaps ----------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == i3 ] && command -v i3 >/dev/null 2>&1 && ! i3 --version | grep gaps >/dev/null 2>&1; then
   i3g_stable=$(latest_version "Airblader/i3")

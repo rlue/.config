@@ -191,6 +191,7 @@ dev_packages=(
   default-libmysqlclient-dev
   mariadb-server
   postgresql{,-client,-server-dev-11}
+  pipenv
   python3-{dev,setuptools}
   libsqlite3-dev
   lib{xslt1-dev,xml2-dev}
@@ -663,6 +664,37 @@ fi
 if [ -r "$HOME/.ruby-version" ] && ! [ -d "$HOME/.rbenv/versions/$(cat "$HOME/.ruby-version")" ]; then
   echo "Installing Ruby $(cat "$HOME/.ruby-version")..."
   sudo RUBY_CONFIGURE_OPTS=--with-jemalloc su $(logname) -c '"$HOME/.rbenv/bin/rbenv" install $(cat "$HOME/.ruby-version")' >&3
+fi
+
+# python -----------------------------------------------------------------------
+python_build_deps=(
+  make
+  build-essential
+  libssl-dev
+  zlib1g-dev
+  libbz2-dev
+  libreadline-dev
+  libsqlite3-dev
+  wget
+  curl
+  llvm
+  libncurses5-dev
+  xz-utils
+  tk-dev
+  libxml2-dev
+  libxmlsec1-dev
+  libffi-dev
+  liblzma-dev
+)
+
+if ! dpkg -s $python_build_deps[@] >/dev/null 2>&1; then
+  echo "Installing python build dependencies..."
+  apt install -y ${python_build_deps[@]} >&3 2>/dev/null
+fi
+
+if ! [ -d "$HOME/.pyenv" ]; then
+  echo "Installing pyenv..."
+  sudo -su $(logname) git clone https://github.com/pyenv/pyenv.git "$HOME/.pyenv" >&3 2>&3
 fi
 
 # i3-gaps ----------------------------------------------------------------------
