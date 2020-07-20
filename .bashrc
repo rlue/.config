@@ -273,3 +273,18 @@ if hash timer >/dev/null 2>&1; then
     waitfor "$1" 2>/dev/null || $@ ; timer 0 >/dev/null
   }
 fi
+
+# watch-build-repeat -----------------------------------------------------------
+# via https://jvns.ca/blog/2020/06/28/entr/
+
+if hash fd >/dev/null 2>&1 && hash entr >/dev/null 2>&1; then
+  function watch-build-repeat() {
+    while [ -z $WBR_FINISHED ]; do
+      fd | entr -d bash -c "$@" && WBR_FINISHED=1
+    done
+
+    unset WBR_FINISHED
+  }
+
+  alias wbr="watch-build-repeat"
+fi
