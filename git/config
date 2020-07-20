@@ -12,7 +12,7 @@
 [merge]
 	tool = vimdiff
 [push]
-	default = simple
+	default = current
 [commit]
 	verbose = true
 [alias]
@@ -27,6 +27,7 @@
 	mc = merge --no-ff
 	rb = rebase
 	rs = restore
+	sh = show --stat --pretty=format:'%C(yellow)%h%C(reset) %G? %C(bold blue)%an%C(reset) %s%C(bold cyan)%d%C(reset) %C(green)%cr.%C(reset) %n%n%b%n%N%-%n'
 	st = status
 	sw = switch
 	; review = log -p --reverse
@@ -43,3 +44,5 @@
 	smtpuser = hello@ryanlue.com
 	smtpencryption = ssl
 	smtpserverport = 465
+[pull]
+	rebase = true
