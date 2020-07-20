@@ -244,9 +244,9 @@ if [ $# -eq 0 ] || [ "$1" == rbenv ] && [ -d "$HOME/.rbenv/.git" ]; then
   fi
 
   if [ -d "$HOME/.rbenv/plugins/ruby-build/.git" ]; then
-    cd $HOME/.rbenv/plugins/ruby-update
+    cd $HOME/.rbenv/plugins/rbenv-update
     if [ -n "$(sudo -su $(logname) git pull 2>&1 1>&3 )" ]; then
-      echo "Upgrading ruby-update..."
+      echo "Upgrading rbenv-update..."
     fi
 
     if [ -n "$(sudo -su $(logname) "$HOME/.rbenv/bin/rbenv" update | tee -a "/tmp/inapt-upgrade.log" | grep -v Updating)" ]; then
