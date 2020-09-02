@@ -570,14 +570,6 @@ if  ! command -v docker-credential-pass >/dev/null 2>&1; then
     chown root.staff /usr/local/bin/docker-credential-pass
 fi
 
-# TeamViewer -------------------------------------------------------------------
-if [ "${desktop,,}" = "y" ] && ! dpkg -s teamviewer >/dev/null 2>&1; then
-  echo "Installing TeamViewer..."
-  cd "$sandbox"
-  teamviewer_release="https://download.teamviewer.com/download/linux/teamviewer_amd64.deb"
-  curl -sSf -o "$tmpfile" -L "$teamviewer_release" && dpkg -i --skip-same-version "$tmpfile" >&3
-fi
-
 # # Mattermost -------------------------------------------------------------------
 # if [ "${desktop,,}" = "y" ] && ! dpkg -s mattermost-desktop >/dev/null 2>&1; then
 #   echo "Installing Mattermost..."
