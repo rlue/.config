@@ -229,6 +229,7 @@ desktop_packages=(
   pulseaudio-module-bluetooth
   mkusb
   msmtp{,-mta}
+  mupdf
   {mutt,neomutt}
   network-manager{,-openvpn}
   newsboat

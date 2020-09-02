@@ -11,7 +11,7 @@ image/*; xdg-open %s >/dev/null 2>&1
 # image/gif; qlmanage -p %s >/dev/null 2>&1
 
 # PDFs
-application/pdf; xdg-open %s 2>&1 /dev/null
+application/pdf; mupdf %s 2>&1 /dev/null
 
 # HTML (displayed in mutt via w3m by default; use `vm` to view in qutebrowser)
 text/html; firefox %s; nametemplate=%s.html;
