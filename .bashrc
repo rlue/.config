@@ -25,13 +25,6 @@ if [ -z "$SSH_CONNECTION" ]; then
     if [ "$(uname)" = Linux ] || type greadlink >/dev/null 2>&1; then
       source "$HOME/.config/tmux/tmux-git/init.sh" >/dev/null 2>&1
     fi
-
-    if hash timer >/dev/null 2>&1 &&
-       ! pgrep -f $(hash -t timer) >/dev/null 2>&1 &&
-       [ "$(tmux display-message -p '#S')" = "work" ]; then
-      delay="$(echo "900 - (($(date +%S) + ($(date +%M) * 60)) % 900)" | bc)"
-      timer -qd "$delay" -r -1 15 15 15 15 &
-    fi
   fi
 fi
 
