@@ -5,6 +5,7 @@
 !/memories
 !/notes
 !/share
+!/.local/etc/otpclient/
 !/.vim/viminfo
 !/.vim/vimundo/
 

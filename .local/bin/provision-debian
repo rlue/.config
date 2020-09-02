@@ -237,6 +237,7 @@ desktop_packages=(
   {ruby-,}notmuch
   obs-studio
   okular-extra-backends
+  otpclient
   pandoc
   papirus-icon-theme
   picard
