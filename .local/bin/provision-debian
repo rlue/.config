@@ -691,6 +691,27 @@ if ! [ -d "$HOME/.pyenv" ]; then
   sudo -su $(logname) git clone https://github.com/pyenv/pyenv.git "$HOME/.pyenv" >&3 2>&3
 fi
 
+# node -------------------------------------------------------------------------
+if ! [ -d "$HOME/.nodenv" ]; then
+  echo "Installing nodenv..."
+  sudo -su $(logname) git clone https://github.com/nodenv/nodenv.git "$HOME/.nodenv" >&3 2>&3
+fi
+
+if ! [ -f "$HOME/.nodenv/libexec/nodenv-realpath.dylib" ]; then
+  echo "Installing nodenv..."
+  cd $HOME/.nodenv
+  sudo -su $(logname) src/configure >&3
+  sudo -su $(logname) make -C src >&3
+fi
+
+if ! [ -d "$HOME/.nodenv/plugins/node-build" ]; then
+  sudo -su $(logname) git clone https://github.com/nodenv/node-build.git "$HOME/.nodenv/plugins/node-build" >&3 2>&3
+fi
+
+if ! [ -d "$HOME/.rbenv/plugins/nodenv-update" ]; then
+  sudo -su $(logname) git clone https://github.com/nodenv/rbenv-update.git "$HOME/.rbenv/plugins/nodenv-update" >&3 2>&3
+fi
+
 # i3-gaps ----------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && command -v i3 >/dev/null 2>&1 && ! i3 --version | grep gaps >/dev/null 2>&1; then
   echo "Installing i3-gaps..."

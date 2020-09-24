@@ -54,19 +54,24 @@ while read -r dir; do
 done <<-EOF
   $path_entries
   $HOME/bin
-  $HOME/.rbenv/bin
+  $HOME/.nodenv/bin
   $HOME/.pyenv/bin
+  $HOME/.rbenv/bin
   $HOME/.cargo/bin
 EOF
 
 unset path_entries
 
-if command -v rbenv >/dev/null 2>&1; then
-  eval "$(rbenv init -)"
+if command -v nodenv >/dev/null 2>&1; then
+  eval "$(nodenv init -)"
 fi
 
 if command -v pyenv >/dev/null 2>&1; then
   eval "$(pyenv init -)"
+fi
+
+if command -v rbenv >/dev/null 2>&1; then
+  eval "$(rbenv init -)"
 fi
 
 if command -v vim >/dev/null 2>&1; then
