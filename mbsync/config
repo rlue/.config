@@ -58,6 +58,7 @@ MaildirStore local
 Path ~/mail/
 Inbox ~/mail/\<\<Gmail\>\>
 Flatten "."
+SubFolders Verbatim
 
 # CHANNELS ====================================================================
 
