@@ -272,10 +272,10 @@ fi
 
 if hash fd >/dev/null 2>&1 && hash entr >/dev/null 2>&1; then
   function watch-build-repeat() {
-    ALERT="$(hash timer >/dev/null 2>&1 && echo timer 0 || echo tput bel)"
+    TIME_WRAPPER="$(which time) -f 'Rebuild complete (%e secs)'"
 
     while [ -z $WBR_FINISHED ]; do
-      fd | entr -d bash -c "$@; $ALERT" && WBR_FINISHED=1
+      fd | entr -d bash -c "$TIME_WRAPPER $@; tput bel" && WBR_FINISHED=1
     done
 
     unset WBR_FINISHED

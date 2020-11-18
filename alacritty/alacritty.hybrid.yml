@@ -268,7 +268,7 @@ colors:
 # Bell
 #
 # The bell is rung every time the BEL control character is received.
-#bell:
+visual_bell:
   # Visual Bell Animation
   #
   # Animation effect for flashing the screen when the visual bell is rung.
@@ -288,10 +288,10 @@ colors:
 
   # Duration of the visual bell flash. A `duration` of `0` will disable the
   # visual bell animation.
-  #duration: 0
+  duration: 80
 
   # Visual bell animation color.
-  #color: '#ffffff'
+  color: '#27292c'
 
   # Bell Command
   #
