@@ -225,6 +225,7 @@ desktop_packages=(
   gimp{,-plugin-registry,-python}
   gnubiff
   {i3,compton,xdotool,blueman,scrot}
+  keynav
   live-task-localisation-desktop
   pulseaudio-module-bluetooth
   mkusb
