@@ -2,7 +2,9 @@
 application/msword; libreoffice %s
 
 # Images
-image/*; xdg-open %s >/dev/null 2>&1
+image/*; feh %s >/dev/null 2>&1
+video/*; mpv %s >/dev/null 2>&1
+
 # use QuickLook on macOS
 # image/jpg; qlmanage -p %s >/dev/null 2>&1
 # image/jpeg; qlmanage -p %s >/dev/null 2>&1
@@ -15,8 +17,7 @@ application/pdf; mupdf %s 2>&1 /dev/null
 
 # HTML (displayed in mutt via w3m by default; use `vm` to view in qutebrowser)
 text/html; firefox %s; nametemplate=%s.html;
-text/html; w3m -I %{charset} -T text/html; copiousoutput;
-
+# text/html; w3m -I %{charset} -T text/html; copiousoutput;
 
 # Unidentified files
 application; xdg-open %s
