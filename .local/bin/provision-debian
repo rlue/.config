@@ -573,14 +573,6 @@ if  ! command -v docker-credential-pass >/dev/null 2>&1; then
     chown root.staff /usr/local/bin/docker-credential-pass
 fi
 
-# # Mattermost -------------------------------------------------------------------
-# if [ "${desktop,,}" = "y" ] && ! dpkg -s mattermost-desktop >/dev/null 2>&1; then
-#   echo "Installing Mattermost..."
-#   mattermost_stable=$(latest_version "mattermost/desktop")
-#   mattermost_release="https://releases.mattermost.com/desktop/${mattermost_stable}/mattermost-desktop-${mattermost_stable}-linux-amd64.deb"
-#   curl -sSf -o "$tmpfile" -L "$mattermost_release" && dpkg -i --skip-same-version "$tmpfile" >&3
-# fi
-
 # alacritty --------------------------------------------------------------------
 if [ "${desktop,,}" = "y" ] && ! dpkg -s alacritty >/dev/null 2>&1; then
   alacritty_build_deps=(

@@ -41,4 +41,3 @@ x-scheme-handler/bjnb=bluejeans-v2.desktop
 x-scheme-handler/ftp=org.qutebrowser.qutebrowser.desktop
 x-scheme-handler/http=firefox-default.desktop;
 x-scheme-handler/https=firefox-default.desktop;
-x-scheme-handler/mattermost=Mattermost.desktop

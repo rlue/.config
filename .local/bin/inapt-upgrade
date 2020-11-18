@@ -191,18 +191,6 @@ if [ $# -eq 0 ] || [ "$1" == docker-credential-pass ] && command -v docker-crede
   fi
 fi
 
-# Mattermost -------------------------------------------------------------------
-if [ $# -eq 0 ] || [ "$1" == mattermost ] && dpkg -s mattermost-desktop >/dev/null 2>&1; then
-  mattermost_stable=$(latest_version "mattermost/desktop")
-  mattermost_installed=$(dpkg -s mattermost-desktop | grep Version | awk '{ print $NF }')
-  mattermost_release="https://releases.mattermost.com/desktop/${mattermost_stable}/mattermost-desktop-${mattermost_stable}-linux-amd64.deb"
-
-  if version_gt "$mattermost_stable" "$mattermost_installed"; then
-    echo "Upgrading Mattermost..."
-    curl -sSf -o "$tmpfile" -L "$mattermost_release" && dpkg -i --skip-same-version "$tmpfile" >&3
-  fi
-fi
-
 # alacritty --------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == alacritty ] && dpkg -s alacritty >/dev/null 2>&1; then
   alacritty_stable=$(latest_version "jwilm/alacritty")
