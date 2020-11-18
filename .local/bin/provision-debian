@@ -190,7 +190,7 @@ dev_packages=(
   inotify-tools
   default-libmysqlclient-dev
   mariadb-server
-  postgresql{,-client,-server-dev-11}
+  postgresql{,-client,-server-dev-all}
   pipenv
   python3-{dev,setuptools}
   libsqlite3-dev
@@ -229,6 +229,7 @@ desktop_packages=(
   live-task-localisation-desktop
   pulseaudio-module-bluetooth
   mkusb
+  mpv
   msmtp{,-mta}
   mupdf
   {mutt,neomutt}
