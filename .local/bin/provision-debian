@@ -167,7 +167,6 @@ base_system_packages=(
   nodejs
   openssh-server
   pass
-  python3-pip
   reportbug
   restic
   stow
@@ -191,8 +190,6 @@ dev_packages=(
   default-libmysqlclient-dev
   mariadb-server
   postgresql{,-client,-server-dev-all}
-  pipenv
-  python3-{dev,setuptools}
   libsqlite3-dev
   lib{xslt1-dev,xml2-dev}
   xmlstarlet
@@ -474,21 +471,6 @@ if [ "${desktop,,}" = "y" ] && ! [ -x "$HOME/.cargo/bin/cargo-deb" ] >/dev/null 
   sudo -su $(logname) "$HOME/.cargo/bin/cargo" install cargo-deb >&3
 fi
 
-# pip --------------------------------------------------------------------------
-if [ "${desktop,,}" = "y" ]; then
-  for package in pip beancount fava pocket-cli rtv speedtest-cli ueberzug urlscan youtube_dl; do
-    if ! pip3 show "$package" >/dev/null 2>&1; then
-      echo "Installing $package..."
-      HOME=/root pip3 install --upgrade "$package" >&3
-    fi
-  done
-
-  if ! pip3 show subsync >/dev/null 2>&1; then
-    echo "Installing subsync..."
-    HOME=/root pip3 install --upgrade git+https://github.com/smacke/subsync >&3
-  fi
-fi
-
 # bat --------------------------------------------------------------------------
 if ! dpkg -s bat >/dev/null 2>&1; then
   echo "Installing bat..."
@@ -527,15 +509,6 @@ if ! command -v diff-so-fancy >/dev/null 2>&1; then
   curl -o /usr/local/bin/diff-so-fancy https://raw.githubusercontent.com/so-fancy/diff-so-fancy/master/third_party/build_fatpack/diff-so-fancy >&3
   chown root.staff /usr/local/bin/diff-so-fancy
   chmod +x /usr/local/bin/diff-so-fancy
-fi
-
-# ranger -----------------------------------------------------------------------
-# (master branch required for ueberzug compatibility)
-if ! command -v ranger >/dev/null 2>&1; then
-  echo "Installing ranger..."
-  sudo -su $(logname) git clone https://github.com/ranger/ranger "$sandbox/ranger" >&3 2>&3
-  cd "$sandbox/ranger"
-  make install
 fi
 
 # rbspy ------------------------------------------------------------------------
@@ -683,6 +656,15 @@ fi
 if ! [ -d "$HOME/.pyenv" ]; then
   echo "Installing pyenv..."
   sudo -su $(logname) git clone https://github.com/pyenv/pyenv.git "$HOME/.pyenv" >&3 2>&3
+fi
+
+if [ "${desktop,,}" = "y" ]; then
+  for package in buku ffsubsync picard pocket-cli ranger-fm speedtest-cli ueberzug urlscan visidata youtube-dl; do
+    if ! sudo -iu $(logname) pip show "$package" >/dev/null 2>&1; then
+      echo "Installing $package..."
+      sudo -iu $(logname) pip install --upgrade "$package" >&3
+    fi
+  done
 fi
 
 # node -------------------------------------------------------------------------
