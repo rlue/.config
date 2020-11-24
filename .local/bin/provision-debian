@@ -47,7 +47,7 @@ function latest_version() {
   git init >/dev/null
   git remote remove origin >/dev/null 2>&1
   git remote add origin "https://github.com/$1" >/dev/null
-  echo "$(git ls-remote --tags 2>/dev/null | cut -d/ -f3 | sed 's/^v//' | grep -v "[^0-9.]" | sort -V | tail -n1)"
+  echo "$(git ls-remote --tags 2>/dev/null | \grep -oP '(?<=/)v?[0-9.]+$' | sed 's/^v//' | sort -rV | head -n1)"
 }
 
 # APT PACKAGES =================================================================
