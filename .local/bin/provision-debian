@@ -479,6 +479,14 @@ if ! dpkg -s bat >/dev/null 2>&1; then
   curl -sSf -o "$tmpfile" -L "$bat_release" && dpkg -i --skip-same-version "$tmpfile" >&3
 fi
 
+# dive -------------------------------------------------------------------------
+if ! dpkg -s dive >/dev/null 2>&1; then
+  echo "Installing dive..."
+  dive_stable=$(latest_version "wagoodman/dive")
+  dive_release="https://github.com/wagoodman/dive/releases/download/v${dive_stable}/dive_${dive_stable}_linux_amd64.deb"
+  curl -sSf -o "$tmpfile" -L "$dive_release" && dpkg -i --skip-same-version "$tmpfile" >&3
+fi
+
 # fd ---------------------------------------------------------------------------
 if ! dpkg -s fd >/dev/null 2>&1; then
   echo "Installing fd..."

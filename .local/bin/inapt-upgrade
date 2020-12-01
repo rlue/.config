@@ -94,6 +94,18 @@ if [ $# -eq 0 ] || [ "$1" == bat ] && dpkg -s bat >/dev/null 2>&1; then
   fi
 fi
 
+# dive -------------------------------------------------------------------------
+if [ $# -eq 0 ] || [ "$1" == dive ] && dpkg -s dive >/dev/null 2>&1; then
+  dive_stable=$(latest_version "wagoodman/dive")
+  dive_installed=$(dive --version | awk '{ print $NF }')
+  dive_release="https://github.com/wagoodman/dive/releases/download/v${dive_stable}/dive_${dive_stable}_linux_amd64.deb"
+
+  if version_gt "$dive_stable" "$dive_installed"; then
+    echo "Upgrading dive..."
+    curl -sSf -o "$tmpfile" -L "$dive_release" && dpkg -i --skip-same-version "$tmpfile" >&3
+  fi
+fi
+
 # fd ---------------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == fd ] && dpkg -s fd >/dev/null 2>&1; then
   fd_stable=$(latest_version "sharkdp/fd")
