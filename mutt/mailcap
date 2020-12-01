@@ -2,7 +2,7 @@
 application/msword; libreoffice %s
 
 # Images
-image/*; feh %s >/dev/null 2>&1
+image/*; feh -. %s >/dev/null 2>&1
 video/*; mpv %s >/dev/null 2>&1
 
 # use QuickLook on macOS
