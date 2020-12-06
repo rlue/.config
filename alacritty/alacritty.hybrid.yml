@@ -268,7 +268,7 @@ colors:
 # Bell
 #
 # The bell is rung every time the BEL control character is received.
-visual_bell:
+bell:
   # Visual Bell Animation
   #
   # Animation effect for flashing the screen when the visual bell is rung.
