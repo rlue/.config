@@ -5,7 +5,7 @@ if [ "$(whoami)" != "root" ]; then
   exit 1
 fi
 
-if [ "$HOME" != "$(eval echo ~$(logname))" ]; then
+if [ "$HOME" != "$(eval echo ~"$(logname)")" ]; then
   >&2 echo "$(basename "$0"): requires sudo with --preserve-env option (use -E)"
   exit 1
 fi
@@ -16,11 +16,11 @@ tmpfile="$(mktemp)"
 
 # accepts a github repo (e.g., "sharkdp/fd") and returns the latest version tag
 function latest_version() {
-  cd "$sandbox" >/dev/null
+  cd "$sandbox" >/dev/null || exit
   git init >/dev/null
   git remote remove origin >/dev/null 2>&1
   git remote add origin "https://github.com/$1" >/dev/null
-  echo "$(git ls-remote --tags 2>/dev/null | \grep -oP '(?<=/)v?[0-9.]+$' | sed 's/^v//' | sort -rV | head -n1)"
+  git ls-remote --tags 2>/dev/null | \grep -oP '(?<=/)v?[0-9.]+$' | sed 's/^v//' | sort -rV | head -n1
 }
 
 # via https://stackoverflow.com/a/24067243/4865822
@@ -28,7 +28,7 @@ function version_gt() {
   test "$(printf '%s\n' "$@" | sort -V | head -n 1)" != "$1";
 }
 
-> "/tmp/inapt-upgrade.log"
+truncate -s 0 "/tmp/inapt-upgrade.log"
 # chown $(logname).$(logname) "/tmp/inapt-upgrade.log"
 exec 3>>"/tmp/inapt-upgrade.log"
 
@@ -48,7 +48,7 @@ echo "Looking for outdated packages..."
 # firefox ----------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == firefox ] && [ -d /opt/firefox ] >/dev/null 2>&1; then
   ff_stable=$(curl -sSfL https://product-details.mozilla.org/1.0/firefox_versions.json | grep DEVEDITION | awk '{ print $ NF }' | tr -d \",)
-  ff_installed=$(sudo -su $(logname) /opt/firefox/firefox --version | awk '{ print $NF }')
+  ff_installed=$(sudo -su "$(logname)" /opt/firefox/firefox --version | awk '{ print $NF }')
 
   if version_gt "$ff_stable" "$ff_installed"; then
     echo "Upgrading Firefox Developer Edition..."
@@ -58,26 +58,28 @@ fi
 
 # rust -------------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == rust ] && [ -x "$HOME/.cargo/bin/rustup" ] >/dev/null 2>&1; then
-  if sudo -su $(logname) "$HOME/.cargo/bin/rustup" update 2>&3 | grep updated >/dev/null; then
+  if sudo -su "$(logname)" "$HOME/.cargo/bin/rustup" update 2>&3 | grep updated >/dev/null; then
     echo "Upgrading Rust..."
   fi
 fi
 
 if [ $# -eq 0 ] || [ "$1" == cargo-deb ] && [ -x "$HOME/.cargo/bin/cargo" ] >/dev/null 2>&1; then
   cargodeb_stable=$(latest_version "mmstick/cargo-deb")
-  cargodeb_installed=$(sudo -su $(logname) "$HOME/.cargo/bin/cargo" deb --version)
+  cargodeb_installed=$(sudo -su "$(logname)" "$HOME/.cargo/bin/cargo" deb --version)
 
   if version_gt "$cargodeb_stable" "$cargodeb_installed"; then
     echo "Upgrading cargo-deb..."
-    sudo -su $(logname) "$HOME/.cargo/bin/cargo" install cargo-deb --force >&3
+    sudo -su "$(logname)" "$HOME/.cargo/bin/cargo" install cargo-deb --force >&3
   fi
 fi
 
 # pip --------------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == pip ]; then
-  for package in buku ffsubsync picard pip pocket-cli speedtest-cli urlscan youtube-dl; do
-    if sudo -iu $(logname) pip show "$package" >/dev/null 2>&1; then
-      sudo -iu $(logname) pip install --upgrade "$package" >&3
+  for package in pip buku ffsubsync picard pocket-cli speedtest-cli urlscan youtube-dl; do
+    if sudo -iu "$(logname)" pip show "$package" >/dev/null 2>&1; then
+      if sudo -iu "$(logname)" pip install --upgrade "$package" | tee -a "/tmp/inapt-upgrade.log" | grep -q Collecting; then
+        echo "Updating $package..."
+      fi
     fi
   done
 fi
@@ -207,12 +209,12 @@ if [ $# -eq 0 ] || [ "$1" == alacritty ] && dpkg -s alacritty >/dev/null 2>&1; t
   if version_gt "$alacritty_stable" "$alacritty_installed"; then
     echo "Upgrading alacritty..."
 
-    chmod 777 $sandbox
+    chmod 777 "$sandbox"
 
-    sudo -su $(logname) git clone https://github.com/jwilm/alacritty "$sandbox/alacritty" 2>&3
-    cd "$sandbox/alacritty"
+    sudo -su "$(logname)" git clone https://github.com/jwilm/alacritty "$sandbox/alacritty" 2>&3
+    cd "$sandbox/alacritty" || exit
     git checkout "v${alacritty_stable}"
-    sudo -su $(logname) "$HOME/.cargo/bin/cargo" deb --install --manifest-path "$sandbox/alacritty/alacritty/Cargo.toml" >&3
+    sudo -su "$(logname)" "$HOME/.cargo/bin/cargo" deb --install --manifest-path "$sandbox/alacritty/alacritty/Cargo.toml" >&3
   fi
 fi
 
@@ -226,49 +228,49 @@ fi
 
 # ruby -------------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == rbenv ] && [ -d "$HOME/.rbenv/.git" ]; then
-  cd $HOME/.rbenv
-  if [ -n "$(sudo -su $(logname) git pull 2>&1 1>&3 )" ]; then
+  cd "$HOME/.rbenv" || exit
+  if [ -n "$(sudo -su "$(logname)" git pull 2>&1 1>&3 )" ]; then
     echo "Upgrading rbenv..."
-    sudo -su $(logname) src/configure >&3
-    sudo -su $(logname) make -C src >&3
+    sudo -su "$(logname)" src/configure >&3
+    sudo -su "$(logname)" make -C src >&3
   fi
 
   if [ -d "$HOME/.rbenv/plugins/ruby-build/.git" ]; then
-    cd $HOME/.rbenv/plugins/ruby-build
-    if [ -n "$(sudo -su $(logname) git pull 2>&1 1>&3 )" ]; then
+    cd "$HOME/.rbenv/plugins/ruby-build" || exit
+    if [ -n "$(sudo -su "$(logname)" git pull 2>&1 1>&3 )" ]; then
       echo "Upgrading ruby-build..."
     fi
   fi
 
   if [ -d "$HOME/.rbenv/plugins/ruby-build/.git" ]; then
-    cd $HOME/.rbenv/plugins/rbenv-update
-    if [ -n "$(sudo -su $(logname) git pull 2>&1 1>&3 )" ]; then
+    cd "$HOME/.rbenv/plugins/rbenv-update" || exit
+    if [ -n "$(sudo -su "$(logname)" git pull 2>&1 1>&3 )" ]; then
       echo "Upgrading rbenv-update..."
     fi
 
-    if [ -n "$(sudo -su $(logname) "$HOME/.rbenv/bin/rbenv" update | tee -a "/tmp/inapt-upgrade.log" | grep -v Updating)" ]; then
+    if sudo -su "$(logname)" "$HOME/.rbenv/bin/rbenv" update | tee -a "/tmp/inapt-upgrade.log" | grep -q Updating; then
       echo "Updating rbenv..."
     fi
   fi
 
   if [ -r "$HOME/.ruby-version" ] && ! [ -d "$HOME/.rbenv/versions/$(cat "$HOME/.ruby-version")" ]; then
     echo "Installing Ruby $(cat "$HOME/.ruby-version")..."
-    sudo -su $(logname) rbenv install $(cat "$HOME/.ruby-version") >&3
+    sudo -su "$(logname)" rbenv install "$(cat "$HOME/.ruby-version")" >&3
   fi
 fi
 
 # pyenv ------------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == pyenv ] && [ -d "$HOME/.pyenv/.git" ]; then
-  cd $HOME/.pyenv
-  if [ -n "$(sudo -su $(logname) git pull 2>&1 1>&3 )" ]; then
+  cd "$HOME/.pyenv" || exit
+  if [ -n "$(sudo -su "$(logname)" git pull 2>&1 1>&3 )" ]; then
     echo "Upgrading pyenv..."
   fi
 fi
 
 # nodenv -----------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == nodenv ] && [ -d "$HOME/.nodenv/.git" ]; then
-  cd $HOME/.nodenv
-  if [ -n "$(sudo -su $(logname) git pull 2>&1 1>&3 )" ]; then
+  cd "$HOME/.nodenv" || exit
+  if [ -n "$(sudo -su "$(logname)" git pull 2>&1 1>&3 )" ]; then
     echo "Upgrading nodenv..."
   fi
 fi
@@ -281,7 +283,7 @@ if [ $# -eq 0 ] || [ "$1" == i3 ] && command -v i3 >/dev/null 2>&1 && ! i3 --ver
   if version_gt "$i3g_stable" "$i3g_installed"; then
     echo "Upgrading i3-gaps..."
     git clone https://github.com/maestrogerardo/i3-gaps-deb "$sandbox/i3-gaps-deb" >&3
-    cd "$sandbox/i3-gaps-deb"
+    cd "$sandbox/i3-gaps-deb" || exit
     yes | ./i3-gaps-deb >&3
     rm -rf /root/.config/i3
   fi
@@ -296,7 +298,7 @@ if [ "$1" == anki ] && command -v anki >/dev/null 2>&1; then
   # if version_gt "$anki_stable" "$anki_installed"; then
     echo "Upgrading Anki..."
     curl -sSf -L "$anki_release" | tar xz -C "$sandbox" -f - >&3
-    cd "$sandbox/anki-${anki_stable}-linux-amd64"
+    cd "$sandbox/anki-${anki_stable}-linux-amd64" || exit
     make install
   # fi
 fi
@@ -304,6 +306,6 @@ fi
 # vim plugins ------------------------------------------------------------------
 if [ $# -eq 0 ] || [ "$1" == vim-plug ] && command -v vim >/dev/null 2>&1; then
   echo "Upgrading vim-plug..."
-  sudo -su $(logname) curl -sSfLo "$HOME/.vim/autoload/plug.vim" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-  sudo -su $(logname) vim -c PlugUpdate -c qall
+  sudo -su "$(logname)" curl -sSfLo "$HOME/.vim/autoload/plug.vim" https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  sudo -su "$(logname)" vim -c PlugUpdate -c qall
 fi
