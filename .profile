@@ -77,6 +77,7 @@ fi
 if command -v vim >/dev/null 2>&1; then
   export EDITOR=vim VISUAL=vim
   export MANPAGER="/bin/sh -c \"col -b | vim -c 'runtime ftplugin/man.vim | set ft=man ro nomod nolist nonu iskeyword+=:' -\""
+  export VIMINIT="set nocp | source ${XDG_CONFIG_HOME:-$HOME/.config}/vim/vimrc"
 else
   export EDITOR=vi VISUAL=vi
 fi
