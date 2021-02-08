@@ -30,16 +30,6 @@ AuthMechs LOGIN
 SSLType IMAPS
 SSLVersions TLSv1.2
 
-# rl@zammad.com ---------------------------------------------------------------
-IMAPAccount zammad
-Host mx2.zammad.com
-Port 993
-User rl@zammad.com
-PassCmd "pass web/email/rl@zammad.com"
-AuthMechs LOGIN
-SSLType IMAPS
-SSLVersions TLSv1.2
-
 # STORES ======================================================================
 
 IMAPStore gmail
@@ -50,9 +40,6 @@ Account hello
 
 IMAPStore lists
 Account lists
-
-IMAPStore zammad
-Account zammad
 
 MaildirStore local
 Path ~/mail/
@@ -72,13 +59,6 @@ SyncState *
 Channel lists
 Master :lists:INBOX
 Slave :local:<Lists>
-Create Slave
-Expunge Both
-SyncState *
-
-Channel zammad
-Master :zammad:INBOX
-Slave :local:<<Zammad>>
 Create Slave
 Expunge Both
 SyncState *
@@ -146,7 +126,6 @@ SyncState *
 Group inboxes
 Channel hello
 Channel lists
-Channel zammad
 Channel gmail-inbox
 Channel gmail-drafts
 Channel gmail-sent

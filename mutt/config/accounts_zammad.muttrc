@@ -1,6 +1,0 @@
-# vim: filetype=muttrc
-
-set from      = "rl@zammad.com"
-set sendmail  = "msmtp -a zammad"
-set record    = "=<<Zammad>>"
-set spoolfile = "=<<Zammad>>"
